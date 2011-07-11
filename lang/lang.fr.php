@@ -17,7 +17,8 @@
 	$dictionary = array(
 
 		'Easily embed videos/images from ANY website that implements the oEmbed format (http://oembed.com/)' =>
+		false,
+		
+		'oEmbed Ressource Field' =>
 		false
-		
-		
 	);
