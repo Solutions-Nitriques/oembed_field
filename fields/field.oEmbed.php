@@ -6,13 +6,13 @@
 	
 	/**
 	 * 
-	 * Field class that will represent a oEmbed ressource
+	 * Field class that will represent an oEmbed ressource
 	 * @author Nicolas
 	 * 
 	 * Based on @nickdunn's Vimeo field: https://github.com/nickdunn/vimeo_videos/blob/master/fields/field.vimeo_video.php
 	 *
 	 */
-	class FieldVimeo_Video extends Field {
+	class FieldOembed extends Field {
 		public function __construct(&$parent){
 			parent::__construct($parent);
 			$this->_name = __('oEmbed Ressource Field');

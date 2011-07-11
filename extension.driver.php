@@ -13,7 +13,7 @@
 	 * @author nicolasbrassard
 	 *
 	 */
-	class extension_oembed extends Extension {
+	class extension_oembed_field extends Extension {
 
 		/**
 		 * Name of the extension
