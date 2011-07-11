@@ -2,8 +2,6 @@
 	
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 	
-	require_once(EXTENSIONS . '/vimeo_videos/lib/vimeo_helper.php');
-	
 	/**
 	 * 
 	 * Field class that will represent an oEmbed ressource
@@ -13,11 +11,15 @@
 	 *
 	 */
 	class FieldOembed extends Field {
+		
 		public function __construct(&$parent){
 			parent::__construct($parent);
 			$this->_name = __('oEmbed Ressource Field');
 			$this->_required = false;
 			$this->set('required', 'no');
+			
+			//var_dump($this->get());
+			//die;
 		}
 		
 		function isSortable(){
@@ -271,11 +273,11 @@
 		}
 		
 		public function preparePlainTextValue($data, $entry_id = null) {
-			/*return (
+			return (
 				isset($data['title'])
 					? $data['title']
 					: null
-			);*/
+			);
 		}
 		
 		function createTable(){

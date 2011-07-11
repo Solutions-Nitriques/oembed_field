@@ -6,7 +6,8 @@ Version: 1.0
 
 ### SPECS ###
 
-- Adds a field that will contain the link to the page that has the embeded media
+- Adds a field that will contain the link to the page that has the embeded media.
+- Currently supported: Vimeo, Youtube, Flickr
 
 ### REQUIREMENTS ###
 
@@ -14,8 +15,8 @@ Version: 1.0
 
 ### INSTALLATION ###
 
-- Unzip the oEmbed.zip file
-- (re)Name the folder oEmbed
+- Unzip the oembed_field.zip file
+- (re)Name the folder oembed_field
 - Put into the extension directory
 - Enable/install just like any other extension
 
