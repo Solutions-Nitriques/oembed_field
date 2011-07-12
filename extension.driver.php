@@ -5,9 +5,10 @@
 	*/
 
 	if(!defined("__IN_SYMPHONY__")) die("<h2>Error</h2><p>You cannot directly access this file</p>");
-
-	require_once(EXTENSIONS . '/oembed_field/field/field.oembed.php');
-
+	
+	require_once(EXTENSIONS . '/oembed_field/fields/field.oembed.php');
+	
+	
 	/**
 	 *
 	 * Embed Videos/Image Decorator/Extension

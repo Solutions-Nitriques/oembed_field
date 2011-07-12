@@ -2,6 +2,7 @@
 
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 
+	require_once(TOOLKIT . '/class.field.php');
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDispatcher.php');
 
 	/**
@@ -19,7 +20,7 @@
 		 * Name of the field table
 		 * @var string
 		 */
-		private $FIELD_TBL_NAME = 'tbl_fields_oembed';
+		const FIELD_TBL_NAME = 'tbl_fields_oembed';
 
 		public function __construct(&$parent){
 			parent::__construct($parent);
@@ -236,7 +237,7 @@
 			$label->appendChild($clip_id);
 
 			if($flagWithError != NULL) $wrapper->appendChild(Widget::wrapFormElementWithError($label, $flagWithError));
-			else $wrapper->appendChild($label);*/
+			else $wrapper->appendChild($label);
 		}
 
 
@@ -287,12 +288,15 @@
 		 * Creates the table needed for the settings of the field
 		 */
 		public static function createFieldTable() {
+			
+			$tbl = self::FIELD_TBL_NAME;
+			
 			return Symphony::Database()->query("
-				CREATE TABLE `$this->FIELD_TBL_NAME` IF NOT EXISTS (
+				CREATE TABLE IF NOT EXISTS `$tbl` (
 					`id` int(11) unsigned NOT NULL auto_increment,
 					`field_id` int(11) unsigned NOT NULL,
 					`refresh` int(11) unsigned NOT NULL,
-					`driver` varchar(150) NOT NULL
+					`driver` varchar(150) NOT NULL,
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
 				)
@@ -305,9 +309,10 @@
 		 * Drops the table needed for the settings of the field
 		 */
 		public static function deleteFieldTable() {
+			$tbl = self::FIELD_TBL_NAME;
+			
 			return Symphony::Database()->query("
-				DROP TABLE `$this->FIELD_TBL_NAME`
-					IF EXISTS
+				DROP TABLE IF EXISTS `$tbl` 
 			");
 		}
 
