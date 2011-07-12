@@ -24,8 +24,12 @@
 
 		public function __construct(&$parent){
 			parent::__construct($parent);
-			$this->_name = __('oEmbed Ressource Field');
-			$this->_required = false;
+			$this->_name = __('oEmbed Ressource');
+			// permits to make it requiered
+			$this->_required = true;
+			// permits the make it show in the table columns
+			$this->_showcolumn = true;
+			// as default as not requiered
 			$this->set('required', 'no');
 
 			//var_dump($this->get());
@@ -204,6 +208,9 @@
 
 		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
 
+			var_dump($data);
+			die();
+			
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
 
@@ -234,7 +241,7 @@
 
 			}
 
-			$label->appendChild($clip_id);
+			$label->appendChild($url);
 
 			if($flagWithError != NULL) $wrapper->appendChild(Widget::wrapFormElementWithError($label, $flagWithError));
 			else $wrapper->appendChild($label);
@@ -271,16 +278,18 @@
 		 * Creates table needed for entries of invidual fields
 		 */
 		function createTable(){
-			return Symphony::Database()->query(
-				"CREATE TABLE IF NOT EXISTS `tbl_entries_data_" . $this->get('id') . "` (
-				`id` int(11) unsigned NOT NULL auto_increment,
-				`url` varchar(2048) unsigned NOT NULL,
-				`url_oembed_xml` varchar(2048) unsigned NOT NULL,
-				`title` varchar(2048) default NULL,
-				`oembed_xml` text,
-				`dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-				PRIMARY KEY  (`id`),
-				);"
+			$id = $this->get('id');
+			
+			return Symphony::Database()->query("
+				CREATE TABLE IF NOT EXISTS `tbl_entries_data_$id` (
+					`id` int(11) unsigned NOT NULL auto_increment,
+					`url` varchar(2048) NOT NULL,
+					`url_oembed_xml` varchar(2048) NOT NULL,
+					`title` varchar(2048) NULL,
+					`oembed_xml` text NULL,
+					`dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				PRIMARY KEY  (`id`)
+				)"
 			);
 		}
 
@@ -295,8 +304,8 @@
 				CREATE TABLE IF NOT EXISTS `$tbl` (
 					`id` int(11) unsigned NOT NULL auto_increment,
 					`field_id` int(11) unsigned NOT NULL,
-					`refresh` int(11) unsigned NOT NULL,
-					`driver` varchar(150) NOT NULL,
+					`refresh` int(11) unsigned NULL,
+					`driver` varchar(150) NULL,
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
 				)
@@ -317,13 +326,28 @@
 		}
 
 		public function displaySettingsPanel(&$wrapper, $errors=NULL){
+			//var_dump($this->get());
+			//die;
+			
+			/* first line */
 			parent::displaySettingsPanel($wrapper, $errors);
-			$this->appendRequiredCheckbox($wrapper);
-			$this->appendShowColumnCheckbox($wrapper);
-
-			/*$label = Widget::Label('Update cache (minutes; leave blank to never update) <i>Optional</i>');
+			
+			/* new line */
+			$set_wrap = new XMLElement('div');
+			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
 			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
-			$wrapper->appendChild($label);
-			*/
+			$set_wrap->appendChild($label);
+			
+			/* new line */
+			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
+			
+			$this->appendRequiredCheckbox($chk_wrap);
+			$this->appendShowColumnCheckbox($chk_wrap);
+			
+			
+			/* append to wrapper */
+			$wrapper->appendChild($set_wrap);
+			$wrapper->appendChild($chk_wrap);
+
 		}
 	}

@@ -19,9 +19,12 @@
 		'Easily embed videos/images from ANY website that implements the oEmbed format (http://oembed.com/)' =>
 		false,
 
-		'oEmbed Ressource Field' =>
+		'oEmbed Ressource' =>
 		false,
 
 		"No ServiceDriver found for '%s'." =>
+		false,
+		
+		'Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>' =>
 		false
 	);
