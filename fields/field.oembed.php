@@ -14,6 +14,13 @@
 	 */
 	class FieldOembed extends Field {
 
+		/**
+		 *
+		 * Name of the field table
+		 * @var string
+		 */
+		private $FIELD_TBL_NAME = 'tbl_fields_oembed';
+
 		public function __construct(&$parent){
 			parent::__construct($parent);
 			$this->_name = __('oEmbed Ressource Field');
@@ -60,6 +67,13 @@
 			return false;
 		}
 
+		/**
+		 *
+		 * Validates input
+		 * @param $data
+		 * @param $message
+		 * @param $entry_id
+		 */
 		function checkPostFieldData($data, &$message, $entry_id=NULL){
 
 			$message = NULL;
@@ -83,6 +97,7 @@
 
 			return self::__OK__;
 		}
+
 
 		public function processRawFieldData($data, &$status, $simulate = false, $entry_id = null) {
 
@@ -188,13 +203,13 @@
 
 		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
 
-			/*$value = General::sanitize($data['clip_id']);
+			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
 
-			$clip_id = new XMLElement('input');
-			$clip_id->setAttribute('type', 'text');
-			$clip_id->setAttribute('name', 'fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix);
-			$clip_id->setAttribute('value', $value);
+			$url = new XMLElement('input');
+			$url->setAttribute('type', 'text');
+			$url->setAttribute('name', 'fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix);
+			$url->setAttribute('value', $value);
 
 			if (strlen($value) == 0 || $flagWithError != NULL) {
 
@@ -202,46 +217,12 @@
 
 			} else {
 
-				$clip_id->setAttribute('class', 'hidden');
+				$url->setAttribute('class', 'hidden');
 
 				$video_container = new XMLElement('span');
 				$video_container->setAttribute('class', 'frame');
 
-				$clip_url = 'http://www.vimeo.com/moogaloop.swf?clip_id=' . $value . '&amp;server=www.vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00ADEF&amp;fullscreen=1';
 
-				$video = new XMLElement('object');
-				$video->setAttribute('width', $data['width']);
-				$video->setAttribute('height', $data['height']);
-
-				$param = new XMLElement('param');
-				$param->setAttribute('allowfullscreen', 'true');
-				$video->appendChild($param);
-
-				$param = new XMLElement('param');
-				$param->setAttribute('allowscriptaccess', 'always');
-				$video->appendChild($param);
-
-				$param = new XMLElement('param');
-				$param->setAttribute('movie', $clip_url);
-				$video->appendChild($param);
-
-				$embed = new XMLElement('embed');
-				$embed->setAttribute('src', $clip_url);
-				$embed->setAttribute('allowfullscreen', 'true');
-				$embed->setAttribute('allowscriptaccess', 'always');
-				$embed->setAttribute('width', $data['width']);
-				$embed->setAttribute('height', $data['height']);
-				$embed->setAttribute('type', 'application/x-shockwave-flash');
-
-				$video->appendChild($embed);
-
-				$meta = new XMLElement('span', $data['title'] . ' by <a href="' . $data["user_url"] . '">' . $data['user_name'] . '</a>');
-				$meta->setAttribute('class', 'meta');
-				$video->appendChild($meta);
-
-				$meta = new XMLElement('span', $data['plays'] . ' plays');
-				$meta->setAttribute('class', 'meta');
-				$video->appendChild($meta);
 
 				$change = new XMLElement('a', 'Remove Video');
 				$change->setAttribute('class', 'change');
@@ -258,13 +239,6 @@
 			else $wrapper->appendChild($label);*/
 		}
 
-		/*function displayDatasourceFilterPanel(&$wrapper, $data=NULL, $errors=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
-			$wrapper->appendChild(new XMLElement('h4', $this->get('label') . ' <i>'.$this->Name().'</i>'));
-			$label = Widget::Label('Clip ID');
-			$label->appendChild(Widget::Input('fields[filter]'.($fieldnamePrefix ? '['.$fieldnamePrefix.']' : '').'['.$this->get('id').']'.($fieldnamePostfix ? '['.$fieldnamePostfix.']' : ''), ($data ? General::sanitize($data) : NULL)));
-			$wrapper->appendChild($label);
-
-		}*/
 
 		function prepareTableValue($data, XMLElement $link=NULL){
 			/*if(strlen($data['clip_id']) == 0) return NULL;
@@ -291,17 +265,50 @@
 			);
 		}
 
+		/**
+		 *
+		 * Creates table needed for entries of invidual fields
+		 */
 		function createTable(){
-			return $this->_engine->Database->query(
+			return Symphony::Database()->query(
 				"CREATE TABLE IF NOT EXISTS `tbl_entries_data_" . $this->get('id') . "` (
 				`id` int(11) unsigned NOT NULL auto_increment,
 				`url` varchar(2048) unsigned NOT NULL,
-				`url_oembed_xml` int(2048) unsigned NOT NULL,
-				`title` varchar(255) default NULL,
+				`url_oembed_xml` varchar(2048) unsigned NOT NULL,
+				`title` varchar(2048) default NULL,
 				`oembed_xml` text,
+				`dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 				PRIMARY KEY  (`id`),
 				);"
 			);
+		}
+
+		/**
+		 * Creates the table needed for the settings of the field
+		 */
+		public static function createFieldTable() {
+			return Symphony::Database()->query("
+				CREATE TABLE `$this->FIELD_TBL_NAME` IF NOT EXISTS (
+					`id` int(11) unsigned NOT NULL auto_increment,
+					`field_id` int(11) unsigned NOT NULL,
+					`refresh` int(11) unsigned NOT NULL,
+					`driver` varchar(150) NOT NULL
+					PRIMARY KEY (`id`),
+					KEY `field_id` (`field_id`)
+				)
+			");
+		}
+
+
+		/**
+		 *
+		 * Drops the table needed for the settings of the field
+		 */
+		public static function deleteFieldTable() {
+			return Symphony::Database()->query("
+				DROP TABLE `$this->FIELD_TBL_NAME`
+					IF EXISTS
+			");
 		}
 
 		public function displaySettingsPanel(&$wrapper, $errors=NULL){
@@ -314,63 +321,4 @@
 			$wrapper->appendChild($label);
 			*/
 		}
-
-		/*function buildSortingSQL(&$joins, &$where, &$sort, $order='ASC'){
-			$joins .= "INNER JOIN `tbl_entries_data_".$this->get('id')."` AS `ed` ON (`e`.`id` = `ed`.`entry_id`) ";
-			$sort = 'ORDER BY ' . (strtolower($order) == 'random' ? 'RAND()' : "`ed`.`plays` $order");
-		}*/
-
-		/*public function buildDSRetrievalSQL($data, &$joins, &$where, $andOperation = false) {
-
-			$field_id = $this->get('id');
-
-			if (self::isFilterRegex($data[0])) {
-				$this->_key++;
-				$pattern = str_replace('regexp:', '', $this->cleanValue($data[0]));
-				$joins .= "
-					LEFT JOIN
-						`tbl_entries_data_{$field_id}` AS t{$field_id}_{$this->_key}
-						ON (e.id = t{$field_id}_{$this->_key}.entry_id)
-				";
-				$where .= "
-					AND t{$field_id}_{$this->_key}.clip_id REGEXP '{$pattern}'
-				";
-
-			} elseif ($andOperation) {
-				foreach ($data as $value) {
-					$this->_key++;
-					$value = $this->cleanValue($value);
-					$joins .= "
-						LEFT JOIN
-							`tbl_entries_data_{$field_id}` AS t{$field_id}_{$this->_key}
-							ON (e.id = t{$field_id}_{$this->_key}.entry_id)
-					";
-					$where .= "
-						AND t{$field_id}_{$this->_key}.clip_id = '{$value}'
-					";
-				}
-
-			} else {
-				if (!is_array($data)) $data = array($data);
-
-				foreach ($data as &$value) {
-					$value = $this->cleanValue($value);
-				}
-
-				$this->_key++;
-				$data = implode("', '", $data);
-				$joins .= "
-					LEFT JOIN
-						`tbl_entries_data_{$field_id}` AS t{$field_id}_{$this->_key}
-						ON (e.id = t{$field_id}_{$this->_key}.entry_id)
-				";
-				$where .= "
-					AND t{$field_id}_{$this->_key}.clip_id IN ('{$data}')
-				";
-			}
-
-			return true;
-
-		}*/
-
 	}

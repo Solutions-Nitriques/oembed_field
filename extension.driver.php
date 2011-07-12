@@ -6,6 +6,8 @@
 
 	if(!defined("__IN_SYMPHONY__")) die("<h2>Error</h2><p>You cannot directly access this file</p>");
 
+	require_once(EXTENSIONS . '/oembed_field/field/field.oembed.php');
+
 	/**
 	 *
 	 * Embed Videos/Image Decorator/Extension
@@ -20,13 +22,6 @@
 		 * @var string
 		 */
 		const EXT_NAME = 'Field: oEmbed';
-		
-		/**
-		 * 
-		 * Name of the field table
-		 * @var string
-		 */
-		private $FIELD_TBL_NAME = 'tbl_fields_oembed';
 
 		/**
 		 * Credits for the extension
@@ -57,21 +52,23 @@
 		 */
 		/*public function getSubscribedDelegates(){
 			return array(
-				
+
 			);
 		}*/
-		
+
+		/**
+		 * Creates the table needed for the settings of the field
+		 */
 		public function install() {
-			return Symphony::Database()->query("
-				CREATE TABLE `$this->FIELD_TBL_NAME` (
-					`id` int(11) unsigned NOT NULL auto_increment,
-					`field_id` int(11) unsigned NOT NULL,
-					`refresh` int(11) unsigned NOT NULL,
-					`driver` varchar(150) NOT NULL
-					PRIMARY KEY (`id`),
-					KEY `field_id` (`field_id`)
-				)
-			");
+			return FieldOembed::createFieldTable();
+		}
+
+		/**
+		 *
+		 * Drops the table needed for the settings of the field
+		 */
+		public function uninstall() {
+			return FieldOembed::deleteFieldTable();
 		}
 
 	}
