@@ -81,6 +81,9 @@
 		 */
 		function checkPostFieldData($data, &$message, $entry_id=NULL){
 
+			//var_dump($data);
+			//die;
+			
 			$message = NULL;
 
 			if (empty($data)) {
@@ -120,6 +123,11 @@
 				return;
 			}
 			*/
+			
+			$result = array(
+				'url' => $data,
+				'url_oembed_xml' => $data
+			);
 
 			return $result;
 		}
@@ -131,6 +139,8 @@
 		 */
 		function appendFormattedElement(&$wrapper, $data){
 
+			die;
+			
 			if(!is_array($data) || empty($data)) return;
 
 			// If cache has expired refresh the data array from parsing the API XML
@@ -187,10 +197,15 @@
 			$wrapper->appendChild($video);*/
 		}
 
+		/**
+		 * 
+		 * Save field info into the field table
+		 */
 		function commit(){
+			
 			if(!parent::commit()) return false;
 
-			/*$id = $this->get('id');
+			$id = $this->get('id');
 			$refresh = $this->get('refresh');
 
 			if($id === false) return false;
@@ -199,17 +214,21 @@
 
 			$fields['field_id'] = $id;
 			$fields['refresh'] = $refresh;
+			// @todo change this
+			//$fields['driver'] = $refresh;
 
-			$this->_engine->Database->query("DELETE FROM `tbl_fields_".$this->handle()."` WHERE `field_id` = '$id' LIMIT 1");
+			$tbl = self::FIELD_TBL_NAME;
+			
+			$this->_engine->Database->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
+			
 			return $this->_engine->Database->insert($fields, 'tbl_fields_' . $this->handle());
-			*/
 
 		}
 
 		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
 
-			var_dump($data);
-			die();
+			//var_dump($data);
+			//die();
 			
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
@@ -234,10 +253,12 @@
 
 				$change = new XMLElement('a', 'Remove Video');
 				$change->setAttribute('class', 'change');
-				$video->appendChild($change);
+				
+				$video_container->appendChild($change);
 
-				$video_container->appendChild($video);
+				//$video_container->appendChild($video);
 				$label->appendChild($video_container);
+				
 
 			}
 
@@ -249,6 +270,10 @@
 
 
 		function prepareTableValue($data, XMLElement $link=NULL){
+			
+			//var_dump($data);
+			//die();
+			
 			/*if(strlen($data['clip_id']) == 0) return NULL;
 
 			$image = '<img src="' . URL . '/image/2/75/75/5/1/' . str_replace('http://', '', $data['thumbnail_url']) .'" alt="' . $data['title'] .'" width="75" height="75"/>';
@@ -283,12 +308,14 @@
 			return Symphony::Database()->query("
 				CREATE TABLE IF NOT EXISTS `tbl_entries_data_$id` (
 					`id` int(11) unsigned NOT NULL auto_increment,
+					`entry_id` int(11) unsigned NOT NULL,
 					`url` varchar(2048) NOT NULL,
 					`url_oembed_xml` varchar(2048) NOT NULL,
 					`title` varchar(2048) NULL,
 					`oembed_xml` text NULL,
 					`dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				PRIMARY KEY  (`id`)
+				PRIMARY KEY  (`id`),
+				KEY `entry_id` (`entry_id`)
 				)"
 			);
 		}
@@ -346,7 +373,7 @@
 			
 			
 			/* append to wrapper */
-			$wrapper->appendChild($set_wrap);
+			//$wrapper->appendChild($set_wrap);
 			$wrapper->appendChild($chk_wrap);
 
 		}
