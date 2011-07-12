@@ -2,6 +2,8 @@
 
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 
+	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDispatcher.php');
+
 	/**
 	 *
 	 * Field class that will represent an oEmbed ressource
@@ -21,9 +23,9 @@
 			//var_dump($this->get());
 			//die;
 
-			$sd = new ServiceDispatcher('http://vimeo.com');
+			//$sd = new ServiceDispatcher('http://vimeo.com');
 
-			var_dump($sd->getDriver());
+			//var_dump($sd->getDriver());
 		}
 
 		function isSortable(){

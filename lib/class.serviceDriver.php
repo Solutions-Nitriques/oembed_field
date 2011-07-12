@@ -22,8 +22,8 @@
 			return $this->Domain;
 		}
 
-		public static function isMatch($url) {
-			return strpos($url, $domain) > -1;
+		public function isMatch($url) {
+			return strpos($url, $this->Domain) > -1;
 		}
 
 		public abstract function getEmbedCode($data);

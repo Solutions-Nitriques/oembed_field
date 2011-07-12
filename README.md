@@ -10,7 +10,8 @@ see http://oembed.com
 
 - Adds a field that takes as input the link to the page that has the embeded media
 - Caches the oEmbed XML info into the database
-	- Refresh the info each time the entry is saved
+	- Easily get it into via your Data Sources
+	- Refreshes the info each time the entry is saved
 - Currently supported services: ***Vimeo*** only
 	- v1.1 will support Youtube and Flickr too
 - Anybody can add a service: Just fork, code the missing Service Driver and request a pull!

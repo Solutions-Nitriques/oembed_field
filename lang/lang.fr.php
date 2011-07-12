@@ -12,7 +12,7 @@
 
 
 	/**
-	 * Save and return
+	 * Traduction Francophone
 	 */
 	$dictionary = array(
 
