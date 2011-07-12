@@ -4,10 +4,16 @@ Version: 1.0
 
 ## Easily embed videos/images from ANY website that implements the oEmbed format ##
 
+see http://oembed.com
+
 ### SPECS ###
 
-- Adds a field that will contain the link to the page that has the embeded media.
-- Currently supported: Vimeo, Youtube, Flickr
+- Adds a field that takes as input the link to the page that has the embeded media
+- Caches the oEmbed XML info into the database
+	- Refresh the info each time the entry is saved
+- Currently supported services: ***Vimeo*** only
+	- v1.1 will support Youtube and Flickr too
+- Anybody can add a service: Just fork, code the missing Service Driver and request a pull!
 
 ### REQUIREMENTS ###
 
