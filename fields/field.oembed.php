@@ -83,7 +83,7 @@
 
 			//var_dump($data);
 			//die;
-			
+
 			$message = NULL;
 
 			if (empty($data)) {
@@ -123,7 +123,7 @@
 				return;
 			}
 			*/
-			
+
 			$result = array(
 				'url' => $data,
 				'url_oembed_xml' => $data
@@ -140,7 +140,7 @@
 		function appendFormattedElement(&$wrapper, $data){
 
 			die;
-			
+
 			if(!is_array($data) || empty($data)) return;
 
 			// If cache has expired refresh the data array from parsing the API XML
@@ -198,11 +198,11 @@
 		}
 
 		/**
-		 * 
+		 *
 		 * Save field info into the field table
 		 */
 		function commit(){
-			
+
 			if(!parent::commit()) return false;
 
 			$id = $this->get('id');
@@ -218,10 +218,10 @@
 			//$fields['driver'] = $refresh;
 
 			$tbl = self::FIELD_TBL_NAME;
-			
+
 			$this->_engine->Database->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
-			
-			return $this->_engine->Database->insert($fields, 'tbl_fields_' . $this->handle());
+
+			return $this->_engine->Database->insert($fields, $tbl);
 
 		}
 
@@ -229,7 +229,7 @@
 
 			//var_dump($data);
 			//die();
-			
+
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
 
@@ -253,12 +253,12 @@
 
 				$change = new XMLElement('a', 'Remove Video');
 				$change->setAttribute('class', 'change');
-				
+
 				$video_container->appendChild($change);
 
 				//$video_container->appendChild($video);
 				$label->appendChild($video_container);
-				
+
 
 			}
 
@@ -270,10 +270,10 @@
 
 
 		function prepareTableValue($data, XMLElement $link=NULL){
-			
+
 			//var_dump($data);
 			//die();
-			
+
 			/*if(strlen($data['clip_id']) == 0) return NULL;
 
 			$image = '<img src="' . URL . '/image/2/75/75/5/1/' . str_replace('http://', '', $data['thumbnail_url']) .'" alt="' . $data['title'] .'" width="75" height="75"/>';
@@ -304,7 +304,7 @@
 		 */
 		function createTable(){
 			$id = $this->get('id');
-			
+
 			return Symphony::Database()->query("
 				CREATE TABLE IF NOT EXISTS `tbl_entries_data_$id` (
 					`id` int(11) unsigned NOT NULL auto_increment,
@@ -324,9 +324,9 @@
 		 * Creates the table needed for the settings of the field
 		 */
 		public static function createFieldTable() {
-			
+
 			$tbl = self::FIELD_TBL_NAME;
-			
+
 			return Symphony::Database()->query("
 				CREATE TABLE IF NOT EXISTS `$tbl` (
 					`id` int(11) unsigned NOT NULL auto_increment,
@@ -346,32 +346,32 @@
 		 */
 		public static function deleteFieldTable() {
 			$tbl = self::FIELD_TBL_NAME;
-			
+
 			return Symphony::Database()->query("
-				DROP TABLE IF EXISTS `$tbl` 
+				DROP TABLE IF EXISTS `$tbl`
 			");
 		}
 
 		public function displaySettingsPanel(&$wrapper, $errors=NULL){
 			//var_dump($this->get());
 			//die;
-			
+
 			/* first line */
 			parent::displaySettingsPanel($wrapper, $errors);
-			
+
 			/* new line */
 			$set_wrap = new XMLElement('div');
 			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
 			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
 			$set_wrap->appendChild($label);
-			
+
 			/* new line */
 			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
-			
+
 			$this->appendRequiredCheckbox($chk_wrap);
 			$this->appendShowColumnCheckbox($chk_wrap);
-			
-			
+
+
 			/* append to wrapper */
 			//$wrapper->appendChild($set_wrap);
 			$wrapper->appendChild($chk_wrap);
