@@ -139,7 +139,7 @@
 		 */
 		function appendFormattedElement(&$wrapper, $data){
 
-			die;
+			//die;
 
 			if(!is_array($data) || empty($data)) return;
 
@@ -227,9 +227,6 @@
 
 		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
 
-			//var_dump($data);
-			//die();
-
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
 
@@ -251,7 +248,7 @@
 
 
 
-				$change = new XMLElement('a', 'Remove Video');
+				$change = new XMLElement('a', __('Remove or change'));
 				$change->setAttribute('class', 'change');
 
 				$video_container->appendChild($change);
@@ -259,35 +256,36 @@
 				//$video_container->appendChild($video);
 				$label->appendChild($video_container);
 
-
 			}
 
 			$label->appendChild($url);
 
-			if($flagWithError != NULL) $wrapper->appendChild(Widget::wrapFormElementWithError($label, $flagWithError));
-			else $wrapper->appendChild($label);
+			if($flagWithError != NULL) {
+				$wrapper->appendChild(Widget::wrapFormElementWithError($label, $flagWithError));
+			} else {
+				$wrapper->appendChild($label);
+			}
 		}
 
 
 		function prepareTableValue($data, XMLElement $link=NULL){
 
-			//var_dump($data);
-			//die();
+			$url = $data['url'];
 
-			/*if(strlen($data['clip_id']) == 0) return NULL;
+			if(strlen($url) == 0) return NULL;
 
-			$image = '<img src="' . URL . '/image/2/75/75/5/1/' . str_replace('http://', '', $data['thumbnail_url']) .'" alt="' . $data['title'] .'" width="75" height="75"/>';
+			//$image = '<img src="' . URL . '/image/2/75/75/5/1/' . str_replace('http://', '', $data['thumbnail_url']) .'" alt="' . $data['title'] .'" width="75" height="75"/>';
 
 			if($link){
-				$link->setValue($image);
-				return $link->generate();
+				//$link->setValue($image);
+				$link->setValue($data['url']);
+
+			} else{
+				//$link = new XMLElement('span', $image . '<br />' . $data['plays'] . ' plays');
+				return new XMLElement('a', $url, array('href' => $url, 'target' => '_blank'));
 			}
 
-			else{
-				$link = new XMLElement('span', $image . '<br />' . $data['plays'] . ' plays');
-				return $link->generate();
-			}
-			*/
+			return $link->generate();
 		}
 
 		public function preparePlainTextValue($data, $entry_id = null) {
