@@ -31,18 +31,18 @@
 
 			$xml = array();
 
-			//try {
+			try {
 				$doc = new DOMDocument();
-				$doc->loadXML($url);
+				$doc->load($url);
 
 				$xml['xml'] = $doc->saveXML();
 				$xml['url'] = $url;
 				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
 
-			//} catch (Exception $ex) {
+			} catch (ErrorException $ex) {
 
 				$xml['error'] = $ex->getMessage();
-			//}
+			}
 
 			return $xml;
 		}
