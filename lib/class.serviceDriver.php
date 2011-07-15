@@ -31,7 +31,7 @@
 
 			$xml = array();
 
-			//try {
+			try {
 				$doc = new DOMDocument();
 				$doc->loadXML($url);
 
@@ -39,10 +39,10 @@
 				$xml['url'] = $url;
 				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
 
-			//} catch (Exception $ex) {
+			} catch (Exception $ex) {
 
-				//$xml['error'] = $ex->getMessage();
-			//}
+				$xml['error'] = $ex->getMessage();
+			}
 
 			return $xml;
 		}
