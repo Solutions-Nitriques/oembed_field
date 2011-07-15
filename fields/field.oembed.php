@@ -318,14 +318,14 @@
 
 			//$image = '<img src="' . URL . '/image/2/75/75/5/1/' . str_replace('http://', '', $data['thumbnail_url']) .'" alt="' . $data['title'] .'" width="75" height="75"/>';
 
+			$value = (isset($data['title'])? $data['title'] : $data['url']);
+			
 			if($link){
-				//$link->setValue($image);
-				$link->setValue($data['url']);
+				$link->setValue($value);
 
 			} else{
-				//$link = new XMLElement('span', $image . '<br />' . $data['plays'] . ' plays');
 				$link = new XMLElement('a', 
-					(isset($data['title'])? $data['title'] : $data['url']), 
+					$value, 
 					array('href' => $url, 'target' => '_blank'));
 			}
 
