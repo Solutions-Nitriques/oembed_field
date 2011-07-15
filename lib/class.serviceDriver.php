@@ -2,7 +2,6 @@
 
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 
-
 	abstract class ServiceDriver {
 
 		protected $Name = '';
@@ -13,7 +12,17 @@
 			$this->Name = $name;
 			$this->Domain = $domain;
 		}
-
+		
+		function exception_error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
+			if (!(error_reporting() & $errno)) {
+		        // Ce code d'erreur n'est pas inclus dans error_reporting()
+		        return;
+		    }
+			
+		    throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
+		}
+		
+		
 		public function getName() {
 			return $this->Name;
 		}
@@ -27,11 +36,18 @@
 		}
 
 		public function getXmlDataFromSource($data) {
+			
+			//var_dump($data);
+			
 			$url = $this->getOEmbedXmlApiUrl($data);
+			
+			var_dump($url);
 
 			$xml = array();
 
-			try {
+			//try {
+				set_error_handler( array($this, 'exception_error_handler') );
+				
 				$doc = new DOMDocument();
 				$doc->load($url);
 
@@ -39,10 +55,13 @@
 				$xml['url'] = $url;
 				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
 
-			} catch (ErrorException $ex) {
+				
+			//} catch (Exception $ex) {
 
-				$xml['error'] = $ex->getMessage();
-			}
+				//$xml['error'] = $ex->getMessage();
+			//} 
+				
+			restore_error_handler();
 
 			return $xml;
 		}

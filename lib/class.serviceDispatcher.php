@@ -17,7 +17,7 @@
 		public function __construct($url) {
 			$this->_driver = self::getServiceDriver($url);
 		}
-
+		
 		/**
 		 *
 		 * @return ServiceDriver
@@ -69,7 +69,11 @@
 
 		public function __construct($url, Exception $ex = null) {
 			$this->InnerException = $ex;
-			parent::__construct( vsprintf ("No ServiceDriver found for '%s'.", $url));
+			$msg = vsprintf ("No ServiceDriver found for '%s'", $url);
+			if ($ex) {
+				$msg = vsprintf ("No ServiceDriver found for '%s': %s", array($url, $ex->getMessage()));
+			}
+			parent::__construct($msg);
 		}
 
 		public function getInnerException() {
