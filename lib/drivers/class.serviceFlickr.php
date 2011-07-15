@@ -3,25 +3,23 @@
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 
 
-	class serviceVimeo extends ServiceDriver {
+	class serviceFlickr extends ServiceDriver {
 
 		public function __construct() {
-			parent::__construct('Vimeo', 'vimeo.com');
+			parent::__construct('Flickr', 'flickr.com');
 		}
 
 		public function getEmbedCode($data, $options) {
-			return vsprintf('<iframe src="http://player.vimeo.com/video/%s" width="%d" height="%d" frameborder="0"></iframe>',
+			return vsprintf('<img src="%s" width="%d" height="%d" />',
 							array($data['res_id'], $options['width'], $options['height']));
 		}
 
 		public function getOEmbedXmlApiUrl($params) {
-			// DO NOT CONCAT WITH + IN PHP ... USE .
-			// TABARNAK !!!
-			return 'http://vimeo.com/api/oembed.xml?url=' . $params['url'];
+			return 'http://www.flickr.com/services/oembed?url=' . $params['url'];
 		}
 
 			
 		public function getIdTagName() {
-			return 'video_id';
+			return 'url';
 		}
 	}

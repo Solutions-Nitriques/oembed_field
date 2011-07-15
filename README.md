@@ -12,8 +12,8 @@ see http://oembed.com
 - Caches the oEmbed XML info into the database
 	- Easily get it into via your Data Sources
 	- Refreshes the info each time the entry is saved
-- Currently supported services: ***Vimeo*** only
-	- v1.1 will support Youtube and Flickr too
+- Currently supported services: ***Vimeo and Flickr*** only
+	- v1.1 will support Youtube too
 - Anybody can add a service: Just fork, code the missing Service Driver and request a pull!
 
 ### REQUIREMENTS ###
@@ -30,6 +30,13 @@ see http://oembed.com
 *Voila !*
 
 http://www.nitriques.com/open-source/
+
+### TODO ###
+
+- Add support for image in table view
+- Add a lot more service drivers
+- Improve error handling when loading XML data
+- Adds a auto-refresh data mechanism
 
 ### History ###
 

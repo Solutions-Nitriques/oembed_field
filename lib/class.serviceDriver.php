@@ -41,8 +41,8 @@
 
 			$xml = array();
 
-			try {
-				set_error_handler( array($this, 'exception_error_handler') );
+			//try {
+				//set_error_handler( array($this, 'exception_error_handler') );
 				
 				$doc = new DOMDocument();
 				$doc->preserveWhiteSpace = false;
@@ -52,18 +52,19 @@
 				$xml['url'] = $url;
 				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
 				$xml['thumb'] = $doc->getElementsByTagName($this->getThumbnailTagName())->item(0)->nodeValue;
+				$xml['id'] = $doc->getElementsByTagName($this->getIdTagName())->item(0)->nodeValue;
 				
-			} catch (Exception $ex) {
+			/*} catch (Exception $ex) {
 
 				$xml['error'] = $ex->getMessage();
-			} 
+			} */
 				
-			restore_error_handler();
+			//restore_error_handler();
 
 			return $xml;
 		}
 
-		public abstract function getEmbedCode($data);
+		public abstract function getEmbedCode($data, $options);
 
 		public abstract function getOEmbedXmlApiUrl($params);
 
@@ -74,4 +75,6 @@
 		public function getThumbnailTagName() {
 			return 'thumbnail_url';
 		}
+		
+		public abstract function getIdTagName();
 	}

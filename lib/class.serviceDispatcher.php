@@ -9,7 +9,7 @@
 		static private $_registeredClasses = array(
 			//'serviceYouTube',
 			'serviceVimeo',
-			//'serviceFlickr'
+			'serviceFlickr'
 		);
 
 		private $_driver = null;

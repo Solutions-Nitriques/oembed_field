@@ -118,10 +118,6 @@
 		 */
 		public function processRawFieldData($data, &$status, $simulate = false, $entry_id = null) {
 
-			//echo 'process';
-			//var_dump($data);
-			//die;
-
 			$status = self::__OK__;
 
 			$url = $data;
@@ -148,16 +144,14 @@
 			}
 
 			// return row
-			$result = array(
+			return array(
 				'url' => $url,
+				'res_id' => $xml['id'],
 				'url_oembed_xml' => $xml['url'],
 				'oembed_xml' => $xml['xml'],
 				'title' => $xml['title'],
-				'thumbnail_url' => $xml['thumb'] //,
-				//'dateCreated' => time() // @todo: figure a way to get the time from sql server, even on updates
+				'thumbnail_url' => $xml['thumb']
 			);
-
-			return $result;
 		}
 
 		/**
@@ -281,8 +275,11 @@
 
 				$remove = new XMLElement('a', __('Remove'));
 				$remove->setAttribute('class', 'change remove');
+				
+				$e_options = array('width' => '640', 'height' => '360' );
+				$embed = ServiceDispatcher::getServiceDriver($value)->getEmbedCode($data, $e_options);
 
-				$video_container->setValue("<div>$value</div>");
+				$video_container->setValue("<div>$embed</div>");
 
 				$video_container->appendChild($change);
 				$video_container->appendChild($or);
@@ -317,10 +314,12 @@
 
 			} else{
 				//$link = new XMLElement('span', $image . '<br />' . $data['plays'] . ' plays');
-				return new XMLElement('a', $url, array('href' => $url, 'target' => '_blank'));
+				return new XMLElement('a', 
+					(isset($data['title'])? $data['title'] : $data['url']), 
+					array('href' => $url, 'target' => '_blank'));
 			}
 
-			return $link->generate();
+			return $link;
 		}
 
 		public function preparePlainTextValue($data, $entry_id = null) {
@@ -342,6 +341,7 @@
 				CREATE TABLE `tbl_entries_data_$id` (
 					`id` int(11) unsigned NOT NULL auto_increment,
 					`entry_id` int(11) unsigned NOT NULL,
+					`res_id` varchar(128) NOT NULL,
 					`url` varchar(2048) NOT NULL,
 					`url_oembed_xml` varchar(2048) NOT NULL,
 					`title` varchar(2048) NULL,
