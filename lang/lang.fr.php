@@ -17,25 +17,25 @@
 	$dictionary = array(
 
 		'Easily embed videos/images from ANY website that implements the oEmbed format (http://oembed.com/)' =>
-		false,
+		'Incorporer facilement des vidéos/images de n\'importe quelle site web qui implémente le format oEmbed (http://oembed.com/)',
 
 		'oEmbed Ressource' =>
-		false,
+		'Ressource oEmbed',
 
 		'Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>' =>
-		false,
+		'Mise à jour du cache <em>en minutes</em> (laisser vide pour aucune mise à jour) <i>Optionel</i>',
 
 		"%s: No ServiceDriver found for '%s'." =>
-		false,
+		"%s: Aucun ServiceDriver trouvé pour '%s'.",
 
 		'Failed to load oEmbed XML data' =>
-		false,
+		'Échec du chargement des données XML',
 
 		'Exception occured: %s' =>
-		false,
+		'Une exception a été levée: %s',
 		
 		'XML Data does not validate' =>
-		false,
+		'Les données XML ne sont pas valides',
 		
 		'Change' =>
 		'Changer',
