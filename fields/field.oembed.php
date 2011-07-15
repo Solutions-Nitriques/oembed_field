@@ -324,12 +324,12 @@
 
 			} else{
 				//$link = new XMLElement('span', $image . '<br />' . $data['plays'] . ' plays');
-				return new XMLElement('a', 
+				$link = new XMLElement('a', 
 					(isset($data['title'])? $data['title'] : $data['url']), 
 					array('href' => $url, 'target' => '_blank'));
 			}
 
-			return $link;
+			return $link->generate();
 		}
 
 		/**
