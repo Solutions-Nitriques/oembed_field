@@ -5,10 +5,10 @@
 	*/
 
 	if(!defined("__IN_SYMPHONY__")) die("<h2>Error</h2><p>You cannot directly access this file</p>");
-	
+
 	require_once(EXTENSIONS . '/oembed_field/fields/field.oembed.php');
-	
-	
+
+
 	/**
 	 *
 	 * Embed Videos/Image Decorator/Extension
@@ -51,11 +51,34 @@
 		 * implement the Observer/Observable pattern.
 		 * We register here delegate that will be fired by Symphony
 		 */
-		/*public function getSubscribedDelegates(){
+		public function getSubscribedDelegates(){
 			return array(
-
+				array(
+					'page' => '/backend/',
+					'delegate' => 'InitaliseAdminPageHead',
+					'callback' => 'appendJS'
+				)
 			);
-		}*/
+		}
+
+		/**
+		 *
+		 * Enter description here ...
+		 * @param array $context
+		 */
+		public function appendJS(Array $context) {
+			$c = Administration::instance()->getPageCallback();
+
+			if(isset($c['context']['section_handle']) && in_array($c['context']['page'], array('new', 'edit'))){
+
+				Administration::instance()->Page->addScriptToHead(
+					URL . '/extensions/oembed_field/assets/publish.oembed.js',
+					time(),
+					false
+				);
+
+			}
+		}
 
 		/**
 		 * Creates the table needed for the settings of the field
