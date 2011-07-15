@@ -13,7 +13,7 @@
 
 		}
 
-		public function getOEmbedApiUrl($params) {
+		public function getOEmbedXmlApiUrl($params) {
 			return 'http://vimeo.com/api/oembed.xml?url=' + $params['url'];
 		}
 

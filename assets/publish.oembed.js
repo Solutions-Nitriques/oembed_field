@@ -14,12 +14,22 @@
 	var FIELD = 'field-oembed',
 		FIELD_CLASS = '.' + FIELD;
 	
-	function switchToEdit() {
-		
-	};
-	
 	function hookOne() {
+		// create a local scope
+		var f = $(this),
+			container = $('span.frame', f),
+			input = $('input[name^=fields]', f),
+			change = $('a.change', container);
 		
+		function switchToEdit() {
+			input.removeClass('irrelevant');
+			if ($(this).hasClass('remove')) {
+				container.remove();
+				input.val('');
+			}
+		};
+		
+		change.click(switchToEdit);
 	};
 	
 	function init() {

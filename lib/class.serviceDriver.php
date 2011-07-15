@@ -26,9 +26,32 @@
 			return strpos($url, $this->Domain) > -1;
 		}
 
+		public function getXmlDataFromSource($data) {
+			$url = $this->getOEmbedXmlApiUrl($data);
+
+			$xml = array();
+
+			//try {
+				$doc = new DOMDocument();
+				$doc->loadXML($url);
+
+				$xml['xml'] = $doc->saveXML();
+				$xml['url'] = $url;
+				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
+
+			//} catch (Exception $ex) {
+
+				//$xml['error'] = $ex->getMessage();
+			//}
+
+			return $xml;
+		}
+
 		public abstract function getEmbedCode($data);
 
-		public abstract function getOEmbedApiUrl($params);
+		public abstract function getOEmbedXmlApiUrl($params);
 
-
+		public function getTitleTagName() {
+			return 'title';
+		}
 	}

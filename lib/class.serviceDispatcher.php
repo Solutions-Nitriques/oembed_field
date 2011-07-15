@@ -36,7 +36,7 @@
 		public static function getServiceDriver($url) {
 
 			if (!$url || $url == null || strlen($url) == 0) {
-				return;
+				return null;
 			}
 
 			foreach (self::$_registeredClasses as $class) {
@@ -52,17 +52,18 @@
 					}
 
 				} catch (Exception $ex) {
-					throw new ServiceDriverNotFoundException($url, $ex);
+					throw new ServiceDriverException($url, $ex);
 				}
 
 			}
 
-			throw new ServiceDriverNotFoundException($url);
+			//throw new ServiceDriverNotFoundException($url);
+			return null;
 		}
 
 	}
 
-	class ServiceDriverNotFoundException extends Exception {
+	class ServiceDriverException extends Exception {
 
 		private $InnerException = null;
 

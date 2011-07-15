@@ -22,9 +22,16 @@
 		'oEmbed Ressource' =>
 		false,
 
-		"No ServiceDriver found for '%s'." =>
-		false,
-		
 		'Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>' =>
+		false,
+
+		"%s: No ServiceDriver found for '%s'." =>
+		false,
+
+		'Failed to load oEmbed XML data' =>
+		false,
+
+		'Exception occured: %s' =>
 		false
+
 	);

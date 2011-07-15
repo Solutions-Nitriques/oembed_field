@@ -63,7 +63,7 @@
 
 		/**
 		 *
-		 * Enter description here ...
+		 * Appends javascript file referneces into the head, if needed
 		 * @param array $context
 		 */
 		public function appendJS(Array $context) {
