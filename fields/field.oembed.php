@@ -172,9 +172,12 @@
 				'entry_id' => $data['entry_id']
 			));
 
-			$field->appendChild(new XMLElement('title', General::sanitize($data['title'])));
+			$title = new XMLElement('title', General::sanitize($data['title']));
+			$title->setAttribute('handle', Lang::createHandle($data['title']));
+			
+			$field->appendChild($title);
 			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
-			$field->appendChild(new XMLElement('thumbnail', $data['thumbnail_url']));
+			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
 			
 			$xml = new DomDocument();
 			$xml->loadXML($data['oembed_xml']);
@@ -350,7 +353,7 @@
 		 *
 		 * Creates table needed for entries of invidual fields
 		 */
-		function createTable(){
+		public function createTable(){
 			$id = $this->get('id');
 
 			return Symphony::Database()->query("
