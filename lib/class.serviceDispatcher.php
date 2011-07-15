@@ -4,49 +4,44 @@
 
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDriver.php');
 
+	/**
+	 * 
+	 * Class that groups functionality for working with Service Drivers
+	 * @author Nicolas
+	 *
+	 */
 	class ServiceDispatcher {
-
-		static private $_registeredClasses = array(
-			//'serviceYouTube',
-			'serviceVimeo',
-			'serviceFlickr'
-		);
-
-		private $_driver = null;
-
-		public function __construct($url) {
-			$this->_driver = self::getServiceDriver($url);
-		}
-		
-		/**
-		 *
-		 * @return ServiceDriver
-		 */
-		public function getDriver() {
-			return $this->_driver;
-		}
 
 		/**
 		 *
 		 * Factory method that return the good driver based on the url
 		 * @param string $url
 		 * @return ServiceDriver
-		 * @throws ServiceDriverNotFoundException
+		 * @throws ServiceDriverException
 		 */
 		public static function getServiceDriver($url) {
 
 			if (!$url || $url == null || strlen($url) == 0) {
 				return null;
 			}
+			
+			$dir = EXTENSIONS . '/oembed_field/lib/drivers/';
+			
+			$drivers = General::listStructure($dir, null, false, true);
 
-			foreach (self::$_registeredClasses as $class) {
+			foreach ($drivers['filelist'] as $class) {
 
 				try {
 
-					require_once(EXTENSIONS . "/oembed_field/lib/drivers/class.$class.php");
+					require_once($dir . $class);
 
+					// get class name
+					$class = str_replace(array('class.', '.php'), '', $class);
+					
+					// create new instance
 					$class = new $class($url);
 
+					// if it matches, return it
 					if ($class->isMatch($url)) {
 						return $class;
 					}
@@ -57,12 +52,18 @@
 
 			}
 
-			//throw new ServiceDriverNotFoundException($url);
+			// not found
 			return null;
 		}
 
 	}
 
+	/**
+	 * 
+	 * Exception class that wraps around another exception
+	 * @author Nicolas
+	 *
+	 */
 	class ServiceDriverException extends Exception {
 
 		private $InnerException = null;

@@ -4,10 +4,10 @@
 		'name' => 'Français',
 		'author' => array(
 			'name' => 'Solutions Nitriques',
-			'email' => 'nico (at) nitriques.com',
+			'email' => 'open-source (at) nitriques.com',
 			'website' => 'http://www.nitriques.com/'
 		),
-		'release-date' => '2011-07-12',
+		'release-date' => '2011-07-15',
 	);
 
 
@@ -35,6 +35,15 @@
 		false,
 		
 		'XML Data does not validate' =>
-		false
+		false,
+		
+		'Change' =>
+		'Changer',
+		
+		' or ' =>
+		' ou ',
+		
+		'Remove' =>
+		'Supprimer'
 
 	);

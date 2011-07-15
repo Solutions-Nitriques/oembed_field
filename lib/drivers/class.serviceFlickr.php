@@ -8,6 +8,19 @@
 		public function __construct() {
 			parent::__construct('Flickr', 'flickr.com');
 		}
+		
+		public function about() {
+			return array(
+				'name'			=> $this->Name,
+				'version'		=> '1.0',
+				'release-date'	=> '2011-07-15',
+				'author'		=> array(
+					'name'			=> 'Solutions Nitriques',
+					'website'		=> 'http://www.nitriques.com/open-source/',
+					'email'			=> 'open-source (at) nitriques.com'
+				)
+	 		);
+		}
 
 		public function getEmbedCode($data, $options) {
 			return vsprintf('<img src="%s" width="%d" height="%d" />',

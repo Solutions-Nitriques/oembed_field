@@ -10,7 +10,7 @@
 	 * Field class that will represent an oEmbed ressource
 	 * @author Nicolas
 	 *
-	 * Based on @nickdunn's Vimeo field: https://github.com/nickdunn/vimeo_videos/blob/master/fields/field.vimeo_video.php
+	 * Based on @nickdunn's Vimeo field: https://github.com/nickdunn/vimeo_videos/
 	 *
 	 */
 	class FieldOembed extends Field {
@@ -99,7 +99,6 @@
 
 			return self::__OK__;
 		}
-
 
 		/**
 		 *
@@ -278,6 +277,35 @@
 
 		/**
 		 * 
+		 * Builds the UI for the field's settings when creating/editing a section
+		 * @param XMLElement $wrapper
+		 * @param array $errors
+		 */
+		public function displaySettingsPanel(&$wrapper, $errors=NULL){
+
+			/* first line */
+			parent::displaySettingsPanel($wrapper, $errors);
+
+			/* new line */
+			$set_wrap = new XMLElement('div');
+			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
+			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
+			$set_wrap->appendChild($label);
+
+			/* new line */
+			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
+
+			$this->appendRequiredCheckbox($chk_wrap);
+			$this->appendShowColumnCheckbox($chk_wrap);
+
+			/* append to wrapper */
+			//$wrapper->appendChild($set_wrap);
+			$wrapper->appendChild($chk_wrap);
+
+		}
+		
+		/**
+		 * 
 		 * Build the UI for the table view
 		 * @param Array $data
 		 * @param XMLElement $link
@@ -361,7 +389,6 @@
 			");
 		}
 
-
 		/**
 		 *
 		 * Drops the table needed for the settings of the field
@@ -374,32 +401,4 @@
 			");
 		}
 
-		/**
-		 * 
-		 * Builds the UI for the field's settings when creating/editing a section
-		 * @param XMLElement $wrapper
-		 * @param array $errors
-		 */
-		public function displaySettingsPanel(&$wrapper, $errors=NULL){
-
-			/* first line */
-			parent::displaySettingsPanel($wrapper, $errors);
-
-			/* new line */
-			$set_wrap = new XMLElement('div');
-			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
-			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
-			$set_wrap->appendChild($label);
-
-			/* new line */
-			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
-
-			$this->appendRequiredCheckbox($chk_wrap);
-			$this->appendShowColumnCheckbox($chk_wrap);
-
-			/* append to wrapper */
-			//$wrapper->appendChild($set_wrap);
-			$wrapper->appendChild($chk_wrap);
-
-		}
 	}

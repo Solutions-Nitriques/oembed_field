@@ -37,8 +37,10 @@ http://www.nitriques.com/open-source/
 - Add a lot more service drivers
 - Improve error handling when loading XML data
 - Adds a auto-refresh data mechanism
+- Automaticly add sites in the JIT autorized sites
+- Add a field setting: Autorize only certain drivers
 
 ### History ###
 
-- 1.0 - 2011-07-12
+- 1.0 - 2011-07-15
   First release
