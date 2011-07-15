@@ -82,13 +82,11 @@
 		 */
 		function checkPostFieldData($data, &$message, $entry_id=NULL){
 
-			//var_dump($data);
-			//die;
-
 			$message = NULL;
 
-			if (empty($data)) {
-				return self::__OK__;
+			if($this->get('required') == 'yes' && strlen($data) == 0){
+				$message = __("'%s' is a required field.", array($this->get('label')));
+				return self::__MISSING_FIELDS__;
 			}
 
 			$url = $data;
@@ -155,10 +153,11 @@
 				'url_oembed_xml' => $xml['url'],
 				'oembed_xml' => $xml['xml'],
 				'title' => $xml['title'],
-				'dateCreated' => time() // @todo: figure a way to get the time from sql server, even on updates
+				'thumbnail_url' => $xml['thumb'] //,
+				//'dateCreated' => time() // @todo: figure a way to get the time from sql server, even on updates
 			);
 
-			return $data;
+			return $result;
 		}
 
 		/**
@@ -346,7 +345,8 @@
 					`url` varchar(2048) NOT NULL,
 					`url_oembed_xml` varchar(2048) NOT NULL,
 					`title` varchar(2048) NULL,
-					`oembed_xml` text NULL,
+					`thumbnail_url` varchar(2048) NULL,
+					`oembed_xml` text NOT NULL,
 					`dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY  (`id`),
 				KEY `entry_id` (`entry_id`)

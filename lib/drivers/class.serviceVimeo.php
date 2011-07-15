@@ -10,7 +10,8 @@
 		}
 
 		public function getEmbedCode($data) {
-
+			return vsprintf('<iframe src="http://player.vimeo.com/video/%s" width="%d" height="%d" frameborder="0"></iframe>',
+							array($data['id'], $data['width'], $data['height']));
 		}
 
 		public function getOEmbedXmlApiUrl($params) {

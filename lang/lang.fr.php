@@ -32,6 +32,9 @@
 		false,
 
 		'Exception occured: %s' =>
+		false,
+		
+		'XML Data does not validate' =>
 		false
 
 	);
