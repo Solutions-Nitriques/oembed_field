@@ -22,6 +22,11 @@
 		 */
 		const FIELD_TBL_NAME = 'tbl_fields_oembed';
 
+		/**
+		 * 
+		 * Constructor the the oEmbed Field object
+		 * @param mixed $parent
+		 */
 		public function __construct(&$parent){
 			parent::__construct($parent);
 			$this->_name = __('oEmbed Ressource');
@@ -31,13 +36,6 @@
 			$this->_showcolumn = true;
 			// as default as not requiered
 			$this->set('required', 'no');
-
-			//var_dump($this->get());
-			//die;
-
-			//$sd = new ServiceDispatcher('http://vimeo.com');
-
-			//var_dump($sd->getDriver());
 		}
 
 		function isSortable(){
@@ -80,7 +78,7 @@
 		 * @param $message
 		 * @param $entry_id
 		 */
-		function checkPostFieldData($data, &$message, $entry_id=NULL){
+		public function checkPostFieldData($data, &$message, $entry_id=NULL){
 
 			$message = NULL;
 
@@ -155,75 +153,46 @@
 		}
 
 		/**
-		 * Appends data into the XML tree
+		 * Appends data into the XML tree of a Data Source
 		 * @param $wrapper
 		 * @param $data
 		 */
-		function appendFormattedElement(&$wrapper, $data){
-
-			//die;
-
+		public function appendFormattedElement(&$wrapper, $data){
+			
 			if(!is_array($data) || empty($data)) return;
 
 			// If cache has expired refresh the data array from parsing the API XML
 			/*if ((time() - $data['last_updated']) > ($this->_fields['refresh'] * 60)) {
 				$data = VimeoHelper::updateClipInfo($data['clip_id'], $this->_fields['id'], $wrapper->getAttribute('id'), $this->Database);
-			}
+			}*/
 
-			$video = new XMLElement($this->get('element_name'));
+			$field = new XMLElement($this->get('element_name'));
 
-			$video->setAttributeArray(array(
-				'clip-id' => $data['clip_id'],
-				'width' => $data['width'],
-				'height' => $data['height'],
-				'duration' => $data['duration'],
-				'plays' => $data['plays'],
+			$field->setAttributeArray(array(
+				'id' => $data['res_id'],
+				'entry_id' => $data['entry_id']
 			));
 
-			$video->appendChild(new XMLElement('title', General::sanitize($data['title'])));
-			$video->appendChild(new XMLElement('caption', General::sanitize($data['caption'])));
+			$field->appendChild(new XMLElement('title', General::sanitize($data['title'])));
+			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
+			$field->appendChild(new XMLElement('thumbnail', $data['thumbnail_url']));
+			
+			$xml = new DomDocument();
+			$xml->loadXML($data['oembed_xml']);
+			$xml->preserveWhiteSpace = true;
+			$xml->formatOutput = true;
+			$xml = $xml->saveXML($xml->getElementsByTagName('oembed')->item(0));
+			
+			$field->setValue($xml);
 
-			$user = new XMLElement('user');
-			$user->appendChild(new XMLElement('name', $data['user_name']));
-			$user->appendChild(new XMLElement('url', $data['user_url']));
-
-			$thumbnail = new XMLElement('thumbnail');
-			$thumbnail->setAttributeArray(array(
-				'width' => $data['thumbnail_width'],
-				'height' => $data['thumbnail_height'],
-				'size' => 'large',
-			));
-			$thumbnail->appendChild(new XMLElement('url', $data['thumbnail_url']));
-			$video->appendChild($thumbnail);
-
-			$thumbnail = new XMLElement('thumbnail');
-			$thumbnail->setAttributeArray(array(
-				'width' => $data['thumbnail_medium_width'],
-				'height' => $data['thumbnail_medium_height'],
-				'size' => 'medium',
-			));
-			$thumbnail->appendChild(new XMLElement('url', $data['thumbnail_medium_url']));
-			$video->appendChild($thumbnail);
-
-			$thumbnail = new XMLElement('thumbnail');
-			$thumbnail->setAttributeArray(array(
-				'width' => $data['thumbnail_small_width'],
-				'height' => $data['thumbnail_small_height'],
-				'size' => 'small',
-			));
-			$thumbnail->appendChild(new XMLElement('url', $data['thumbnail_small_url']));
-			$video->appendChild($thumbnail);
-
-			$video->appendChild($user);
-
-			$wrapper->appendChild($video);*/
+			$wrapper->appendChild($field);
 		}
 
 		/**
 		 *
 		 * Save field info into the field table
 		 */
-		function commit(){
+		public function commit(){
 
 			if(!parent::commit()) return false;
 
@@ -247,6 +216,15 @@
 
 		}
 
+		/**
+		 * 
+		 * Builds the UI for the publish page
+		 * @param XMLElement $wrapper
+		 * @param mixed $data
+		 * @param mixed $flagWithError
+		 * @param string $fieldnamePrefix
+		 * @param string $fieldnamePostfix
+		 */
 		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
 
 			$value = General::sanitize($data['url']);
@@ -285,9 +263,7 @@
 				$video_container->appendChild($or);
 				$video_container->appendChild($remove);
 
-				//$video_container->appendChild($video);
 				$label->appendChild($video_container);
-
 			}
 
 			$label->appendChild($url);
@@ -300,7 +276,13 @@
 			}
 		}
 
-		function prepareTableValue($data, XMLElement $link=NULL){
+		/**
+		 * 
+		 * Build the UI for the table view
+		 * @param Array $data
+		 * @param XMLElement $link
+		 */
+		public function prepareTableValue($data, XMLElement $link=NULL){
 
 			$url = $data['url'];
 
@@ -322,6 +304,12 @@
 			return $link;
 		}
 
+		/**
+		 * 
+		 * Return a plain text representation of the field's data
+		 * @param array $data
+		 * @param int $entry_id
+		 */
 		public function preparePlainTextValue($data, $entry_id = null) {
 			return (
 				isset($data['title'])
@@ -386,9 +374,13 @@
 			");
 		}
 
+		/**
+		 * 
+		 * Builds the UI for the field's settings when creating/editing a section
+		 * @param XMLElement $wrapper
+		 * @param array $errors
+		 */
 		public function displaySettingsPanel(&$wrapper, $errors=NULL){
-			//var_dump($this->get());
-			//die;
 
 			/* first line */
 			parent::displaySettingsPanel($wrapper, $errors);
@@ -404,7 +396,6 @@
 
 			$this->appendRequiredCheckbox($chk_wrap);
 			$this->appendShowColumnCheckbox($chk_wrap);
-
 
 			/* append to wrapper */
 			//$wrapper->appendChild($set_wrap);
