@@ -13,7 +13,7 @@ see http://oembed.com
 	- Easily get it into via your Data Sources
 	- Refreshes the info each time the entry is saved
 - Currently supported services: ***Vimeo, Flickr, Youtube***
-	- Anybody can add a service: Just fork, code the missing [Service Driver][https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php] and request a pull!
+	- Anybody can add a service: Just fork, code the missing (Service Driver [https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php]) and request a pull!
 
 ### REQUIREMENTS ###
 
