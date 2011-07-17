@@ -3,17 +3,17 @@
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 
 
-	class serviceFlickr extends ServiceDriver {
+	class serviceYouTube extends ServiceDriver {
 
 		public function __construct() {
-			parent::__construct('Flickr', 'flickr.com');
+			parent::__construct('YouTube', 'youtube.com');
 		}
 
 		public function about() {
 			return array(
 				'name'			=> $this->Name,
 				'version'		=> '1.0',
-				'release-date'	=> '2011-07-15',
+				'release-date'	=> '2011-07-17',
 				'author'		=> array(
 					'name'			=> 'Solutions Nitriques',
 					'website'		=> 'http://www.nitriques.com/open-source/',
@@ -23,16 +23,18 @@
 		}
 
 		public function getEmbedCode($data, $options) {
-			return vsprintf('<img src="%s" width="%d" height="%d" alt="%s" />',
-							array($data['res_id'], $options['width'], $options['height'], General::sanatize($data['title'])));
+			$xml = new DOMDocument();
+			$xml->loadXML($data['oembed_xml']);
+
+			return $xml->getElementsByTagName('html')->item(0)->nodeValue;
 		}
 
 		public function getOEmbedXmlApiUrl($params) {
-			return 'http://www.flickr.com/services/oembed?url=' . $params['url'];
+			return 'http://www.youtube.com/oembed?format=xml&url=' . $params['url'];
 		}
 
 
 		public function getIdTagName() {
-			return 'url';
+			return null; // will use url as id
 		}
 	}
