@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.0
+Version: 1.0.1
 
 ## Easily embed videos/images from ANY website that implements the oEmbed format ##
 
@@ -12,9 +12,8 @@ see http://oembed.com
 - Caches the oEmbed XML info into the database
 	- Easily get it into via your Data Sources
 	- Refreshes the info each time the entry is saved
-- Currently supported services: ***Vimeo and Flickr*** only
-	- v1.1 will support Youtube too
-- Anybody can add a service: Just fork, code the missing Service Driver and request a pull!
+- Currently supported services: ***Vimeo, Flickr, Youtube***
+	- Anybody can add a service: Just fork, code the missing [Service Driver][https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php] and request a pull!
 
 ### REQUIREMENTS ###
 
@@ -34,13 +33,15 @@ http://www.nitriques.com/open-source/
 ### TODO ###
 
 - Add support for image in table view
-- Add a lot more service drivers
 - Improve error handling when loading XML data
 - Adds a auto-refresh data mechanism
-- Automaticly add sites in the JIT autorized sites
-- Add a field setting: Autorize only certain drivers
+- Automatically add sites in the JIT authorized sites
+- Add a field setting: Authorize only certain drivers
 
 ### History ###
+
+- 1.0.1 - 2011-07-17
+  Added YouTube
 
 - 1.0 - 2011-07-15
   First release
