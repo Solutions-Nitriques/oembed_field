@@ -167,10 +167,12 @@
 			}*/
 
 			$field = new XMLElement($this->get('element_name'));
+			
+			var_dump($data);
+			die;
 
 			$field->setAttributeArray(array(
-				'id' => $data['res_id'],
-				'entry_id' => $data['entry_id']
+				'id' => $data['res_id']
 			));
 
 			$title = new XMLElement('title', General::sanitize($data['title']));
