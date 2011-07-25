@@ -257,7 +257,13 @@
 				$remove = new XMLElement('a', __('Remove'));
 				$remove->setAttribute('class', 'change remove');
 				
-				$e_options = array('width' => '640', 'height' => '360' );
+				$e_options = array(
+					'placement' => $this->get('location'),
+					'width' => '640', 
+					'height' => '360',
+					'width_side' => '320',
+					'height_side' => '160'
+				);
 				$embed = ServiceDispatcher::getServiceDriver($value)->getEmbedCode($data, $e_options);
 
 				$video_container->setValue("<div>$embed</div>");

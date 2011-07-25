@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.0.1
+Version: 1.1
 
 ## Easily embed videos/images from ANY website that implements the oEmbed format ##
 
@@ -39,6 +39,10 @@ http://www.nitriques.com/open-source/
 - Add a field setting: Authorize only certain drivers
 
 ### History ###
+
+- 1.1 - 2011-07-25   
+  Couple of bug fixes    
+  Adapted the code so oEmbed resources in the sidebar displays correctly
 
 - 1.0.1 - 2011-07-17
   Added YouTube

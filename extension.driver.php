@@ -30,8 +30,8 @@
 		public function about() {
 			return array(
 				'name'			=> self::EXT_NAME,
-				'version'		=> '1.0',
-				'release-date'	=> '2011-07-15',
+				'version'		=> '1.1',
+				'release-date'	=> '2011-07-25',
 				'author'		=> array(
 					'name'			=> 'Solutions Nitriques',
 					'website'		=> 'http://www.nitriques.com/open-source/',

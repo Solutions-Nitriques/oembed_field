@@ -139,6 +139,19 @@
 		 */
 		public abstract function getIdTagName();
 
+		
+		/**
+		 * 
+		 * Utility method that returns the good size based on the location of the field
+		 * @param array $options
+		 * @param string $size (width or height)
+		 */
+		protected function getEmbedSize($options, $size) {
+			if (!isset($options['location']) || !isset($options[$size . '_side']) || $options['location'] == 'main' ) {
+				return $options[$size];
+			}
+			return $options[$size. '_side'];
+		}
 
 		function exception_error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 			//if (!(error_reporting() & $errno)) {

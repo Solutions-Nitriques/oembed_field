@@ -24,7 +24,11 @@
 
 		public function getEmbedCode($data, $options) {
 			return vsprintf('<iframe src="http://player.vimeo.com/video/%s" width="%d" height="%d" frameborder="0"></iframe>',
-							array($data['res_id'], $options['width'], $options['height']));
+							array(	$data['res_id'], 
+									$this->getEmbedSize($options, 'width'),
+									$this->getEmbedSize($options, 'height')
+								  )
+					);
 		}
 
 		public function getOEmbedXmlApiUrl($params) {
