@@ -81,8 +81,9 @@
 		public function checkPostFieldData($data, &$message, $entry_id=NULL){
 
 			$message = NULL;
+			$requiered = ($this->get('required') == 'yes');
 
-			if($this->get('required') == 'yes' && strlen($data) == 0){
+			if($requiered && strlen($data) == 0){
 				$message = __("'%s' is a required field.", array($this->get('label')));
 				return self::__MISSING_FIELDS__;
 			}
@@ -92,7 +93,7 @@
 			$driver = ServiceDispatcher::getServiceDriver($url);
 
 			// valid driver
-			if (!$driver) {
+			if (!$driver && strlen($data) > 0) {
 				$message = __("%s: No ServiceDriver found for '%s'.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
