@@ -24,7 +24,7 @@
 
 		public function getEmbedCode($data, $options) {
 			return vsprintf('<img src="%s" width="%d" height="%d" alt="%s" />',
-							array($data['res_id'], $options['width'], $options['height'], General::sanitize($data['title'])));
+							array($data['res_id'], $options['width'], $options['height'], General::sanatize($data['title'])));
 		}
 
 		public function getOEmbedXmlApiUrl($params) {
