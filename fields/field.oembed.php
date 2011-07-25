@@ -93,7 +93,7 @@
 			$driver = ServiceDispatcher::getServiceDriver($url);
 
 			// valid driver
-			if (!$driver && strlen($data) > 0) {
+			if (!$driver && strlen($url) > 0) {
 				$message = __("%s: No ServiceDriver found for '%s'.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
