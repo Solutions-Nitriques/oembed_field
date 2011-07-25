@@ -167,9 +167,6 @@
 			}*/
 
 			$field = new XMLElement($this->get('element_name'));
-			
-			var_dump($data);
-			die;
 
 			$field->setAttributeArray(array(
 				'id' => $data['res_id']
