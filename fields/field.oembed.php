@@ -258,7 +258,7 @@
 				$remove->setAttribute('class', 'change remove');
 				
 				$e_options = array(
-					'placement' => $this->get('location'),
+					'location' => $this->get('location'),
 					'width' => '640', 
 					'height' => '360',
 					'width_side' => '320',
