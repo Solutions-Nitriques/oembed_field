@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.1
+Version: 1.2
 
 ## Easily embed videos/images from ANY website that implements the oEmbed format ##
 
@@ -39,6 +39,10 @@ http://www.nitriques.com/open-source/
 - Add a field setting: Authorize only certain drivers
 
 ### History ###
+
+- 1.2 - 2011-08-19   
+  Update for Symphony 2.2.2 compatibility
+  	(do not need to check for the $simulate value as it seems to be always true) 
 
 - 1.1 - 2011-07-25   
   Couple of bug fixes    

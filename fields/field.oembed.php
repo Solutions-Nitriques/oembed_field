@@ -117,17 +117,17 @@
 		public function processRawFieldData($data, &$status, $simulate = false, $entry_id = null) {
 
 			$status = self::__OK__;
-
+			
 			$url = $data;
-
-			if (trim($url) == '' || $simulate == true) return array();
+			
+			if (trim($url) == '' /*|| $simulate == true */) return $data;
 
 			// get xml data
 			$params = array(
 				'url' => $url
 			);
 			$xml = ServiceDispatcher::getServiceDriver($url)->getXmlDataFromSource($params);
-
+			
 			// HACK: couldn't figure out how to validate in checkPostFieldData() and then prevent
 			// this processRawFieldData function executing, since it requires valid data to load the XML
 			// thanks @nickdunn
