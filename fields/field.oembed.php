@@ -81,8 +81,9 @@
 		public function checkPostFieldData($data, &$message, $entry_id=NULL){
 
 			$message = NULL;
+			$requiered = ($this->get('required') == 'yes');
 
-			if($this->get('required') == 'yes' && strlen($data) == 0){
+			if($requiered && strlen($data) == 0){
 				$message = __("'%s' is a required field.", array($this->get('label')));
 				return self::__MISSING_FIELDS__;
 			}
@@ -92,7 +93,7 @@
 			$driver = ServiceDispatcher::getServiceDriver($url);
 
 			// valid driver
-			if (!$driver) {
+			if (!$driver && strlen($url) > 0) {
 				$message = __("%s: No ServiceDriver found for '%s'.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
@@ -168,8 +169,7 @@
 			$field = new XMLElement($this->get('element_name'));
 
 			$field->setAttributeArray(array(
-				'id' => $data['res_id'],
-				'entry_id' => $data['entry_id']
+				'id' => $data['res_id']
 			));
 
 			$title = new XMLElement('title', General::sanitize($data['title']));
@@ -256,7 +256,13 @@
 				$remove = new XMLElement('a', __('Remove'));
 				$remove->setAttribute('class', 'change remove');
 				
-				$e_options = array('width' => '640', 'height' => '360' );
+				$e_options = array(
+					'location' => $this->get('location'),
+					'width' => '640', 
+					'height' => '360',
+					'width_side' => '320',
+					'height_side' => '160'
+				);
 				$embed = ServiceDispatcher::getServiceDriver($value)->getEmbedCode($data, $e_options);
 
 				$video_container->setValue("<div>$embed</div>");
