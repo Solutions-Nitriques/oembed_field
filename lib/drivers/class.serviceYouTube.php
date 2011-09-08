@@ -12,8 +12,8 @@
 		public function about() {
 			return array(
 				'name'			=> $this->Name,
-				'version'		=> '1.0',
-				'release-date'	=> '2011-07-17',
+				'version'		=> '1.1',
+				'release-date'	=> '2011-09-08',
 				'author'		=> array(
 					'name'			=> 'Solutions Nitriques',
 					'website'		=> 'http://www.nitriques.com/open-source/',
@@ -26,7 +26,19 @@
 			$xml = new DOMDocument();
 			$xml->loadXML($data['oembed_xml']);
 
-			return $xml->getElementsByTagName('html')->item(0)->nodeValue;
+			$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;	
+			
+			if ($options['location'] == 'sidebar') {
+				// replace height and width to make it fit in the backend
+				$w = $this->getEmbedSize($options, 'width');
+				$h = $this->getEmbedSize($options, 'height');
+				
+				$player = preg_replace(
+					array('/width="([^"]*)"/', '/height="([^"]*)"/'), 
+					array("width=\"{$w}\"", "height=\"{$h}\""), $player);
+			}
+			
+			return $player;
 		}
 
 		public function getOEmbedXmlApiUrl($params) {
