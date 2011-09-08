@@ -30,8 +30,8 @@
 		public function about() {
 			return array(
 				'name'			=> self::EXT_NAME,
-				'version'		=> '1.2',
-				'release-date'	=> '2011-08-19',
+				'version'		=> '1.2.1',
+				'release-date'	=> '2011-09-08',
 				'author'		=> array(
 					'name'			=> 'Solutions Nitriques',
 					'website'		=> 'http://www.nitriques.com/open-source/',
@@ -39,6 +39,7 @@
 				),
 				'description'	=> __('Easily embed videos/images from ANY website that implements the oEmbed format (http://oembed.com/)'),
 				'compatibility' => array(
+					'2.2.3' => true,
 					'2.2.2' => true,
 					'2.2.1' => true,
 					'2.2' => true
