@@ -62,31 +62,33 @@
 
 			$xml = array();
 
-			//try {
-				//set_error_handler( array($this, 'exception_error_handler') );
+			// add url to array
+			$xml['url'] = $url;
 
-				$doc = new DOMDocument();
-				$doc->preserveWhiteSpace = false;
-				$doc->load($url);
+			// add id to array
+			$idTagName = $this->getIdTagName();
+			if ($idTagName == null) {
+				$xml['id'] = Lang::createHandle($url);
+			} else {
+				$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
+			}
+
+			// trying to load XML into DOM Document
+			$doc = new DOMDocument();
+			$doc->preserveWhiteSpace = false;
+			$doc->formatOutput = false;
+
+			// ignore errors
+			if (@$doc->load($url)) {
 
 				$xml['xml'] = $doc->saveXML();
-				$xml['url'] = $url;
+
 				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
 				$xml['thumb'] = $doc->getElementsByTagName($this->getThumbnailTagName())->item(0)->nodeValue;
 
-				$idTagName = $this->getIdTagName();
-				if ($idTagName == null) {
-					$xml['id'] = Lang::createHandle($url);
-				} else {
-					$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
-				}
-
-			/*} catch (Exception $ex) {
-
-				$xml['error'] = $ex->getMessage();
-			} */
-
-			//restore_error_handler();
+			} else {
+				$xml['xml'] = '<error>Could not load XML from oembed remote service</error>';
+			}
 
 			return $xml;
 		}
@@ -139,9 +141,9 @@
 		 */
 		public abstract function getIdTagName();
 
-		
+
 		/**
-		 * 
+		 *
 		 * Utility method that returns the good size based on the location of the field
 		 * @param array $options
 		 * @param string $size (width or height)
@@ -153,12 +155,4 @@
 			return $options[$size. '_side'];
 		}
 
-		function exception_error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
-			//if (!(error_reporting() & $errno)) {
-		        // Ce code d'erreur n'est pas inclus dans error_reporting()
-		        //return;
-		    //}
-
-		    throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
-		}
 	}

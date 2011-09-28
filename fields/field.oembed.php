@@ -180,12 +180,27 @@
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
 			
 			$xml = new DomDocument();
-			$xml->loadXML($data['oembed_xml']);
+
+			// if we can successfully load the XML data into the
+			// DOM object while ignoring errors (@)
+			if (@$xml->loadXML($data['oembed_xml'])) {
+
 			$xml->preserveWhiteSpace = true;
 			$xml->formatOutput = true;
-			$xml = $xml->saveXML($xml->getElementsByTagName('oembed')->item(0));
+				$xml->normalize();
 			
-			$field->setValue($xml);
+				$xml_root = $xml->getElementsByTagName('oembed')->item(0);
+
+				if (empty($xml_root)) {
+					$xml_root = $xml->getElementsByTagName('error')->item(0);
+				}
+
+				if (!empty($xml_root)) {
+					$xml = $xml->saveXML($xml_root);
+					$field->setValue($xml, false);
+				}
+
+			}
 
 			$wrapper->appendChild($field);
 		}
