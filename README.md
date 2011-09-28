@@ -37,25 +37,26 @@ http://www.nitriques.com/open-source/
 - Adds a auto-refresh data mechanism
 - Automatically add sites in the JIT authorized sites
 - Add a field setting: Authorize only certain drivers
+- Add MySpace driver: Waiting for MySpace to complete their oEmbed service
 
 ### History ###
 
-- 1.2.2 - 2011-09-28      
+- 1.2.2 - 2011-09-28       
   Update the YouTube driver to 1.2 - Fix when the entered url contains a #
 
-- 1.2.1 - 2011-09-08      
+- 1.2.1 - 2011-09-08       
   Update the YouTube driver to 1.1 - Fix the width when the field is in the sidebar
 
-- 1.2 - 2011-08-19   
+- 1.2 - 2011-08-19     
   Update for Symphony 2.2.2 compatibility
   	(do not need to check for the $simulate value as it seems to be always true) 
 
-- 1.1 - 2011-07-25   
+- 1.1 - 2011-07-25     
   Couple of bug fixes    
   Adapted the code so oEmbed resources in the sidebar displays correctly
 
-- 1.0.1 - 2011-07-17
+- 1.0.1 - 2011-07-17     
   Added YouTube
 
-- 1.0 - 2011-07-15
+- 1.0 - 2011-07-15     
   First release
