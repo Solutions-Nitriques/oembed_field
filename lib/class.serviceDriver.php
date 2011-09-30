@@ -65,14 +65,6 @@
 			// add url to array
 			$xml['url'] = $url;
 
-			// add id to array
-			$idTagName = $this->getIdTagName();
-			if ($idTagName == null) {
-				$xml['id'] = Lang::createHandle($url);
-			} else {
-				$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
-			}
-
 			// trying to load XML into DOM Document
 			$doc = new DOMDocument();
 			$doc->preserveWhiteSpace = false;
@@ -82,6 +74,14 @@
 			if (@$doc->load($url)) {
 
 				$xml['xml'] = $doc->saveXML();
+
+				// add id to array
+				$idTagName = $this->getIdTagName();
+				if ($idTagName == null) {
+					$xml['id'] = Lang::createHandle($url);
+				} else {
+					$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
+				}
 
 				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
 				$xml['thumb'] = $doc->getElementsByTagName($this->getThumbnailTagName())->item(0)->nodeValue;
