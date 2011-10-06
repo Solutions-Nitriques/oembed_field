@@ -5,7 +5,7 @@
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDriver.php');
 
 	/**
-	 * 
+	 *
 	 * Class that groups functionality for working with Service Drivers
 	 * @author Nicolas
 	 *
@@ -24,9 +24,9 @@
 			if (!$url || $url == null || strlen($url) == 0) {
 				return null;
 			}
-			
+
 			$dir = EXTENSIONS . '/oembed_field/lib/drivers/';
-			
+
 			$drivers = General::listStructure($dir, null, false, true);
 
 			foreach ($drivers['filelist'] as $class) {
@@ -37,7 +37,7 @@
 
 					// get class name
 					$class = str_replace(array('class.', '.php'), '', $class);
-					
+
 					// create new instance
 					$class = new $class($url);
 
@@ -59,7 +59,7 @@
 	}
 
 	/**
-	 * 
+	 *
 	 * Exception class that wraps around another exception
 	 * @author Nicolas
 	 *

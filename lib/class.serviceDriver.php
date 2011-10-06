@@ -29,7 +29,7 @@
 		 *
 		 * Accessor for the Name property
 		 */
-		public function getName() {
+		public final function getName() {
 			return $this->Name;
 		}
 
@@ -37,7 +37,7 @@
 		 *
 		 * Accessor for the Domaine property
 		 */
-		public function getDomain() {
+		public final function getDomain() {
 			return $this->Domain;
 		}
 
@@ -54,9 +54,11 @@
 		/**
 		 *
 		 * Gets the oEmbed XML data from the Driver Source
+		 *
 		 * @param array $data
+		 * @param bool $errorFlag - ref parameter to flag if the operation was successful (new in 1.3)
 		 */
-		public function getXmlDataFromSource($data) {
+		public final function getXmlDataFromSource($data, &$errorFlag) {
 
 			$url = $this->getOEmbedXmlApiUrl($data);
 
@@ -70,8 +72,10 @@
 			$doc->preserveWhiteSpace = false;
 			$doc->formatOutput = false;
 
-			// ignore errors
-			if (@$doc->load($url)) {
+			// ignore errors, but save if it was successful
+			$errorFlag = !(@$doc->load($url));
+
+			if (!$errorFlag) {
 
 				$xml['xml'] = $doc->saveXML();
 
@@ -87,7 +91,8 @@
 				$xml['thumb'] = $doc->getElementsByTagName($this->getThumbnailTagName())->item(0)->nodeValue;
 
 			} else {
-				$xml['xml'] = '<error>Could not load XML from oembed remote service</error>';
+				// return somthing since the column can't be null
+				$xml['xml'] = '<error>' . __('Symphony could not load XML from oEmbed remote service') . '</error>';
 			}
 
 			return $xml;
@@ -135,18 +140,26 @@
 
 		/**
 		 *
+		 * Method that returns the name of the root tag.
+		 * Overrides at will. Default returns 'oembed'
+		 */
+		public function getRootTagName() {
+			return 'oembed';
+		}
+
+		/**
+		 *
 		 * Abstract method that shall return the name of the tag that will be used as ID.
 		 *
 		 * N.B: Can return null: Id will be a handle created from the url
 		 */
 		public abstract function getIdTagName();
 
-
 		/**
 		 *
 		 * Utility method that returns the good size based on the location of the field
 		 * @param array $options
-		 * @param string $size (width or height)
+		 * @param string $size (width and/or height)
 		 */
 		protected function getEmbedSize($options, $size) {
 			if (!isset($options['location']) || !isset($options[$size . '_side']) || $options['location'] == 'main' ) {

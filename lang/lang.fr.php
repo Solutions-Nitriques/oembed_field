@@ -33,17 +33,20 @@
 
 		'Exception occured: %s' =>
 		'Une exception a été levée: %s',
-		
+
 		'XML Data does not validate' =>
 		'Les données XML ne sont pas valides',
-		
+
 		'Change' =>
 		'Changer',
-		
+
 		' or ' =>
 		' ou ',
-		
+
 		'Remove' =>
-		'Supprimer'
+		'Supprimer',
+
+		'Symphony could not load XML from oEmbed remote service' =>
+		"Symphony n'a pas pu charger les données XML à partir du service oEmbed"
 
 	);
