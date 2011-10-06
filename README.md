@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.2.2
+Version: 1.3
 
 ## Easily embed videos/images from ANY website that implements the oEmbed format ##
 
@@ -33,13 +33,16 @@ http://www.nitriques.com/open-source/
 ### TODO ###
 
 - Add support for image (thumbnail) in table view
-- Improve error handling when loading XML data, especially if the HTTP status is 503
 - Adds a auto-refresh data mechanism
 - Automatically add sites in the JIT authorized sites
 - Add a field setting: Authorize only certain drivers
-- Add MySpace driver: Waiting for MySpace to complete their oEmbed service
+- Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
 
 ### History ###
+
+- 1.3 - 2011-10-06      
+  Improved error management - Added a ref flag for that in the public method     
+  Added a method that permit change of the root tag name in the oEmbed response         
 
 - 1.2.2 - 2011-09-28       
   Update the YouTube driver to 1.2 - Fix when the entered url contains a #

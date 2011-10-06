@@ -25,19 +25,31 @@
 		}
 
 		public function getEmbedCode($data, $options) {
-			$xml = new DOMDocument();
-			$xml->loadXML($data['oembed_xml']);
 
-			$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
+			$player = null;
 
-			if ($options['location'] == 'sidebar') {
-				// replace height and width to make it fit in the backend
-				$w = $this->getEmbedSize($options, 'width');
-				$h = $this->getEmbedSize($options, 'height');
+			$xml_data = $data['oembed_xml'];
 
-				$player = preg_replace(
-					array('/width="([^"]*)"/', '/height="([^"]*)"/'),
-					array("width=\"{$w}\"", "height=\"{$h}\""), $player);
+			//var_dump($data);die;
+
+			if (!empty($xml_data)) {
+				$xml = new DOMDocument();
+
+				if (@$xml->loadXML($xml_data)) {
+
+					$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
+
+					if ($options['location'] == 'sidebar') {
+						// replace height and width to make it fit in the backend
+						$w = $this->getEmbedSize($options, 'width');
+						$h = $this->getEmbedSize($options, 'height');
+
+						$player = preg_replace(
+							array('/width="([^"]*)"/', '/height="([^"]*)"/'),
+							array("width=\"{$w}\"", "height=\"{$h}\""), $player);
+					}
+
+				}
 			}
 
 			return $player;
@@ -52,9 +64,9 @@
 				$exploded = preg_split('/[\/#]/', $url);
 
 				$url = self::BASE_URL . $exploded[count($exploded)-1];
-
-				//var_dump($url); die;
 			}
+
+			//var_dump($url); die;
 
 			return 'http://www.youtube.com/oembed?format=xml&url=' . $url;
 		}

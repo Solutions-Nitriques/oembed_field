@@ -23,7 +23,7 @@
 		const FIELD_TBL_NAME = 'tbl_fields_oembed';
 
 		/**
-		 * 
+		 *
 		 * Constructor the the oEmbed Field object
 		 * @param mixed $parent
 		 */
@@ -117,25 +117,36 @@
 		public function processRawFieldData($data, &$status, $simulate = false, $entry_id = null) {
 
 			$status = self::__OK__;
-			
+
 			$url = $data;
-			
+
 			if (trim($url) == '' /*|| $simulate == true */) return $data;
+
+			// store a pointer to the driver
+			$driver = ServiceDispatcher::getServiceDriver($url);
 
 			// get xml data
 			$params = array(
 				'url' => $url
 			);
-			$xml = ServiceDispatcher::getServiceDriver($url)->getXmlDataFromSource($params);
-			
+			$xml = $driver->getXmlDataFromSource($params, $errorFlag);
+
 			// HACK: couldn't figure out how to validate in checkPostFieldData() and then prevent
 			// this processRawFieldData function executing, since it requires valid data to load the XML
 			// thanks @nickdunn
 
-			if (!is_array($xml)) {
+			// if $xml is NOT an array
+			// OR
+			// if $errorFlag and not error message...
+			if (!is_array($xml) || ($errorFlag && !isset($xml['error']))) {
 				$message = __('Failed to load oEmbed XML data');
 				$status =  self::__INVALID_FIELDS__;
-				$xml = array();
+				// set the array, as we still wan't to save the url
+				if (!is_array($xml)) {
+					$xml = array();
+				}
+
+
 			} elseif (isset($xml['error'])) {
 				$message = __('Exception occured: %s', array( $xml['error'] ));
 				$status =  self::__INVALID_FIELDS__;
@@ -158,7 +169,7 @@
 		 * @param $data
 		 */
 		public function appendFormattedElement(&$wrapper, $data){
-			
+
 			if(!is_array($data) || empty($data)) return;
 
 			// If cache has expired refresh the data array from parsing the API XML
@@ -174,26 +185,32 @@
 
 			$title = new XMLElement('title', General::sanitize($data['title']));
 			$title->setAttribute('handle', Lang::createHandle($data['title']));
-			
+
 			$field->appendChild($title);
 			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
-			
+
 			$xml = new DomDocument();
 
 			// if we can successfully load the XML data into the
 			// DOM object while ignoring errors (@)
 			if (@$xml->loadXML($data['oembed_xml'])) {
 
-			$xml->preserveWhiteSpace = true;
-			$xml->formatOutput = true;
+				$xml->preserveWhiteSpace = true;
+				$xml->formatOutput = true;
 				$xml->normalize();
-			
-				$xml_root = $xml->getElementsByTagName('oembed')->item(0);
 
+				// store a pointer to the driver
+				$driver = ServiceDispatcher::getServiceDriver($data['url']);
+
+				// get the root node
+				$xml_root = $xml->getElementsByTagName($driver->getRootTagName())->item(0);
+
+				// if we did not found anything, try to look for a 'error' tag
 				if (empty($xml_root)) {
 					$xml_root = $xml->getElementsByTagName('error')->item(0);
 				}
+
 
 				if (!empty($xml_root)) {
 					$xml = $xml->saveXML($xml_root);
@@ -234,7 +251,7 @@
 		}
 
 		/**
-		 * 
+		 *
 		 * Builds the UI for the publish page
 		 * @param XMLElement $wrapper
 		 * @param mixed $data
@@ -243,6 +260,8 @@
 		 * @param string $fieldnamePostfix
 		 */
 		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
+
+			//var_dump($data);die;
 
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
@@ -270,14 +289,15 @@
 
 				$remove = new XMLElement('a', __('Remove'));
 				$remove->setAttribute('class', 'change remove');
-				
+
 				$e_options = array(
 					'location' => $this->get('location'),
-					'width' => '640', 
+					'width' => '640',
 					'height' => '360',
 					'width_side' => '320',
 					'height_side' => '160'
 				);
+
 				$embed = ServiceDispatcher::getServiceDriver($value)->getEmbedCode($data, $e_options);
 
 				$video_container->setValue("<div>$embed</div>");
@@ -300,7 +320,7 @@
 		}
 
 		/**
-		 * 
+		 *
 		 * Builds the UI for the field's settings when creating/editing a section
 		 * @param XMLElement $wrapper
 		 * @param array $errors
@@ -327,9 +347,9 @@
 			$wrapper->appendChild($chk_wrap);
 
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * Build the UI for the table view
 		 * @param Array $data
 		 * @param XMLElement $link
@@ -343,13 +363,13 @@
 			//$image = '<img src="' . URL . '/image/2/75/75/5/1/' . str_replace('http://', '', $data['thumbnail_url']) .'" alt="' . $data['title'] .'" width="75" height="75"/>';
 
 			$value = (isset($data['title'])? $data['title'] : $data['url']);
-			
+
 			if($link){
 				$link->setValue($value);
 
 			} else{
-				$link = new XMLElement('a', 
-					$value, 
+				$link = new XMLElement('a',
+					$value,
 					array('href' => $url, 'target' => '_blank'));
 			}
 
@@ -357,7 +377,7 @@
 		}
 
 		/**
-		 * 
+		 *
 		 * Return a plain text representation of the field's data
 		 * @param array $data
 		 * @param int $entry_id
