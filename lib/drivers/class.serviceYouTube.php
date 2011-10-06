@@ -5,6 +5,8 @@
 
 	class serviceYouTube extends ServiceDriver {
 
+		const BASE_URL = "http://youtu.be/";
+
 		public function __construct() {
 			parent::__construct('YouTube', 'youtube.com');
 		}
@@ -12,8 +14,8 @@
 		public function about() {
 			return array(
 				'name'			=> $this->Name,
-				'version'		=> '1.1',
-				'release-date'	=> '2011-09-08',
+				'version'		=> '1.2',
+				'release-date'	=> '2011-09-27',
 				'author'		=> array(
 					'name'			=> 'Solutions Nitriques',
 					'website'		=> 'http://www.nitriques.com/open-source/',
@@ -26,23 +28,35 @@
 			$xml = new DOMDocument();
 			$xml->loadXML($data['oembed_xml']);
 
-			$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;	
-			
+			$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
+
 			if ($options['location'] == 'sidebar') {
 				// replace height and width to make it fit in the backend
 				$w = $this->getEmbedSize($options, 'width');
 				$h = $this->getEmbedSize($options, 'height');
-				
+
 				$player = preg_replace(
-					array('/width="([^"]*)"/', '/height="([^"]*)"/'), 
+					array('/width="([^"]*)"/', '/height="([^"]*)"/'),
 					array("width=\"{$w}\"", "height=\"{$h}\""), $player);
 			}
-			
+
 			return $player;
 		}
 
 		public function getOEmbedXmlApiUrl($params) {
-			return 'http://www.youtube.com/oembed?format=xml&url=' . $params['url'];
+			$url = trim($params['url']);
+
+			// trying to fix url with # in it
+			if (strpos($params['url'], '#') !== FALSE) {
+				// split on every # or /
+				$exploded = preg_split('/[\/#]/', $url);
+
+				$url = self::BASE_URL . $exploded[count($exploded)-1];
+
+				//var_dump($url); die;
+			}
+
+			return 'http://www.youtube.com/oembed?format=xml&url=' . $url;
 		}
 
 
