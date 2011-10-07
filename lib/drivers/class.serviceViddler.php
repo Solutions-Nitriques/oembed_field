@@ -3,12 +3,12 @@
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 
 
-	class serviceDailymotion extends ServiceDriver {
+	class serviceViddler extends ServiceDriver {
 
-		const BASE_URL = "http://dailymotion.com/video/";
+		const BASE_URL = "http://www.viddler.com/explore";
 
 		public function __construct() {
-			parent::__construct('Dailmotion', 'dailymotion.com');
+			parent::__construct('Viddler', 'viddler.com');
 		}
 
 		public function about() {
@@ -31,7 +31,7 @@
 			$xml_data = $data['oembed_xml'];
 
 			//var_dump($data);die;
-
+							
 			if(empty($xml_data)){
 				
 				return false;
@@ -44,6 +44,8 @@
 				if (@$xml->loadXML($xml_data)) {
 
 					$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
+							
+
 
 					if ($options['location'] == 'sidebar') {
 						// replace height and width to make it fit in the backend
@@ -53,12 +55,14 @@
 						$player = preg_replace(
 							array('/width="([^"]*)"/', '/height="([^"]*)"/'),
 							array("width=\"{$w}\"", "height=\"{$h}\""), $player);
+							
 					}
 
 				}
 			}
-
+           
 			return $player;
+			
 		}
 
 		public function getOEmbedXmlApiUrl($params) {
@@ -74,10 +78,10 @@
 
 			//var_dump($url); die;
 
-			return 'http://www.dailymotion.com/services/oembed?format=xml&url=' . $url;
+			return 'http://lab.viddler.com/services/oembed/?type=simple&format=xml&url=' . $url;
 		}
 
-		//Dailymotion Service uses "oembed" as root node just like the others
+		//Viddler Service uses "oembed" as root node just like the others
 		public function getRootTagName() {
 			return 'oembed';
 		}
