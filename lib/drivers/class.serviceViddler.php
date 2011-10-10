@@ -31,11 +31,11 @@
 			$xml_data = $data['oembed_xml'];
 
 			//var_dump($data);die;
-							
+
 			if(empty($xml_data)){
-				
+
 				return false;
-				
+
 			}
 
 			if (!empty($xml_data)) {
@@ -43,8 +43,8 @@
 
 				if (@$xml->loadXML($xml_data)) {
 
-					$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
-							
+					$player = $xml->getElementsByTagName('html')->item(0)->saveXML();
+
 
 
 					if ($options['location'] == 'sidebar') {
@@ -55,14 +55,14 @@
 						$player = preg_replace(
 							array('/width="([^"]*)"/', '/height="([^"]*)"/'),
 							array("width=\"{$w}\"", "height=\"{$h}\""), $player);
-							
+
 					}
 
 				}
 			}
-           
+
 			return $player;
-			
+
 		}
 
 		public function getOEmbedXmlApiUrl($params) {
@@ -85,7 +85,7 @@
 		public function getRootTagName() {
 			return 'oembed';
 		}
-		
+
 		public function getIdTagName() {
 			return null; // will use url as id
 		}

@@ -12,8 +12,15 @@ see http://oembed.com
 - Caches the oEmbed XML info into the database
 	- Easily get it into via your Data Sources
 	- Refreshes the info each time the entry is saved
-- Currently supported services: ***Vimeo, Flickr, Youtube, Dailymotion, Qik and Viddler***
-	- Anybody can add a service: Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
+- Currently supported services: 
+	- **Vimeo**
+	- **Youtube**
+	- **Dailymotion**
+	- Flickr
+	- Qik
+	- Viddler
+		- Anybody can add a service       
+		  Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
 
 ### REQUIREMENTS ###
 
@@ -33,8 +40,8 @@ http://www.nitriques.com/open-source/
 ### TODO ###
 
 - Adds a auto-refresh data mechanism
-- Automatically add sites in the JIT authorized sites
-- Add a field setting: Authorize only certain drivers
+- Automatically add sites in the JIT authorized sites (for thumbnail and image services)
+- Add a field setting: Authorize only certain drivers (needs discussion on that)
 - Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
 
 ### History ###

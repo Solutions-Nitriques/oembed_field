@@ -124,6 +124,7 @@
 		 *
 		 * Method that returns the name of the Title tag.
 		 * Overrides at will. Default returns 'title'
+		 * @return string
 		 */
 		public function getTitleTagName() {
 			return 'title';
@@ -133,6 +134,7 @@
 		 *
 		 * Method that returns the name of the Thumbnail tag.
 		 * Overrides at will. Default returns 'thumbnail_url'
+		 * @return string
 		 */
 		public function getThumbnailTagName() {
 			return 'thumbnail_url';
@@ -142,10 +144,23 @@
 		 *
 		 * Method that returns the name of the root tag.
 		 * Overrides at will. Default returns 'oembed'
+		 * @return string
 		 */
 		public function getRootTagName() {
 			return 'oembed';
 		}
+
+
+		/**
+		 *
+		 * Method that permits compatibility with
+		 * providers that sends embed code not html-encoded (as HTML/XML)
+		 * Override and return true to use children nodes instead of value
+		 */
+		/*
+		public function isEmbedCodeEncoded() {
+			return true;
+		}*/
 
 		/**
 		 *
@@ -160,6 +175,7 @@
 		 * Utility method that returns the good size based on the location of the field
 		 * @param array $options
 		 * @param string $size (width and/or height)
+		 * @return array
 		 */
 		protected function getEmbedSize($options, $size) {
 			if (!isset($options['location']) || !isset($options[$size . '_side']) || $options['location'] == 'main' ) {
