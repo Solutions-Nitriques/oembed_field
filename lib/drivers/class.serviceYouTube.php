@@ -26,29 +26,42 @@
 
 		public function getEmbedCode($data, $options) {
 
+			// ref to the html string to output in the backend
 			$player = null;
 
+			// xml string from the DB
 			$xml_data = $data['oembed_xml'];
 
 			//var_dump($data);die;
 
+			// if we have some data
 			if (!empty($xml_data)) {
+
+				// create a new DOMDocument to manipulate the XML string
 				$xml = new DOMDocument();
 
+				// if we can load the string into the document
 				if (@$xml->loadXML($xml_data)) {
 
+					// get the value of the html node
+					// NOTE: this could be the XML children if the html is not encoded
 					$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
 
+					// if the field is in the side bar
 					if ($options['location'] == 'sidebar') {
 						// replace height and width to make it fit in the backend
 						$w = $this->getEmbedSize($options, 'width');
 						$h = $this->getEmbedSize($options, 'height');
 
+						// actual replacement
 						$player = preg_replace(
 							array('/width="([^"]*)"/', '/height="([^"]*)"/'),
 							array("width=\"{$w}\"", "height=\"{$h}\""), $player);
 					}
 
+				} else {
+					// we could not load the xml
+					$player = 'Error';
 				}
 			}
 
@@ -59,10 +72,15 @@
 			$url = trim($params['url']);
 
 			// trying to fix url with # in it
-			if (strpos($params['url'], '#') !== FALSE) {
+			// N.B. this is valid only for Youtube as other services
+			// may place the resource ID elsewhere in the hash (#) tag
+
+			// if the url contains '#' (the reel resource ID is the last part)
+			if (strpos($url, '#') !== FALSE) {
 				// split on every # or /
 				$exploded = preg_split('/[\/#]/', $url);
 
+				// use the last item
 				$url = self::BASE_URL . $exploded[count($exploded)-1];
 			}
 
