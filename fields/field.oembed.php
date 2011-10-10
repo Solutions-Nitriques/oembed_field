@@ -7,7 +7,7 @@
 
 	/**
 	 *
-	 * Field class that will represent an oEmbed ressource
+	 * Field class that will represent an oEmbed resource
 	 * @author Nicolas
 	 *
 	 * Based on @nickdunn's Vimeo field: https://github.com/nickdunn/vimeo_videos/
@@ -29,7 +29,7 @@
 		 */
 		public function __construct(&$parent){
 			parent::__construct($parent);
-			$this->_name = __('oEmbed Ressource');
+			$this->_name = __('oEmbed Resource');
 			// permits to make it requiered
 			$this->_required = true;
 			// permits the make it show in the table columns
@@ -211,12 +211,25 @@
 					$xml_root = $xml->getElementsByTagName('error')->item(0);
 				}
 
-
+				// if we've found a root node
 				if (!empty($xml_root)) {
+					// save it as a string
 					$xml = $xml->saveXML($xml_root);
+					// set it as the 'value' of the field
+					// BEWARE: it won't just be a string, since the
+					// value we set is xml. It's just a hack to pass
+					// the value from the DOMDocument object to the XMLElement
 					$field->setValue($xml, false);
 				}
 
+			} else {
+				// loading the xml string into the DOMDocument did not work
+				// so we will add a errors message into the result
+				$error = new XMLElement();
+
+				$error->setValue(__('Error while loading the xml into the document'));
+
+				$field->appendChild($error);
 			}
 
 			$wrapper->appendChild($field);
