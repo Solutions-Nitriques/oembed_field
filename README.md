@@ -12,7 +12,7 @@ see http://oembed.com
 - Caches the oEmbed XML info into the database
 	- Easily get it into via your Data Sources
 	- Refreshes the info each time the entry is saved
-- Currently supported services: ***Vimeo, Flickr, Youtube***
+- Currently supported services: ***Vimeo, Flickr, Youtube, Dailymotion, Qik and Viddler***
 	- Anybody can add a service: Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
 
 ### REQUIREMENTS ###
@@ -40,6 +40,7 @@ http://www.nitriques.com/open-source/
 ### History ###
 
 - 1.3.1 - 2011-10-xx     
+  Added Dailymotion, Qik and Viddler drivers (thanks Andrew!)
   Improved comments     
   Fix a typo (issue #6)    
   Added support for image (thumbnail) in table view    
