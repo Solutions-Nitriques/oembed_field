@@ -368,26 +368,41 @@
 		 * Build the UI for the table view
 		 * @param Array $data
 		 * @param XMLElement $link
+		 * @return string - the html of the link
 		 */
 		public function prepareTableValue($data, XMLElement $link=NULL){
 
 			$url = $data['url'];
+			$thumb = $data['thumbnail_url'];
+			$value = NULL;
 
+			// no url = early exit
 			if(strlen($url) == 0) return NULL;
 
-			//$image = '<img src="' . URL . '/image/2/75/75/5/1/' . str_replace('http://', '', $data['thumbnail_url']) .'" alt="' . $data['title'] .'" width="75" height="75"/>';
 
-			$value = (isset($data['title'])? $data['title'] : $data['url']);
+			// do we have a thumbnail ?
+			if (empty($thumb)) {
+				// if not use the title or the url as value
+				$value = (isset($data['title'])? $data['title'] : $data['url']);
+			} else {
+				$img_path = URL . '/image/1/0/50/1/' .  str_replace('http://', '',$url);
 
+				$value = '<img src="' . $img_path .'" alt="' . $data['title'] .'" height="50" />';
+			}
+
+			// does this cell serve as a link ?
 			if($link){
+				// if so, set our html as the link's value
 				$link->setValue($value);
 
 			} else{
+				// if not, wrap our html with a external link to the resource url
 				$link = new XMLElement('a',
 					$value,
 					array('href' => $url, 'target' => '_blank'));
 			}
 
+			// returns the link's html code
 			return $link->generate();
 		}
 

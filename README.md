@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.3
+Version: 1.3.1
 
 ## Easily embed videos/images from ANY website that implements the oEmbed format ##
 
@@ -32,13 +32,17 @@ http://www.nitriques.com/open-source/
 
 ### TODO ###
 
-- Add support for image (thumbnail) in table view
 - Adds a auto-refresh data mechanism
 - Automatically add sites in the JIT authorized sites
 - Add a field setting: Authorize only certain drivers
 - Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
 
 ### History ###
+
+- 1.3.1 - 2011-10-xx     
+  Improved comments     
+  Fix a typo (issue #6)    
+  Added support for image (thumbnail) in table view    
 
 - 1.3 - 2011-10-06      
   Improved error management - Added a ref flag for that in the public method     
