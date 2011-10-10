@@ -137,16 +137,17 @@
 
 			// if $xml is NOT an array
 			// OR
-			// if $errorFlag and not error message...
+			// if $errorFlag and no error message...
 			if (!is_array($xml) || ($errorFlag && !isset($xml['error']))) {
 				$message = __('Failed to load oEmbed XML data');
 				$status =  self::__INVALID_FIELDS__;
+
 				// set the array, as we still wan't to save the url
 				if (!is_array($xml)) {
 					$xml = array();
 				}
 
-
+			// else, if we can find a 'error' value
 			} elseif (isset($xml['error'])) {
 				$message = __('Exception occured: %s', array( $xml['error'] ));
 				$status =  self::__INVALID_FIELDS__;
@@ -177,6 +178,7 @@
 				$data = VimeoHelper::updateClipInfo($data['clip_id'], $this->_fields['id'], $wrapper->getAttribute('id'), $this->Database);
 			}*/
 
+			// root for all values
 			$field = new XMLElement($this->get('element_name'));
 
 			$field->setAttributeArray(array(
