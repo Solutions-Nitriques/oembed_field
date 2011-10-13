@@ -86,7 +86,24 @@
 		 * Creates the table needed for the settings of the field
 		 */
 		public function install() {
-			return FieldOembed::createFieldTable();
+			$create = FieldOembed::createFieldTable();
+
+			return $creat && FieldOembed::updateFieldTable_Unique();
+		}
+
+		/**
+		 * Creates the table needed for the settings of the field
+		 */
+		public function update($previousVersion) {
+			$ret = true;
+
+			// are we updating from lower than 1.3.1 ?
+			if (version_compare($previousVersion,'1.3.1') == -1) {
+				// update for unique setting
+				$ret = FieldOembed::updateFieldTable_Unique();
+			}
+
+			return true;
 		}
 
 		/**

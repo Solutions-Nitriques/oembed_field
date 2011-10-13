@@ -38,11 +38,11 @@
 			$this->set('required', 'no');
 		}
 
-		function isSortable(){
+		public function isSortable(){
 			return false;
 		}
 
-		function canFilter(){
+		public function canFilter(){
 			return false;
 		}
 
@@ -69,6 +69,12 @@
 		public function allowDatasourceParamOutput(){
 			return false;
 		}
+
+
+
+
+		/* ********** INPUT AND FIELD *********** */
+
 
 		/**
 		 *
@@ -112,7 +118,7 @@
 		 * @param boolean $simulate
 		 * @param int $entry_id
 		 *
-		 * @return Array data to be inserted into DB
+		 * @return Array - data to be inserted into DB
 		 */
 		public function processRawFieldData($data, &$status, $simulate = false, $entry_id = null) {
 
@@ -165,11 +171,67 @@
 		}
 
 		/**
+		 *
+		 * Save field settings into the field's table
+		 */
+		public function commit(){
+
+			// if the default implementation works...
+			if(!parent::commit()) return false;
+
+			$id = $this->get('id');
+			$refresh = $this->get('refresh');
+
+			// exit if there is no id
+			if($id === false) return false;
+
+			// declare an array contains the field's settings
+			$settings = array();
+
+			// the field id
+			$settings['field_id'] = $id;
+
+			// the 'unique' setting
+			$settings['unique'] = $this->get('unique');
+
+			// @todo implement this
+			$settings['refresh'] = $refresh;
+
+			// @todo change this... permit only a specific driver
+			//$settings['driver'] = ;
+
+			$tbl = self::FIELD_TBL_NAME;
+
+			Symphony::Database()->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
+
+			// return is the SQL command was successful
+			return Symphony::Database()->insert($settings, $tbl);
+
+		}
+
+
+		/* ******* DATA SOURCE ******* */
+
+		/**
+		 *
+		 * This array will populate the Datasource included elements.
+		 * @return array - the included elements
+		 * @see http://symphony-cms.com/learn/api/2.2.3/toolkit/field/#fetchIncludableElements
+		 */
+		public function fetchIncludableElements() {
+			$elements = parent::fetchIncludableElements();
+
+			var_dump($elements); die;
+
+			return $elements;
+		}
+
+		/**
 		 * Appends data into the XML tree of a Data Source
 		 * @param $wrapper
 		 * @param $data
 		 */
-		public function appendFormattedElement(&$wrapper, $data){
+		public function appendFormattedElement(&$wrapper, $data) {
 
 			if(!is_array($data) || empty($data)) return;
 
@@ -237,33 +299,10 @@
 			$wrapper->appendChild($field);
 		}
 
-		/**
-		 *
-		 * Save field info into the field table
-		 */
-		public function commit(){
 
-			if(!parent::commit()) return false;
 
-			$id = $this->get('id');
-			$refresh = $this->get('refresh');
 
-			if($id === false) return false;
-
-			$fields = array();
-
-			$fields['field_id'] = $id;
-			$fields['refresh'] = $refresh;
-			// @todo change this... permit only a specific driver
-			//$fields['driver'] = ;
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			Symphony::Database()->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
-
-			return Symphony::Database()->insert($fields, $tbl);
-
-		}
+		/* ********* UI *********** */
 
 		/**
 		 *
@@ -274,12 +313,16 @@
 		 * @param string $fieldnamePrefix
 		 * @param string $fieldnamePostfix
 		 */
-		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
+		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL) {
 
 			//var_dump($data);die;
 
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
+
+			if($this->get('required') != 'yes') {
+				$label->appendChild(new XMLElement('i', 'Optional'));
+			}
 
 			$url = new XMLElement('input');
 			$url->setAttribute('type', 'text');
@@ -288,7 +331,7 @@
 
 			if (strlen($value) == 0 || $flagWithError != NULL) {
 
-				if($this->get('required') != 'yes') $label->appendChild(new XMLElement('i', 'Optional'));
+
 
 			} else {
 
@@ -324,6 +367,7 @@
 				$label->appendChild($video_container);
 			}
 
+			// append the input tag into the label
 			$label->appendChild($url);
 
 			// error management
@@ -345,22 +389,29 @@
 			/* first line */
 			parent::displaySettingsPanel($wrapper, $errors);
 
-			/* new line */
+			/* new line, update settings */
 			$set_wrap = new XMLElement('div');
 			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
 			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
 			$set_wrap->appendChild($label);
 
-			/* new line */
+			/* new line, check boxes */
 			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
-
 			$this->appendRequiredCheckbox($chk_wrap);
 			$this->appendShowColumnCheckbox($chk_wrap);
+			$this->appendMustBeUniqueCheckbox($chk_wrap);
 
 			/* append to wrapper */
 			//$wrapper->appendChild($set_wrap);
 			$wrapper->appendChild($chk_wrap);
 
+		}
+
+		private function appendMustBeUniqueCheckbox(&$wrapper) {
+			$label = new XMLElement('label');
+			$chk = new XMLElement('input', NULL, array('name' => 'field-'.$this->get('id').'-unique', 'type' => 'checkbox'));
+
+			$label->appendChild($chk);
 		}
 
 		/**
@@ -415,10 +466,14 @@
 		public function preparePlainTextValue($data, $entry_id = null) {
 			return (
 				isset($data['title'])
-					? $data['title']
+					? General::sanitize($data['title'])
 					: $data['url']
 			);
 		}
+
+
+
+		/* ********* SQL Data Definition ************* */
 
 		/**
 		 *
@@ -460,6 +515,19 @@
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
 				)
+			");
+		}
+
+		/**
+		 * Updates the table for the new settings
+		 */
+		public static function updateFieldTable_Unique() {
+
+			$tbl = self::FIELD_TBL_NAME;
+
+			return Symphony::Database()->query("
+				ALTER TABLE  `$tbl`
+					ADD COLUMN `unique` enum('yes','no') NOT NULL DEFAULT ('no')
 			");
 		}
 

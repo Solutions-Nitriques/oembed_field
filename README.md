@@ -2,7 +2,7 @@
 
 Version: 1.3.1
 
-## Easily embed videos/images from ANY website that implements the oEmbed format ##
+## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
 see http://oembed.com
 
@@ -10,9 +10,9 @@ see http://oembed.com
 
 - Adds a field that takes as input the link to the page that has the embeded media
 - Caches the oEmbed XML info into the database
-	- Easily get it into via your Data Sources
+	- Easily incorporate this XML via your Data Sources
 	- Refreshes the info each time the entry is saved
-- Currently supported services: 
+- *Currently supported services: 
 	- **Vimeo**
 	- **Youtube**
 	- **Dailymotion**
@@ -39,6 +39,8 @@ http://www.nitriques.com/open-source/
 
 ### TODO ###
 
+- Refactor how the drivers are managed in the ServiceDispatcher
+- Allow appending parameters to oEmbed request from section editor
 - Adds a auto-refresh data mechanism
 - Automatically add sites in the JIT authorized sites (for thumbnail and image services)
 - Add a field setting: Authorize only certain drivers (needs discussion on that)
@@ -46,7 +48,8 @@ http://www.nitriques.com/open-source/
 
 ### History ###
 
-- 1.3.1 - 2011-10-xx     
+- 1.3.1 - 2011-10-xx   
+  Added the 'unique' option - url can now be unique across a section  
   Added Dailymotion, Qik and Viddler drivers (thanks Andrew!)
   Improved comments     
   Fix a typo (issue #6)    

@@ -12,6 +12,8 @@
 	 */
 	class ServiceDispatcher {
 
+		protected static $drivers = null;
+
 		/**
 		 *
 		 * Factory method that return the good driver based on the url

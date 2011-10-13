@@ -35,7 +35,7 @@
 
 		/**
 		 *
-		 * Accessor for the Domaine property
+		 * Accessor for the Domain property
 		 */
 		public final function getDomain() {
 			return $this->Domain;
