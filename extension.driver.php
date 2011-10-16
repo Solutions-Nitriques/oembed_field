@@ -115,7 +115,7 @@
 
 			$unique = FieldOembed::updateFieldTable_Unique();
 
-			$params = FieldOembed::createParamsSetTable();
+			$params = true; //FieldOembed::createParamsSetTable();
 
 			return $create && $unique && params;
 		}
@@ -131,12 +131,17 @@
 				// update for unique setting
 				$ret_unique = FieldOembed::updateFieldTable_Unique();
 
+				// set the return value
+				$ret = $ret_unique;
+			}
+
+			// are we updating from lower or equal than 1.3.1 ?
+			/*if (version_compare($previousVersion, '1.3.1') <= 0) {
 				// create the table needed for params set
 				$ret_params = FieldOembed::createParamsSetTable();
 
-				// set the return value
-				$ret = $ret_unique && $ret_params;
-			}
+				$ret = $ret & $ret_params;
+			}*/
 
 			return $ret;
 		}

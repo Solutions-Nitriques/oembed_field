@@ -59,5 +59,8 @@
 		'Autres propriétés',
 
 		'Parameters sets' =>
-		'Groupes de paramètres'
+		'Groupes de paramètres',
+
+		'Supported services <i>%s</i>' =>
+		'Services supportés <i>%s</i>'
 	);

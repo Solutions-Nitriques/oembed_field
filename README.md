@@ -39,7 +39,6 @@ http://www.nitriques.com/open-source/
 
 ### TODO ###
 
-- Refactor how the drivers are managed in the ServiceDispatcher
 - Allow appending parameters to oEmbed request from section editor
 - Adds a auto-refresh data mechanism
 - Automatically add sites in the JIT authorized sites (for thumbnail and image services)
@@ -48,13 +47,21 @@ http://www.nitriques.com/open-source/
 
 ### History ###
 
-- 1.3.1 - 2011-10-xx    
-  Added the `parameters sets` field's setting ([see how it work])
+- 1.3.2 - 2011-10-xx (`dev` branch)   
+  Added the `parameters sets` field's setting (issue #11) ([see how it work])
+
+- 1.3.1 - 2011-10-16 (`master` branch)    
+  Added assets for the blueprints>section pages
+  Refactored how the drivers are managed in the ServiceDispatcher (issue #10)   
+  	- Public methods to get drivers and drivers names
+  	- Drivers are now all loaded by default
+  	- Drivers filename must now respect the `class.service[a-zA-Z0-9]+.php` regular expression
+  	- Drivers are now listed in section field and publish page
   Added the 'unique' option - url can now be unique across a section  
-  Added Dailymotion, Qik and Viddler drivers (thanks Andrew!)
-  Improved comments     
+  Added Dailymotion, Qik (fix issue #9) and Viddler drivers (thanks Andrew!)
+  Improved comments (a lot!)    
   Fix a typo (issue #6)    
-  Added support for image (thumbnail) in table view    
+  Added support for image (thumbnail) in table view (do not forget to add those site in JIT)    
 
 - 1.3 - 2011-10-06      
   Improved error management - Added a ref flag for that in the public method     

@@ -400,16 +400,25 @@
 			$url->setAttribute('name', 'fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix);
 			$url->setAttribute('value', $value);
 
+			$drivers = new XMLElement('div',
+				__('Supported services <i>%s</i>',
+					array( implode(', ', ServiceDispatcher::getAllowedDriversNames()) )
+				)
+			);
+
 			if (strlen($value) == 0 || $flagWithError != NULL) {
 
 
 
 			} else {
 
+				// hides input and drivers
 				$url->setAttribute('class', 'irrelevant');
+				$drivers->setAttribute('class', 'irrelevant');
 
-				$video_container = new XMLElement('span');
-				$video_container->setAttribute('class', 'frame');
+				// create a resource container
+				$res_container = new XMLElement('span');
+				$res_container->setAttribute('class', 'frame');
 
 				$change = new XMLElement('a', __('Change'));
 				$change->setAttribute('class', 'change');
@@ -429,17 +438,20 @@
 
 				$embed = ServiceDispatcher::getServiceDriver($value)->getEmbedCode($data, $e_options);
 
-				$video_container->setValue("<div>$embed</div>");
+				$res_container->setValue("<div>$embed</div>");
 
-				$video_container->appendChild($change);
-				$video_container->appendChild($or);
-				$video_container->appendChild($remove);
+				$res_container->appendChild($change);
+				$res_container->appendChild($or);
+				$res_container->appendChild($remove);
 
-				$label->appendChild($video_container);
+				$label->appendChild($res_container);
 			}
 
 			// append the input tag into the label
 			$label->appendChild($url);
+
+			// append the allowed drivers list
+			$label->appendChild($drivers);
 
 			// error management
 			if($flagWithError != NULL) {
@@ -457,8 +469,17 @@
 		 */
 		public function displaySettingsPanel(&$wrapper, $errors=NULL){
 
-			/* first line */
+			/* first line, label and such */
 			parent::displaySettingsPanel($wrapper, $errors);
+
+			/* new line, drivers */
+			$driv_wrap = new XMLElement('div', NULL, array('class'=>'oembed-drivers'));
+			$driv_title = new XMLElement('label',
+				__('Supported services <i>%s</i>',
+					array( implode(', ', ServiceDispatcher::getAllDriversNames()) )
+				)
+			);
+			$driv_wrap->appendChild($driv_title);
 
 			/* new line, update settings */
 			$set_wrap = new XMLElement('div', NULL, array('class'=>'group'));
@@ -481,8 +502,9 @@
 			$this->appendMustBeUniqueCheckbox($chk_wrap);
 
 			/* append to wrapper */
+			$wrapper->appendChild($driv_wrap);
 			//$wrapper->appendChild($set_wrap);
-			$wrapper->appendChild($par_wrap);
+			//$wrapper->appendChild($par_wrap);
 			$wrapper->appendChild($chk_wrap);
 
 		}

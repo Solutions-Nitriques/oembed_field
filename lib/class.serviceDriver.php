@@ -150,18 +150,6 @@
 			return 'oembed';
 		}
 
-
-		/**
-		 *
-		 * Method that permits compatibility with
-		 * providers that sends embed code not html-encoded (as HTML/XML)
-		 * Override and return true to use children nodes instead of value
-		 */
-		/*
-		public function isEmbedCodeEncoded() {
-			return true;
-		}*/
-
 		/**
 		 *
 		 * Abstract method that shall return the name of the tag that will be used as ID.
@@ -169,6 +157,21 @@
 		 * N.B: Can return null: Id will be a handle created from the url
 		 */
 		public abstract function getIdTagName();
+
+
+		/**
+		 *
+		 * This method will be called when adding sites
+		 * to the authorized JIT image manipulations external urls.
+		 *
+		 * It should return url as value
+		 * i.e. array('http://*.example.org', 'http://*.example.org')
+		 *
+		 * @return array|null
+		 */
+		public function getNeededUrlsToJITimages() {
+			return null;
+		}
 
 		/**
 		 *
