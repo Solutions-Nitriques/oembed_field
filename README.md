@@ -51,12 +51,14 @@ http://www.nitriques.com/open-source/
   Added the `parameters sets` field's setting (issue #11) ([see how it work])
 
 - 1.3.1 - 2011-10-16 (`master` branch)    
-  Added assets for the blueprints>section pages
-  Refactored how the drivers are managed in the ServiceDispatcher (issue #10)   
+  Added assets for the blueprints>section pages  
+  Refactored how the drivers are managed in the ServiceDispatcher (issue #10)
+  
   	- Public methods to get drivers and drivers names
   	- Drivers are now all loaded by default
   	- Drivers filename must now respect the `class.service[a-zA-Z0-9]+.php` regular expression
-  	- Drivers are now listed in section field and publish page    
+  	- Drivers are now listed in section field and publish page
+  	
   Added the 'unique' option - url can now be unique across a section  
   Added Dailymotion, Qik (fix issue #9) and Viddler drivers (thanks Andrew!, pull request #8)
   Improved comments (a lot!)    
