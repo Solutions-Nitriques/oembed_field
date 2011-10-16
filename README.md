@@ -57,8 +57,9 @@ http://www.nitriques.com/open-source/
   	- Drivers are now all loaded by default
   	- Drivers filename must now respect the `class.service[a-zA-Z0-9]+.php` regular expression
   	- Drivers are now listed in section field and publish page
+  	
   Added the 'unique' option - url can now be unique across a section  
-  Added Dailymotion, Qik (fix issue #9) and Viddler drivers (thanks Andrew!)
+  Added Dailymotion, Qik (fix issue #9) and Viddler drivers (thanks Andrew!, pull request #8)
   Improved comments (a lot!)    
   Fix a typo (issue #6)    
   Added support for image (thumbnail) in table view (do not forget to add those site in JIT)    
