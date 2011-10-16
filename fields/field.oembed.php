@@ -24,26 +24,37 @@
 
 		/**
 		 *
+		 * Name of the parameters set table
+		 * @var string
+		 */
+		const FIELD_PS_TBL_NAME = 'tbl_fields_oembed_param_sets';
+
+		/**
+		 *
 		 * Constructor the the oEmbed Field object
 		 * @param mixed $parent
 		 */
 		public function __construct(&$parent){
+			// call the prent ctor
 			parent::__construct($parent);
+			// set the name of the field
 			$this->_name = __('oEmbed Resource');
 			// permits to make it requiered
 			$this->_required = true;
 			// permits the make it show in the table columns
 			$this->_showcolumn = true;
-			// as default as not requiered
+			// set as not requiered by default
 			$this->set('required', 'no');
+			// set not unique by default
+			$this->set('unique', 'no');
 		}
 
 		public function isSortable(){
-			return false;
+			return false; // @todo: should we allow to sort by url ?
 		}
 
 		public function canFilter(){
-			return false;
+			return false; // @todo: should we allow to filter by url ?
 		}
 
 		public function canImport(){
@@ -55,11 +66,11 @@
 		}
 
 		public function mustBeUnique(){
-			return false;
+			return ($this->get('unique') == 'yes');
 		}
 
 		public function allowDatasourceOutputGrouping(){
-			return false;
+			return false; // @todo: should we allow to group by url ?
 		}
 
 		public function requiresSQLGrouping(){
@@ -67,8 +78,9 @@
 		}
 
 		public function allowDatasourceParamOutput(){
-			return false;
+			return false; // @todo: should we allow to output the url ?
 		}
+
 
 
 
@@ -124,9 +136,14 @@
 
 			$status = self::__OK__;
 
-			$url = $data;
+			// capture the url in the field's data
+			$url = trim($data);
 
-			if (trim($url) == '' /*|| $simulate == true */) return $data;
+			// if no url is found, exit now
+			if ( empty($url) ) {
+				$status = self::__MISSING_FIELDS__;
+				return $data;
+			}
 
 			// store a pointer to the driver
 			$driver = ServiceDispatcher::getServiceDriver($url);
@@ -171,6 +188,27 @@
 		}
 
 		/**
+		 * Overrides of the normal function.
+		 * This permits parsing different field settings values
+		 *
+		 * @param array $settings
+		 *	the data array to initialize if necessary.
+		 */
+		public function setFromPOST(Array $settings = array()) {
+			// call the default behavior
+			parent::setFromPOST($settings);
+
+			// declare a new setting array
+			$new_settings = array();
+
+			// set new settings
+			$new_settings['unique'] = (isset($settings['unique']) && ($settings['unique'] == 'yes' || $settings['unique'] == 'on') ? 'yes' : 'no');
+
+			// save it into the array
+			$this->setArray($new_settings);
+		}
+
+		/**
 		 *
 		 * Save field settings into the field's table
 		 */
@@ -179,8 +217,11 @@
 			// if the default implementation works...
 			if(!parent::commit()) return false;
 
+			//var_dump($this->get());die;
+
 			$id = $this->get('id');
 			$refresh = $this->get('refresh');
+			$unique = $this->get('unique');
 
 			// exit if there is no id
 			if($id === false) return false;
@@ -192,9 +233,10 @@
 			$settings['field_id'] = $id;
 
 			// the 'unique' setting
-			$settings['unique'] = $this->get('unique');
+			$settings['unique'] =  empty($unique) ? 'no' : $unique;
 
 			// @todo implement this
+			// do not comment the next line, as we can not store NULL into it
 			$settings['refresh'] = $refresh;
 
 			// @todo change this... permit only a specific driver
@@ -209,6 +251,35 @@
 
 		}
 
+		/**
+		 *
+		 * Remove the entry data of this field from the database, when deleting an entry
+		 * @param integer|array $entry_id
+		 * @param array $data
+		 * @return boolean
+		 */
+		public function entryDataCleanup($entry_id, array $data) {
+			if (empty($entry_id) || !parent::entryDataCleanup($entry_id, $data)) {
+				return false;
+			}
+
+			// @todo: delete the data associated with the params
+
+			return true;
+		}
+
+		/**
+		 *
+		 * This function allows Fields to cleanup any additional things before it is removed
+		 * from the section.
+		 * @return boolean
+		 */
+		public function tearDown() {
+			return $this->removeParamsSet($this->get('id'));
+		}
+
+
+
 
 		/* ******* DATA SOURCE ******* */
 
@@ -221,7 +292,7 @@
 		public function fetchIncludableElements() {
 			$elements = parent::fetchIncludableElements();
 
-			var_dump($elements); die;
+			//var_dump($elements); die;
 
 			return $elements;
 		}
@@ -390,28 +461,49 @@
 			parent::displaySettingsPanel($wrapper, $errors);
 
 			/* new line, update settings */
-			$set_wrap = new XMLElement('div');
+			$set_wrap = new XMLElement('div', NULL, array('class'=>'group'));
 			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
 			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
 			$set_wrap->appendChild($label);
 
+			/* new line, request params set */
+			$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-sets-wrap'));
+			$par_title = new XMLElement('label', __('Parameters sets'));
+			$par_container = new XMLElement('div', NULL, array('class'=>'oembed-params-sets'));
+			$par_wrap->appendChild($par_title);
+			$par_wrap->appendChild($par_container);
+
 			/* new line, check boxes */
 			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
+			$chk_wrap->appendChild(new XMLElement('label', __('Other properties')));
 			$this->appendRequiredCheckbox($chk_wrap);
 			$this->appendShowColumnCheckbox($chk_wrap);
 			$this->appendMustBeUniqueCheckbox($chk_wrap);
 
 			/* append to wrapper */
 			//$wrapper->appendChild($set_wrap);
+			$wrapper->appendChild($par_wrap);
 			$wrapper->appendChild($chk_wrap);
 
 		}
 
+		/**
+		 *
+		 * Utility (private) function to append a checkbox for the 'unique' setting
+		 * @param XMLElement $wrapper
+		 */
 		private function appendMustBeUniqueCheckbox(&$wrapper) {
 			$label = new XMLElement('label');
-			$chk = new XMLElement('input', NULL, array('name' => 'field-'.$this->get('id').'-unique', 'type' => 'checkbox'));
+			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][unique]', 'type' => 'checkbox'));
 
 			$label->appendChild($chk);
+			$label->setValue(__('Make this field unique'), false);
+
+			if ($this->get('unique') == 'yes') {
+				$chk->setAttribute('checked','checked');
+			}
+
+			$wrapper->appendChild($label);
 		}
 
 		/**
@@ -473,6 +565,8 @@
 
 
 
+
+
 		/* ********* SQL Data Definition ************* */
 
 		/**
@@ -518,6 +612,26 @@
 			");
 		}
 
+
+		/**
+		 * Creates the table needed for the parameter sets of the field
+		 */
+		public static function createParamsSetTable() {
+
+			$tbl = self::FIELD_PS_TBL_NAME;
+
+			return Symphony::Database()->query("
+				CREATE TABLE IF NOT EXISTS `$tbl` (
+					`id` int(11) unsigned NOT NULL auto_increment,
+					`field_id` int(11) unsigned NOT NULL,
+					`name` varchar(50) NOT NULL,
+					`value` varchar(50) NOT NULL,
+					PRIMARY KEY (`id`),
+					KEY `field_id` (`field_id`)
+				)
+			");
+		}
+
 		/**
 		 * Updates the table for the new settings
 		 */
@@ -527,7 +641,7 @@
 
 			return Symphony::Database()->query("
 				ALTER TABLE  `$tbl`
-					ADD COLUMN `unique` enum('yes','no') NOT NULL DEFAULT ('no')
+					ADD COLUMN `unique` enum('yes','no') NOT NULL DEFAULT 'no'
 			");
 		}
 
@@ -542,5 +656,68 @@
 				DROP TABLE IF EXISTS `$tbl`
 			");
 		}
+
+		/**
+		 *
+		 * Drops the table needed for the parameters sets
+		 */
+		public static function deleteParamsSetTable() {
+			$tbl = self::FIELD_PS_TBL_NAME;
+
+			return Symphony::Database()->query("
+				DROP TABLE IF EXISTS `$tbl`
+			");
+		}
+
+
+
+		/* *************** PARAMS SETS *********** */
+
+		private function removeParamsSet($field_id) {
+			if (!is_array($field_id)) {
+				$field_id = array($field_id);
+			}
+
+			$tbl = self::FIELD_PS_TBL_NAME;
+
+			foreach ($field_id as $id) {
+				Symphony::Database()->query("
+					DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1
+				");
+			}
+
+			return true;
+		}
+
+		private function insertParamsSet($field_id, array $params) {
+
+			// remove all params first
+			if ($this->removeParamsSet($field_id)) {
+
+				// insert all individual combinations
+				foreach ($params as $p) {
+
+					$fields = array (
+						'field_id' => 0,
+						'name' => $p['name'],
+						'value' => $p['value']
+					);
+
+					Symphony::Database()->insert($fields, self::FIELD_PS_TBL_NAME);
+				}
+			}
+
+			return true;
+		}
+
+		private function getParamsSet($field_id) {
+
+			$tbl = self::FIELD_PS_TBL_NAME;
+
+			return Symphony::Database()->query("
+				SELECT * FROM `$tbl` WHERE `field_id` = '$id'
+			");
+		}
+
 
 	}

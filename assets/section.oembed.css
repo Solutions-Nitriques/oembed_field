@@ -1,0 +1,19 @@
+/*
+	Copyight: Solutions Nitriques 2011
+	License: MIT, see the LICENCE file
+*/
+
+/**
+ * CSS for the blueprintsection driver
+ * 
+ * @author nicolasbrassard
+ */
+.oembed-params-sets-wrap {
+	
+}
+
+.oembed-params-sets {
+	padding: 1em;
+	margin: 0 0 1.5em 0;
+	background-color: #fff;
+}

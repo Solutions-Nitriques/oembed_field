@@ -48,7 +48,8 @@ http://www.nitriques.com/open-source/
 
 ### History ###
 
-- 1.3.1 - 2011-10-xx   
+- 1.3.1 - 2011-10-xx    
+  Added the `parameters sets` field's setting ([see how it work])
   Added the 'unique' option - url can now be unique across a section  
   Added Dailymotion, Qik and Viddler drivers (thanks Andrew!)
   Improved comments     

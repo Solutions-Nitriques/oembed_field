@@ -7,7 +7,7 @@
 			'email' => 'open-source (at) nitriques.com',
 			'website' => 'http://www.nitriques.com/'
 		),
-		'release-date' => '2011-07-15',
+		'release-date' => '2011-10-13',
 	);
 
 
@@ -50,6 +50,14 @@
 		"Symphony n'a pas pu charger les données XML à partir du service oEmbed",
 
 		'Error while loading the xml into the document' =>
-		'Une erreur est survenue lors du traitement des données xml'
+		'Une erreur est survenue lors du traitement des données xml',
 
+		'Make this field unique' =>
+		'Rendre ce champs unique',
+
+		'Other properties' =>
+		'Autres propriétés',
+
+		'Parameters sets' =>
+		'Groupes de paramètres'
 	);

@@ -12,7 +12,7 @@
 	/**
 	 *
 	 * Embed Videos/Image Decorator/Extension
-	 * Leverage oEmbed standart in Symphony CMS (http://oembed.com/)
+	 * Leverage oEmbed standard in Symphony CMS (http://oembed.com/)
 	 * @author nicolasbrassard
 	 *
 	 */
@@ -69,8 +69,10 @@
 		 * @param array $context
 		 */
 		public function appendJS(Array $context) {
+			// store de callback array localy
 			$c = Administration::instance()->getPageCallback();
 
+			// publish page, new or edit
 			if(isset($c['context']['section_handle']) && in_array($c['context']['page'], array('new', 'edit'))){
 
 				Administration::instance()->Page->addScriptToHead(
@@ -79,8 +81,31 @@
 					false
 				);
 
+				return;
+			}
+
+			// section page, new or edit
+			if($c['driver'] == 'blueprintssections') {
+
+				Administration::instance()->Page->addScriptToHead(
+					URL . '/extensions/oembed_field/assets/section.oembed.js',
+					time(),
+					false
+				);
+
+				Administration::instance()->Page->addStylesheetToHead(
+					URL . '/extensions/oembed_field/assets/section.oembed.css',
+					'screen',
+					time() + 1,
+					false
+				);
+
+				return;
 			}
 		}
+
+
+		/* ********* INSTALL/UPDATE/UNISTALL ******* */
 
 		/**
 		 * Creates the table needed for the settings of the field
@@ -88,7 +113,11 @@
 		public function install() {
 			$create = FieldOembed::createFieldTable();
 
-			return $creat && FieldOembed::updateFieldTable_Unique();
+			$unique = FieldOembed::updateFieldTable_Unique();
+
+			$params = FieldOembed::createParamsSetTable();
+
+			return $create && $unique && params;
 		}
 
 		/**
@@ -100,10 +129,16 @@
 			// are we updating from lower than 1.3.1 ?
 			if (version_compare($previousVersion,'1.3.1') == -1) {
 				// update for unique setting
-				$ret = FieldOembed::updateFieldTable_Unique();
+				$ret_unique = FieldOembed::updateFieldTable_Unique();
+
+				// create the table needed for params set
+				$ret_params = FieldOembed::createParamsSetTable();
+
+				// set the return value
+				$ret = $ret_unique && $ret_params;
 			}
 
-			return true;
+			return $ret;
 		}
 
 		/**
@@ -111,7 +146,9 @@
 		 * Drops the table needed for the settings of the field
 		 */
 		public function uninstall() {
-			return FieldOembed::deleteFieldTable();
+			$params = FieldOembed::deleteParamsSetTable();
+
+			return $params && FieldOembed::deleteFieldTable();
 		}
 
 	}
