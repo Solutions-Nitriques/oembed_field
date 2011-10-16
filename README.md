@@ -56,8 +56,7 @@ http://www.nitriques.com/open-source/
   	- Public methods to get drivers and drivers names
   	- Drivers are now all loaded by default
   	- Drivers filename must now respect the `class.service[a-zA-Z0-9]+.php` regular expression
-  	- Drivers are now listed in section field and publish page
-  	
+  	- Drivers are now listed in section field and publish page    
   Added the 'unique' option - url can now be unique across a section  
   Added Dailymotion, Qik (fix issue #9) and Viddler drivers (thanks Andrew!, pull request #8)
   Improved comments (a lot!)    
