@@ -35,7 +35,7 @@
 
 		/**
 		 *
-		 * Accessor for the Domaine property
+		 * Accessor for the Domain property
 		 */
 		public final function getDomain() {
 			return $this->Domain;
@@ -124,6 +124,7 @@
 		 *
 		 * Method that returns the name of the Title tag.
 		 * Overrides at will. Default returns 'title'
+		 * @return string
 		 */
 		public function getTitleTagName() {
 			return 'title';
@@ -133,6 +134,7 @@
 		 *
 		 * Method that returns the name of the Thumbnail tag.
 		 * Overrides at will. Default returns 'thumbnail_url'
+		 * @return string
 		 */
 		public function getThumbnailTagName() {
 			return 'thumbnail_url';
@@ -142,6 +144,7 @@
 		 *
 		 * Method that returns the name of the root tag.
 		 * Overrides at will. Default returns 'oembed'
+		 * @return string
 		 */
 		public function getRootTagName() {
 			return 'oembed';
@@ -155,11 +158,27 @@
 		 */
 		public abstract function getIdTagName();
 
+
+		/**
+		 *
+		 * This method will be called when adding sites
+		 * to the authorized JIT image manipulations external urls.
+		 *
+		 * It should return url as value
+		 * i.e. array('http://*.example.org', 'http://*.example.org')
+		 *
+		 * @return array|null
+		 */
+		public function getNeededUrlsToJITimages() {
+			return null;
+		}
+
 		/**
 		 *
 		 * Utility method that returns the good size based on the location of the field
 		 * @param array $options
 		 * @param string $size (width and/or height)
+		 * @return array
 		 */
 		protected function getEmbedSize($options, $size) {
 			if (!isset($options['location']) || !isset($options[$size . '_side']) || $options['location'] == 'main' ) {

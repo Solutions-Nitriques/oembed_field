@@ -7,7 +7,7 @@
 
 	/**
 	 *
-	 * Field class that will represent an oEmbed ressource
+	 * Field class that will represent an oEmbed resource
 	 * @author Nicolas
 	 *
 	 * Based on @nickdunn's Vimeo field: https://github.com/nickdunn/vimeo_videos/
@@ -24,26 +24,37 @@
 
 		/**
 		 *
+		 * Name of the parameters set table
+		 * @var string
+		 */
+		const FIELD_PS_TBL_NAME = 'tbl_fields_oembed_param_sets';
+
+		/**
+		 *
 		 * Constructor the the oEmbed Field object
 		 * @param mixed $parent
 		 */
 		public function __construct(&$parent){
+			// call the prent ctor
 			parent::__construct($parent);
-			$this->_name = __('oEmbed Ressource');
+			// set the name of the field
+			$this->_name = __('oEmbed Resource');
 			// permits to make it requiered
 			$this->_required = true;
 			// permits the make it show in the table columns
 			$this->_showcolumn = true;
-			// as default as not requiered
+			// set as not requiered by default
 			$this->set('required', 'no');
+			// set not unique by default
+			$this->set('unique', 'no');
 		}
 
-		function isSortable(){
-			return false;
+		public function isSortable(){
+			return false; // @todo: should we allow to sort by url ?
 		}
 
-		function canFilter(){
-			return false;
+		public function canFilter(){
+			return false; // @todo: should we allow to filter by url ?
 		}
 
 		public function canImport(){
@@ -55,11 +66,11 @@
 		}
 
 		public function mustBeUnique(){
-			return false;
+			return ($this->get('unique') == 'yes');
 		}
 
 		public function allowDatasourceOutputGrouping(){
-			return false;
+			return false; // @todo: should we allow to group by url ?
 		}
 
 		public function requiresSQLGrouping(){
@@ -67,8 +78,15 @@
 		}
 
 		public function allowDatasourceParamOutput(){
-			return false;
+			return false; // @todo: should we allow to output the url ?
 		}
+
+
+
+
+
+		/* ********** INPUT AND FIELD *********** */
+
 
 		/**
 		 *
@@ -112,15 +130,20 @@
 		 * @param boolean $simulate
 		 * @param int $entry_id
 		 *
-		 * @return Array data to be inserted into DB
+		 * @return Array - data to be inserted into DB
 		 */
 		public function processRawFieldData($data, &$status, $simulate = false, $entry_id = null) {
 
 			$status = self::__OK__;
 
-			$url = $data;
+			// capture the url in the field's data
+			$url = trim($data);
 
-			if (trim($url) == '' /*|| $simulate == true */) return $data;
+			// if no url is found, exit now
+			if ( empty($url) ) {
+				$status = self::__MISSING_FIELDS__;
+				return $data;
+			}
 
 			// store a pointer to the driver
 			$driver = ServiceDispatcher::getServiceDriver($url);
@@ -137,16 +160,17 @@
 
 			// if $xml is NOT an array
 			// OR
-			// if $errorFlag and not error message...
+			// if $errorFlag and no error message...
 			if (!is_array($xml) || ($errorFlag && !isset($xml['error']))) {
 				$message = __('Failed to load oEmbed XML data');
 				$status =  self::__INVALID_FIELDS__;
+
 				// set the array, as we still wan't to save the url
 				if (!is_array($xml)) {
 					$xml = array();
 				}
 
-
+			// else, if we can find a 'error' value
 			} elseif (isset($xml['error'])) {
 				$message = __('Exception occured: %s', array( $xml['error'] ));
 				$status =  self::__INVALID_FIELDS__;
@@ -164,11 +188,121 @@
 		}
 
 		/**
+		 * Overrides of the normal function.
+		 * This permits parsing different field settings values
+		 *
+		 * @param array $settings
+		 *	the data array to initialize if necessary.
+		 */
+		public function setFromPOST(Array $settings = array()) {
+			// call the default behavior
+			parent::setFromPOST($settings);
+
+			// declare a new setting array
+			$new_settings = array();
+
+			// set new settings
+			$new_settings['unique'] = (isset($settings['unique']) && ($settings['unique'] == 'yes' || $settings['unique'] == 'on') ? 'yes' : 'no');
+
+			// save it into the array
+			$this->setArray($new_settings);
+		}
+
+		/**
+		 *
+		 * Save field settings into the field's table
+		 */
+		public function commit(){
+
+			// if the default implementation works...
+			if(!parent::commit()) return false;
+
+			//var_dump($this->get());die;
+
+			$id = $this->get('id');
+			$refresh = $this->get('refresh');
+			$unique = $this->get('unique');
+
+			// exit if there is no id
+			if($id === false) return false;
+
+			// declare an array contains the field's settings
+			$settings = array();
+
+			// the field id
+			$settings['field_id'] = $id;
+
+			// the 'unique' setting
+			$settings['unique'] =  empty($unique) ? 'no' : $unique;
+
+			// @todo implement this
+			// do not comment the next line, as we can not store NULL into it
+			$settings['refresh'] = $refresh;
+
+			// @todo change this... permit only a specific driver
+			//$settings['driver'] = ;
+
+			$tbl = self::FIELD_TBL_NAME;
+
+			Symphony::Database()->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
+
+			// return is the SQL command was successful
+			return Symphony::Database()->insert($settings, $tbl);
+
+		}
+
+		/**
+		 *
+		 * Remove the entry data of this field from the database, when deleting an entry
+		 * @param integer|array $entry_id
+		 * @param array $data
+		 * @return boolean
+		 */
+		public function entryDataCleanup($entry_id, array $data) {
+			if (empty($entry_id) || !parent::entryDataCleanup($entry_id, $data)) {
+				return false;
+			}
+
+			// @todo: delete the data associated with the params
+
+			return true;
+		}
+
+		/**
+		 *
+		 * This function allows Fields to cleanup any additional things before it is removed
+		 * from the section.
+		 * @return boolean
+		 */
+		public function tearDown() {
+			return $this->removeParamsSet($this->get('id'));
+		}
+
+
+
+
+		/* ******* DATA SOURCE ******* */
+
+		/**
+		 *
+		 * This array will populate the Datasource included elements.
+		 * @return array - the included elements
+		 * @see http://symphony-cms.com/learn/api/2.2.3/toolkit/field/#fetchIncludableElements
+		 */
+		public function fetchIncludableElements() {
+			$elements = parent::fetchIncludableElements();
+
+			//var_dump($elements); die;
+
+			return $elements;
+		}
+
+		/**
 		 * Appends data into the XML tree of a Data Source
 		 * @param $wrapper
 		 * @param $data
 		 */
-		public function appendFormattedElement(&$wrapper, $data){
+		public function appendFormattedElement(&$wrapper, $data) {
 
 			if(!is_array($data) || empty($data)) return;
 
@@ -177,6 +311,7 @@
 				$data = VimeoHelper::updateClipInfo($data['clip_id'], $this->_fields['id'], $wrapper->getAttribute('id'), $this->Database);
 			}*/
 
+			// root for all values
 			$field = new XMLElement($this->get('element_name'));
 
 			$field->setAttributeArray(array(
@@ -211,44 +346,34 @@
 					$xml_root = $xml->getElementsByTagName('error')->item(0);
 				}
 
-
+				// if we've found a root node
 				if (!empty($xml_root)) {
+					// save it as a string
 					$xml = $xml->saveXML($xml_root);
+					// set it as the 'value' of the field
+					// BEWARE: it won't just be a string, since the
+					// value we set is xml. It's just a hack to pass
+					// the value from the DOMDocument object to the XMLElement
 					$field->setValue($xml, false);
 				}
 
+			} else {
+				// loading the xml string into the DOMDocument did not work
+				// so we will add a errors message into the result
+				$error = new XMLElement();
+
+				$error->setValue(__('Error while loading the xml into the document'));
+
+				$field->appendChild($error);
 			}
 
 			$wrapper->appendChild($field);
 		}
 
-		/**
-		 *
-		 * Save field info into the field table
-		 */
-		public function commit(){
 
-			if(!parent::commit()) return false;
 
-			$id = $this->get('id');
-			$refresh = $this->get('refresh');
 
-			if($id === false) return false;
-
-			$fields = array();
-
-			$fields['field_id'] = $id;
-			$fields['refresh'] = $refresh;
-			// @todo change this... permit only a specific driver
-			//$fields['driver'] = ;
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			Symphony::Database()->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
-
-			return Symphony::Database()->insert($fields, $tbl);
-
-		}
+		/* ********* UI *********** */
 
 		/**
 		 *
@@ -259,28 +384,41 @@
 		 * @param string $fieldnamePrefix
 		 * @param string $fieldnamePostfix
 		 */
-		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
+		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL) {
 
 			//var_dump($data);die;
 
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
 
+			if($this->get('required') != 'yes') {
+				$label->appendChild(new XMLElement('i', 'Optional'));
+			}
+
 			$url = new XMLElement('input');
 			$url->setAttribute('type', 'text');
 			$url->setAttribute('name', 'fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix);
 			$url->setAttribute('value', $value);
 
+			$drivers = new XMLElement('div',
+				__('Supported services <i>%s</i>',
+					array( implode(', ', ServiceDispatcher::getAllowedDriversNames()) )
+				)
+			);
+
 			if (strlen($value) == 0 || $flagWithError != NULL) {
 
-				if($this->get('required') != 'yes') $label->appendChild(new XMLElement('i', 'Optional'));
+
 
 			} else {
 
+				// hides input and drivers
 				$url->setAttribute('class', 'irrelevant');
+				$drivers->setAttribute('class', 'irrelevant');
 
-				$video_container = new XMLElement('span');
-				$video_container->setAttribute('class', 'frame');
+				// create a resource container
+				$res_container = new XMLElement('span');
+				$res_container->setAttribute('class', 'frame');
 
 				$change = new XMLElement('a', __('Change'));
 				$change->setAttribute('class', 'change');
@@ -300,16 +438,20 @@
 
 				$embed = ServiceDispatcher::getServiceDriver($value)->getEmbedCode($data, $e_options);
 
-				$video_container->setValue("<div>$embed</div>");
+				$res_container->setValue("<div>$embed</div>");
 
-				$video_container->appendChild($change);
-				$video_container->appendChild($or);
-				$video_container->appendChild($remove);
+				$res_container->appendChild($change);
+				$res_container->appendChild($or);
+				$res_container->appendChild($remove);
 
-				$label->appendChild($video_container);
+				$label->appendChild($res_container);
 			}
 
+			// append the input tag into the label
 			$label->appendChild($url);
+
+			// append the allowed drivers list
+			$label->appendChild($drivers);
 
 			// error management
 			if($flagWithError != NULL) {
@@ -327,25 +469,63 @@
 		 */
 		public function displaySettingsPanel(&$wrapper, $errors=NULL){
 
-			/* first line */
+			/* first line, label and such */
 			parent::displaySettingsPanel($wrapper, $errors);
 
-			/* new line */
-			$set_wrap = new XMLElement('div');
+			/* new line, drivers */
+			$driv_wrap = new XMLElement('div', NULL, array('class'=>'oembed-drivers'));
+			$driv_title = new XMLElement('label',
+				__('Supported services <i>%s</i>',
+					array( implode(', ', ServiceDispatcher::getAllDriversNames()) )
+				)
+			);
+			$driv_wrap->appendChild($driv_title);
+
+			/* new line, update settings */
+			$set_wrap = new XMLElement('div', NULL, array('class'=>'group'));
 			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
 			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
 			$set_wrap->appendChild($label);
 
-			/* new line */
-			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
+			/* new line, request params set */
+			$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-sets-wrap'));
+			$par_title = new XMLElement('label', __('Parameters sets'));
+			$par_container = new XMLElement('div', NULL, array('class'=>'oembed-params-sets'));
+			$par_wrap->appendChild($par_title);
+			$par_wrap->appendChild($par_container);
 
+			/* new line, check boxes */
+			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
+			$chk_wrap->appendChild(new XMLElement('label', __('Other properties')));
 			$this->appendRequiredCheckbox($chk_wrap);
 			$this->appendShowColumnCheckbox($chk_wrap);
+			$this->appendMustBeUniqueCheckbox($chk_wrap);
 
 			/* append to wrapper */
+			$wrapper->appendChild($driv_wrap);
 			//$wrapper->appendChild($set_wrap);
+			//$wrapper->appendChild($par_wrap);
 			$wrapper->appendChild($chk_wrap);
 
+		}
+
+		/**
+		 *
+		 * Utility (private) function to append a checkbox for the 'unique' setting
+		 * @param XMLElement $wrapper
+		 */
+		private function appendMustBeUniqueCheckbox(&$wrapper) {
+			$label = new XMLElement('label');
+			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][unique]', 'type' => 'checkbox'));
+
+			$label->appendChild($chk);
+			$label->setValue(__('Make this field unique'), false);
+
+			if ($this->get('unique') == 'yes') {
+				$chk->setAttribute('checked','checked');
+			}
+
+			$wrapper->appendChild($label);
 		}
 
 		/**
@@ -353,26 +533,41 @@
 		 * Build the UI for the table view
 		 * @param Array $data
 		 * @param XMLElement $link
+		 * @return string - the html of the link
 		 */
 		public function prepareTableValue($data, XMLElement $link=NULL){
 
 			$url = $data['url'];
+			$thumb = $data['thumbnail_url'];
+			$value = NULL;
 
+			// no url = early exit
 			if(strlen($url) == 0) return NULL;
 
-			//$image = '<img src="' . URL . '/image/2/75/75/5/1/' . str_replace('http://', '', $data['thumbnail_url']) .'" alt="' . $data['title'] .'" width="75" height="75"/>';
 
-			$value = (isset($data['title'])? $data['title'] : $data['url']);
+			// do we have a thumbnail ?
+			if (empty($thumb)) {
+				// if not use the title or the url as value
+				$value = (isset($data['title'])? $data['title'] : $data['url']);
+			} else {
+				$img_path = URL . '/image/1/0/50/1/' .  str_replace('http://', '',$url);
 
+				$value = '<img src="' . $img_path .'" alt="' . $data['title'] .'" height="50" />';
+			}
+
+			// does this cell serve as a link ?
 			if($link){
+				// if so, set our html as the link's value
 				$link->setValue($value);
 
 			} else{
+				// if not, wrap our html with a external link to the resource url
 				$link = new XMLElement('a',
 					$value,
 					array('href' => $url, 'target' => '_blank'));
 			}
 
+			// returns the link's html code
 			return $link->generate();
 		}
 
@@ -385,10 +580,16 @@
 		public function preparePlainTextValue($data, $entry_id = null) {
 			return (
 				isset($data['title'])
-					? $data['title']
+					? General::sanitize($data['title'])
 					: $data['url']
 			);
 		}
+
+
+
+
+
+		/* ********* SQL Data Definition ************* */
 
 		/**
 		 *
@@ -433,6 +634,39 @@
 			");
 		}
 
+
+		/**
+		 * Creates the table needed for the parameter sets of the field
+		 */
+		public static function createParamsSetTable() {
+
+			$tbl = self::FIELD_PS_TBL_NAME;
+
+			return Symphony::Database()->query("
+				CREATE TABLE IF NOT EXISTS `$tbl` (
+					`id` int(11) unsigned NOT NULL auto_increment,
+					`field_id` int(11) unsigned NOT NULL,
+					`name` varchar(50) NOT NULL,
+					`value` varchar(50) NOT NULL,
+					PRIMARY KEY (`id`),
+					KEY `field_id` (`field_id`)
+				)
+			");
+		}
+
+		/**
+		 * Updates the table for the new settings
+		 */
+		public static function updateFieldTable_Unique() {
+
+			$tbl = self::FIELD_TBL_NAME;
+
+			return Symphony::Database()->query("
+				ALTER TABLE  `$tbl`
+					ADD COLUMN `unique` enum('yes','no') NOT NULL DEFAULT 'no'
+			");
+		}
+
 		/**
 		 *
 		 * Drops the table needed for the settings of the field
@@ -444,5 +678,68 @@
 				DROP TABLE IF EXISTS `$tbl`
 			");
 		}
+
+		/**
+		 *
+		 * Drops the table needed for the parameters sets
+		 */
+		public static function deleteParamsSetTable() {
+			$tbl = self::FIELD_PS_TBL_NAME;
+
+			return Symphony::Database()->query("
+				DROP TABLE IF EXISTS `$tbl`
+			");
+		}
+
+
+
+		/* *************** PARAMS SETS *********** */
+
+		private function removeParamsSet($field_id) {
+			if (!is_array($field_id)) {
+				$field_id = array($field_id);
+			}
+
+			$tbl = self::FIELD_PS_TBL_NAME;
+
+			foreach ($field_id as $id) {
+				Symphony::Database()->query("
+					DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1
+				");
+			}
+
+			return true;
+		}
+
+		private function insertParamsSet($field_id, array $params) {
+
+			// remove all params first
+			if ($this->removeParamsSet($field_id)) {
+
+				// insert all individual combinations
+				foreach ($params as $p) {
+
+					$fields = array (
+						'field_id' => 0,
+						'name' => $p['name'],
+						'value' => $p['value']
+					);
+
+					Symphony::Database()->insert($fields, self::FIELD_PS_TBL_NAME);
+				}
+			}
+
+			return true;
+		}
+
+		private function getParamsSet($field_id) {
+
+			$tbl = self::FIELD_PS_TBL_NAME;
+
+			return Symphony::Database()->query("
+				SELECT * FROM `$tbl` WHERE `field_id` = '$id'
+			");
+		}
+
 
 	}

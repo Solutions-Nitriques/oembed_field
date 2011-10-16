@@ -23,6 +23,7 @@
 		
 		function switchToEdit() {
 			input.removeClass('irrelevant');
+			input.next().removeClass('irrelevant');
 			if ($(this).hasClass('remove')) {
 				container.remove();
 				input.val('');

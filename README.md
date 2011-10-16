@@ -1,8 +1,8 @@
 # Field: oEmbed #
 
-Version: 1.3
+Version: 1.3.1
 
-## Easily embed videos/images from ANY website that implements the oEmbed format ##
+## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
 see http://oembed.com
 
@@ -10,10 +10,17 @@ see http://oembed.com
 
 - Adds a field that takes as input the link to the page that has the embeded media
 - Caches the oEmbed XML info into the database
-	- Easily get it into via your Data Sources
+	- Easily incorporate this XML via your Data Sources
 	- Refreshes the info each time the entry is saved
-- Currently supported services: ***Vimeo, Flickr, Youtube***
-	- Anybody can add a service: Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
+- *Currently supported services: 
+	- **Vimeo**
+	- **Youtube**
+	- **Dailymotion**
+	- Flickr
+	- Qik
+	- Viddler
+		- Anybody can add a service       
+		  Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
 
 ### REQUIREMENTS ###
 
@@ -32,14 +39,31 @@ http://www.nitriques.com/open-source/
 
 ### TODO ###
 
-- Add support for image (thumbnail) in table view
+- Allow appending parameters to oEmbed request from section editor
 - Adds a auto-refresh data mechanism
-- Automatically add sites in the JIT authorized sites
-- Add a field setting: Authorize only certain drivers
+- Automatically add sites in the JIT authorized sites (for thumbnail and image services)
+- Add a field setting: Authorize only certain drivers (needs discussion on that)
 - Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
 
 ### History ###
 
+- 1.3.2 - 2011-10-xx (`dev` branch)   
+  Added the `parameters sets` field's setting (issue #11) ([see how it work])
+
+- 1.3.1 - 2011-10-16 (`master` branch)    
+  Added assets for the blueprints>section pages  
+  Added the 'unique' option - url can now be unique across a section  
+  Added Dailymotion, Qik (fix issue #9) and Viddler drivers (thanks Andrew!, pull request #8)
+  Improved comments (a lot!)    
+  Fix a typo (issue #6)    
+  Added support for image (thumbnail) in table view (do not forget to add those site in JIT)   
+  Refactored how the drivers are managed in the ServiceDispatcher (issue #10)
+  
+  	- Public methods to get drivers and drivers names
+  	- Drivers are now all loaded by default
+  	- Drivers filename must now respect the `class.service[a-zA-Z0-9]+.php` regular expression
+  	- Drivers are now listed in section field and publish page   
+    
 - 1.3 - 2011-10-06      
   Improved error management - Added a ref flag for that in the public method     
   Added a method that permit change of the root tag name in the oEmbed response         
