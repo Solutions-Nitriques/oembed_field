@@ -275,7 +275,7 @@
 		 * @return boolean
 		 */
 		public function tearDown() {
-			return $this->removeParamsSet($this->get('id'));
+			//return $this->removeParamsSet($this->get('id'));
 		}
 
 
