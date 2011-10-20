@@ -30,7 +30,7 @@
 		public function about() {
 			return array(
 				'name'			=> self::EXT_NAME,
-				'version'		=> '1.3.1',
+				'version'		=> '1.3.2',
 				'release-date'	=> '2011-10-xx',
 				'author'		=> array(
 					'name'			=> 'Solutions Nitriques',
@@ -111,13 +111,20 @@
 		 * Creates the table needed for the settings of the field
 		 */
 		public function install() {
+			// pre v1.3.1
 			$create = FieldOembed::createFieldTable();
 
+			// v1.3.1
 			$unique = FieldOembed::updateFieldTable_Unique();
 
-			$params = true; //FieldOembed::createParamsSetTable();
+			// v1.3.2
+			$thumbs = FieldOembed::updateFieldTable_Thumbs();
 
-			return $create && $unique && params;
+			$params = FieldOembed::createParamsSetTable();
+
+			$params_set_id = FieldOembed::updateFieldTable_ParamsSetId();
+
+			return $create && $unique && $thumbs && params && $params_set_id;
 		}
 
 		/**
@@ -127,7 +134,7 @@
 			$ret = true;
 
 			// are we updating from lower than 1.3.1 ?
-			if (version_compare($previousVersion,'1.3.1') == -1) {
+			if ($ret && version_compare($previousVersion,'1.3.1') == -1) {
 				// update for unique setting
 				$ret_unique = FieldOembed::updateFieldTable_Unique();
 
@@ -135,13 +142,20 @@
 				$ret = $ret_unique;
 			}
 
-			// are we updating from lower or equal than 1.3.1 ?
-			/*if (version_compare($previousVersion, '1.3.1') <= 0) {
+			// are we updating from lower than 1.3.2 ?
+			if ($ret && version_compare($previousVersion, '1.3.2') == -1) {
 				// create the table needed for params set
 				$ret_params = FieldOembed::createParamsSetTable();
 
-				$ret = $ret & $ret_params;
-			}*/
+				// updtae for the params set id settings
+				$ret_par_sid = FieldOembed::updateFieldTable_ParamsSetId();
+
+				// update for the thumbs settings
+				$ret_thumbs = FieldOembed::updateFieldTable_Thumbs();
+
+				// set the return value
+				$ret = $ret_thumbs && $ret_params && $ret_par_sid;
+			}
 
 			return $ret;
 		}
@@ -151,9 +165,13 @@
 		 * Drops the table needed for the settings of the field
 		 */
 		public function uninstall() {
+			// v1.3.2
 			$params = FieldOembed::deleteParamsSetTable();
 
-			return $params && FieldOembed::deleteFieldTable();
+			// pre v1.3.2
+			$field = FieldOembed::deleteFieldTable();
+
+			return $params && $field;
 		}
 
 	}

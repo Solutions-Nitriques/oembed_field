@@ -47,6 +47,8 @@
 			$this->set('required', 'no');
 			// set not unique by default
 			$this->set('unique', 'no');
+			// set to show thumbs in table by default
+			$this->set('thumbs', 'yes');
 		}
 
 		public function isSortable(){
@@ -116,7 +118,37 @@
 				return self::__INVALID_FIELDS__;
 			}
 
+			// uniqueness
+			if ($this->mustBeUnique() && !$this->checkUniqueness($url, $entry_id)) {
+				$message = __("%s: This field must be unique. An entry already contains this url.", array($this->get('label'), $url));
+				return self::__INVALID_FIELDS__;
+			}
+
 			return self::__OK__;
+		}
+
+
+		/**
+		 *
+		 * Utility (private) function to check if the $url param
+		 * is not already in the DB for this field
+		 * @param $url
+		 */
+		private function checkUniqueness($url, $entry_id = null) {
+			$id = $this->get('id');
+
+			$query = "
+				SELECT count(`id`) as `c` FROM `tbl_entries_data_$id`
+				WHERE `url` = '$url'
+			";
+
+			if ($entry_id != null) {
+				$query .= " AND `entry_id` != $entry_id";
+			}
+
+			$count = Symphony::Database()->fetchVar('c', 0, $query);
+
+			return $count == null || $count == 0;
 		}
 
 		/**
@@ -136,27 +168,35 @@
 
 			$status = self::__OK__;
 
+			$errorFlag = false;
+
 			// capture the url in the field's data
 			$url = trim($data);
 
 			// if no url is found, exit now
-			if ( empty($url) ) {
-				$status = self::__MISSING_FIELDS__;
-				return $data;
+			if ( empty($url)) {
+				// if this field is requiered
+				if ($this->get('required') == 'yes') {
+					$status = self::__MISSING_FIELDS__;
+					return $data;
+				}
+
+				// no data
+				return null;
 			}
 
 			// store a pointer to the driver
 			$driver = ServiceDispatcher::getServiceDriver($url);
 
-			// get xml data
+			// prepare param array
 			$params = array(
 				'url' => $url
 			);
-			$xml = $driver->getXmlDataFromSource($params, $errorFlag);
 
 			// HACK: couldn't figure out how to validate in checkPostFieldData() and then prevent
-			// this processRawFieldData function executing, since it requires valid data to load the XML
+			// this `processRawFieldData` function executing, since it requires valid data (url) to load the XML
 			// thanks @nickdunn
+			$xml = $driver->getXmlDataFromSource($params, $errorFlag);
 
 			// if $xml is NOT an array
 			// OR
@@ -202,7 +242,8 @@
 			$new_settings = array();
 
 			// set new settings
-			$new_settings['unique'] = (isset($settings['unique']) && ($settings['unique'] == 'yes' || $settings['unique'] == 'on') ? 'yes' : 'no');
+			$new_settings['unique'] = ( isset($settings['unique']) && $settings['unique'] == 'on' ? 'yes' : 'no');
+			$new_settings['thumbs'] = ( isset($settings['thumbs']) && $settings['thumbs'] == 'on' ? 'yes' : 'no');
 
 			// save it into the array
 			$this->setArray($new_settings);
@@ -222,6 +263,7 @@
 			$id = $this->get('id');
 			$refresh = $this->get('refresh');
 			$unique = $this->get('unique');
+			$thumbs = $this->get('thumbs');
 
 			// exit if there is no id
 			if($id === false) return false;
@@ -234,6 +276,9 @@
 
 			// the 'unique' setting
 			$settings['unique'] =  empty($unique) ? 'no' : $unique;
+
+			// the 'thumbs' setting
+			$settings['thumbs'] = empty($thumbs) ? 'no' : $thumbs;
 
 			// @todo implement this
 			// do not comment the next line, as we can not store NULL into it
@@ -275,7 +320,7 @@
 		 * @return boolean
 		 */
 		public function tearDown() {
-			//return $this->removeParamsSet($this->get('id'));
+			return $this->removeParamsSet($this->get('id'));
 		}
 
 
@@ -489,7 +534,7 @@
 
 			/* new line, request params set */
 			$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-sets-wrap'));
-			$par_title = new XMLElement('label', __('Parameters sets'));
+			$par_title = new XMLElement('label', __('oEmbed Requests Parameters sets'));
 			$par_container = new XMLElement('div', NULL, array('class'=>'oembed-params-sets'));
 			$par_wrap->appendChild($par_title);
 			$par_wrap->appendChild($par_container);
@@ -500,11 +545,12 @@
 			$this->appendRequiredCheckbox($chk_wrap);
 			$this->appendShowColumnCheckbox($chk_wrap);
 			$this->appendMustBeUniqueCheckbox($chk_wrap);
+			$this->appendShowThumbnailCheckbox($chk_wrap);
 
 			/* append to wrapper */
 			$wrapper->appendChild($driv_wrap);
 			//$wrapper->appendChild($set_wrap);
-			//$wrapper->appendChild($par_wrap);
+			$wrapper->appendChild($par_wrap);
 			$wrapper->appendChild($chk_wrap);
 
 		}
@@ -530,6 +576,25 @@
 
 		/**
 		 *
+		 * Utility (private) function to append a checkbox for the 'thumbs' setting
+		 * @param XMLElement $wrapper
+		 */
+		private function appendShowThumbnailCheckbox(&$wrapper) {
+			$label = new XMLElement('label');
+			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][thumbs]', 'type' => 'checkbox'));
+
+			$label->appendChild($chk);
+			$label->setValue(__('Show thumbnails in table'), false);
+
+			if ($this->get('thumbs') == 'yes') {
+				$chk->setAttribute('checked','checked');
+			}
+
+			$wrapper->appendChild($label);
+		}
+
+		/**
+		 *
 		 * Build the UI for the table view
 		 * @param Array $data
 		 * @param XMLElement $link
@@ -545,14 +610,14 @@
 			if(strlen($url) == 0) return NULL;
 
 
-			// do we have a thumbnail ?
-			if (empty($thumb)) {
+			// no thumbnail or the parameter is not set ?
+			if (empty($thumb) || $this->get('thumbs') != 'yes') {
 				// if not use the title or the url as value
 				$value = (isset($data['title'])? $data['title'] : $data['url']);
 			} else {
-				$img_path = URL . '/image/1/0/50/1/' .  str_replace('http://', '',$url);
+				$img_path = URL . '/image/1/0/50/1/' .  str_replace('http://', '',$thumb);
 
-				$value = '<img src="' . $img_path .'" alt="' . $data['title'] .'" height="50" />';
+				$value = '<img src="' . $img_path .'" alt="' . General::sanitize($data['title']) .'" height="40" />';
 			}
 
 			// does this cell serve as a link ?
@@ -564,7 +629,8 @@
 				// if not, wrap our html with a external link to the resource url
 				$link = new XMLElement('a',
 					$value,
-					array('href' => $url, 'target' => '_blank'));
+					array('href' => $url, 'target' => '_blank')
+				);
 			}
 
 			// returns the link's html code
@@ -655,7 +721,7 @@
 		}
 
 		/**
-		 * Updates the table for the new settings
+		 * Updates the table for the new settings: `unique`
 		 */
 		public static function updateFieldTable_Unique() {
 
@@ -664,6 +730,32 @@
 			return Symphony::Database()->query("
 				ALTER TABLE  `$tbl`
 					ADD COLUMN `unique` enum('yes','no') NOT NULL DEFAULT 'no'
+			");
+		}
+
+		/**
+		 * Updates the table for the new settings: `thumbs`
+		 */
+		public static function updateFieldTable_Thumbs() {
+
+			$tbl = self::FIELD_TBL_NAME;
+
+			return Symphony::Database()->query("
+				ALTER TABLE  `$tbl`
+					ADD COLUMN `thumbs` enum('yes','no') NOT NULL DEFAULT 'no'
+			");
+		}
+
+		/**
+		 * Updates the table for the new settings: `params_set_id`
+		 */
+		public static function updateFieldTable_ParamsSetId() {
+
+			$tbl = self::FIELD_TBL_NAME;
+
+			return Symphony::Database()->query("
+				ALTER TABLE  `$tbl`
+					ADD COLUMN `params_set_id` int(11) unsigned NULL
 			");
 		}
 
@@ -694,6 +786,8 @@
 
 
 		/* *************** PARAMS SETS *********** */
+
+		// @todo: add phpdoc
 
 		private function removeParamsSet($field_id) {
 			if (!is_array($field_id)) {

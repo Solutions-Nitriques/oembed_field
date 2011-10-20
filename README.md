@@ -48,7 +48,9 @@ http://www.nitriques.com/open-source/
 ### History ###
 
 - 1.3.2 - 2011-10-xx (`dev` branch)   
-  Added the `parameters sets` field's setting (issue #11) ([see how it work])
+  Added the `show thumbnails in table` parameter: if disabled, title or url will be used
+  Minor bug fixes    
+  Added the `oembed requests parameters sets` field's setting (issue #11) ([see how it work])
 
 - 1.3.1 - 2011-10-16 (`master` branch)    
   Added assets for the blueprints>section pages  

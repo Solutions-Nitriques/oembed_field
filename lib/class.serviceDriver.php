@@ -126,7 +126,7 @@
 		 * Overrides at will. Default returns 'title'
 		 * @return string
 		 */
-		public function getTitleTagName() {
+		protected function getTitleTagName() {
 			return 'title';
 		}
 
@@ -136,7 +136,7 @@
 		 * Overrides at will. Default returns 'thumbnail_url'
 		 * @return string
 		 */
-		public function getThumbnailTagName() {
+		protected function getThumbnailTagName() {
 			return 'thumbnail_url';
 		}
 
@@ -156,7 +156,7 @@
 		 *
 		 * N.B: Can return null: Id will be a handle created from the url
 		 */
-		public abstract function getIdTagName();
+		protected abstract function getIdTagName();
 
 
 		/**
@@ -165,7 +165,7 @@
 		 * to the authorized JIT image manipulations external urls.
 		 *
 		 * It should return url as value
-		 * i.e. array('http://*.example.org', 'http://*.example.org')
+		 * i.e. array('http://*.example.org/*', 'http://*.example.org/images/*')
 		 *
 		 * @return array|null
 		 */

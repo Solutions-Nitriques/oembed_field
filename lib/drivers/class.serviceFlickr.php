@@ -24,7 +24,7 @@
 
 		public function getEmbedCode($data, $options) {
 			return vsprintf('<img src="%s" width="%d" height="%d" alt="%s" />',
-							array(	$data['res_id'], 
+							array(	$data['res_id'],
 									$this->getEmbedSize($options, 'width'),
 									$this->getEmbedSize($options, 'height'),
 									General::sanitize($data['title'])
@@ -39,5 +39,12 @@
 
 		public function getIdTagName() {
 			return 'url';
+		}
+
+		public function getNeededUrlsToJITimages() {
+			return array(
+				'http://www.flickr.com/*'
+				// @todo: complete
+			);
 		}
 	}

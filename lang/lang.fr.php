@@ -28,6 +28,9 @@
 		"%s: No ServiceDriver found for '%s'." =>
 		"%s: Aucun ServiceDriver trouvé pour '%s'.",
 
+		"%s: This field must be unique. An entry already contains this url." =>
+		"%s: Ce champs doit être unique. Une entrée contient déjàa cet url.",
+
 		'Failed to load oEmbed XML data' =>
 		'Échec du chargement des données XML',
 
@@ -58,9 +61,12 @@
 		'Other properties' =>
 		'Autres propriétés',
 
-		'Parameters sets' =>
-		'Groupes de paramètres',
+		'oEmbed Requests Parameters sets' =>
+		'Groupes de paramètres des requêtes oEmbed',
 
 		'Supported services <i>%s</i>' =>
-		'Services supportés <i>%s</i>'
+		'Services supportés <i>%s</i>',
+
+		'Show thumbnails in table' =>
+		'Afficher les images dans la table'
 	);
