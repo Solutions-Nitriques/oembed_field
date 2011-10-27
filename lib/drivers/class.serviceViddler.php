@@ -43,9 +43,8 @@
 
 				if (@$xml->loadXML($xml_data)) {
 
-					$player = $xml->getElementsByTagName('html')->item(0)->saveXML();
-
-
+					// get string representation of the xml node and its children
+					$player = $xml->saveXML($xml->getElementsByTagName('html')->item(0));
 
 					if ($options['location'] == 'sidebar') {
 						// replace height and width to make it fit in the backend
