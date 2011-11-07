@@ -117,7 +117,7 @@
 
 			$params = true; //FieldOembed::createParamsSetTable();
 
-			return $create && $unique && params;
+			return $create && $unique && $params;
 		}
 
 		/**
