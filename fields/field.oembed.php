@@ -39,11 +39,11 @@
 			parent::__construct($parent);
 			// set the name of the field
 			$this->_name = __('oEmbed Resource');
-			// permits to make it requiered
+			// permits to make it required
 			$this->_required = true;
 			// permits the make it show in the table columns
 			$this->_showcolumn = true;
-			// set as not requiered by default
+			// set as not required by default
 			$this->set('required', 'no');
 			// set not unique by default
 			$this->set('unique', 'no');
@@ -99,20 +99,19 @@
 		public function checkPostFieldData($data, &$message, $entry_id=NULL){
 
 			$message = NULL;
-			$requiered = ($this->get('required') == 'yes');
+			$required = ($this->get('required') == 'yes');
 
-			if($requiered && strlen($data) == 0){
+			if($required && strlen($data) == 0){
 				$message = __("'%s' is a required field.", array($this->get('label')));
 				return self::__MISSING_FIELDS__;
 			}
 
 			$url = $data;
-
 			$driver = ServiceDispatcher::getServiceDriver($url);
 
 			// valid driver
 			if (!$driver && strlen($url) > 0) {
-				$message = __("%s: No ServiceDriver found for '%s'.", array($this->get('label'), $url));
+				$message = __("No <code>ServiceDriver</code> found for '%s'.", array($url));
 				return self::__INVALID_FIELDS__;
 			}
 
@@ -133,47 +132,62 @@
 		 * @return Array - data to be inserted into DB
 		 */
 		public function processRawFieldData($data, &$status, $simulate = false, $entry_id = null) {
-
 			$status = self::__OK__;
 
 			// capture the url in the field's data
 			$url = trim($data);
 
-			// if no url is found, exit now
-			if ( empty($url) ) {
-				$status = self::__MISSING_FIELDS__;
-				return $data;
+			// if no url is given
+			if (empty($url)) {
+				// If this is a required field, flag the missing fields status.
+				if($this->get('required') == 'yes') {
+					$status = self::__MISSING_FIELDS__;
+				}
+
+				return array(
+					'url' => null,
+					'res_id' => null,
+					'url_oembed_xml' => null,
+					'oembed_xml' => null,
+					'title' => null,
+					'thumbnail_url' => null
+				);
 			}
 
 			// store a pointer to the driver
 			$driver = ServiceDispatcher::getServiceDriver($url);
 
-			// get xml data
-			$params = array(
-				'url' => $url
-			);
-			$xml = $driver->getXmlDataFromSource($params, $errorFlag);
-
-			// HACK: couldn't figure out how to validate in checkPostFieldData() and then prevent
-			// this processRawFieldData function executing, since it requires valid data to load the XML
-			// thanks @nickdunn
-
-			// if $xml is NOT an array
-			// OR
-			// if $errorFlag and no error message...
-			if (!is_array($xml) || ($errorFlag && !isset($xml['error']))) {
-				$message = __('Failed to load oEmbed XML data');
+			if(!$driver) {
 				$status =  self::__INVALID_FIELDS__;
+			}
+			else {
+				// get xml data
+				$params = array(
+					'url' => $url
+				);
+				$xml = $driver->getXmlDataFromSource($params, $errorFlag);
 
-				// set the array, as we still wan't to save the url
-				if (!is_array($xml)) {
-					$xml = array();
+				// HACK: couldn't figure out how to validate in checkPostFieldData() and then prevent
+				// this processRawFieldData function executing, since it requires valid data to load the XML
+				// thanks @nickdunn
+				// NOTE: The $message stuff won't do anything due to a Symphony bug
+				// https://github.com/symphonycms/symphony-2/issues/879 ^BA
+
+				// if $xml is NOT an array OR if $errorFlag and no error message...
+				if (!is_array($xml) || ($errorFlag && !isset($xml['error']))) {
+					$message = __('Failed to load oEmbed XML data');
+					$status =  self::__INVALID_FIELDS__;
+
+					// set the array, as we still wan't to save the url
+					if (!is_array($xml)) {
+						$xml = array();
+					}
 				}
-
-			// else, if we can find a 'error' value
-			} elseif (isset($xml['error'])) {
-				$message = __('Exception occured: %s', array( $xml['error'] ));
-				$status =  self::__INVALID_FIELDS__;
+				// else, if we can find a 'error' value
+				elseif (isset($xml['error'])) {
+					$message = __('Exception occured: %s', array( $xml['error'] ));
+					$status =  self::__INVALID_FIELDS__;
+				}
 			}
 
 			// return row
@@ -267,19 +281,6 @@
 
 			return true;
 		}
-
-		/**
-		 *
-		 * This function allows Fields to cleanup any additional things before it is removed
-		 * from the section.
-		 * @return boolean
-		 */
-		/*public function tearDown() {
-			return $this->removeParamsSet($this->get('id'));
-		}*/
-
-
-
 
 		/* ******* DATA SOURCE ******* */
 
@@ -602,15 +603,15 @@
 				CREATE TABLE `tbl_entries_data_$id` (
 					`id` int(11) unsigned NOT NULL auto_increment,
 					`entry_id` int(11) unsigned NOT NULL,
-					`res_id` varchar(128) NOT NULL,
-					`url` varchar(2048) NOT NULL,
-					`url_oembed_xml` varchar(2048) NOT NULL,
-					`title` varchar(2048) NULL,
-					`thumbnail_url` varchar(2048) NULL,
-					`oembed_xml` text NOT NULL,
-					`dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				PRIMARY KEY  (`id`),
-				KEY `entry_id` (`entry_id`)
+					`res_id` varchar(128),
+					`url` varchar(2048),
+					`url_oembed_xml` varchar(2048)
+					`title` varchar(2048),
+					`thumbnail_url` varchar(2048),
+					`oembed_xml` text,
+					`dateCreated` timestamp DEFAULT CURRENT_TIMESTAMP,
+					PRIMARY KEY  (`id`),
+					KEY `entry_id` (`entry_id`)
 				)"
 			);
 		}
