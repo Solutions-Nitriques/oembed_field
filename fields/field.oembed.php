@@ -185,7 +185,7 @@
 				}
 				// else, if we can find a 'error' value
 				elseif (isset($xml['error'])) {
-					$message = __('Exception occured: %s', array( $xml['error'] ));
+					$message = __('Exception occurred: %s', array( $xml['error'] ));
 					$status =  self::__INVALID_FIELDS__;
 				}
 			}
@@ -197,7 +197,7 @@
 				'url_oembed_xml' => $xml['url'],
 				'oembed_xml' => $xml['xml'],
 				'title' => $xml['title'],
-				'thumbnail_url' => $xml['thumb']
+				'thumbnail_url' => $xml['thumbnail_url']
 			);
 		}
 
