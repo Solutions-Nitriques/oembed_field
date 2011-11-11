@@ -8,7 +8,7 @@
 		public function __construct() {
 			parent::__construct('Vimeo', 'vimeo.com');
 		}
-		
+
 		public function about() {
 			return array(
 				'name'			=> $this->Name,
@@ -24,7 +24,7 @@
 
 		public function getEmbedCode($data, $options) {
 			return vsprintf('<iframe src="http://player.vimeo.com/video/%s" width="%d" height="%d" frameborder="0"></iframe>',
-							array(	$data['res_id'], 
+							array(	$data['res_id'],
 									$this->getEmbedSize($options, 'width'),
 									$this->getEmbedSize($options, 'height')
 								  )
@@ -37,7 +37,6 @@
 			return 'http://vimeo.com/api/oembed.xml?url=' . $params['url'];
 		}
 
-			
 		public function getIdTagName() {
 			return 'video_id';
 		}

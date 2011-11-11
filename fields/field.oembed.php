@@ -185,7 +185,7 @@
 				}
 				// else, if we can find a 'error' value
 				elseif (isset($xml['error'])) {
-					$message = __('Exception occured: %s', array( $xml['error'] ));
+					$message = __('Exception occurred: %s', array( $xml['error'] ));
 					$status =  self::__INVALID_FIELDS__;
 				}
 			}
@@ -197,7 +197,7 @@
 				'url_oembed_xml' => $xml['url'],
 				'oembed_xml' => $xml['xml'],
 				'title' => $xml['title'],
-				'thumbnail_url' => $xml['thumb']
+				'thumbnail_url' => $xml['thumbnail_url']
 			);
 		}
 
@@ -605,14 +605,14 @@
 					`entry_id` int(11) unsigned NOT NULL,
 					`res_id` varchar(128),
 					`url` varchar(2048),
-					`url_oembed_xml` varchar(2048)
+					`url_oembed_xml` varchar(2048),
 					`title` varchar(2048),
 					`thumbnail_url` varchar(2048),
 					`oembed_xml` text,
 					`dateCreated` timestamp DEFAULT CURRENT_TIMESTAMP,
 					PRIMARY KEY  (`id`),
 					KEY `entry_id` (`entry_id`)
-				)"
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
 			);
 		}
 
@@ -631,7 +631,7 @@
 					`driver` varchar(150) NULL,
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
-				)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
 		}
 
@@ -651,7 +651,7 @@
 					`value` varchar(50) NOT NULL,
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
-				)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
 		}
 
