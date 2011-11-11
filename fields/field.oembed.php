@@ -612,7 +612,7 @@
 					`dateCreated` timestamp DEFAULT CURRENT_TIMESTAMP,
 					PRIMARY KEY  (`id`),
 					KEY `entry_id` (`entry_id`)
-				)"
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
 			);
 		}
 
@@ -631,7 +631,7 @@
 					`driver` varchar(150) NULL,
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
-				)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
 		}
 
@@ -651,7 +651,7 @@
 					`value` varchar(50) NOT NULL,
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
-				)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
 		}
 
