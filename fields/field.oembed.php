@@ -605,7 +605,7 @@
 					`entry_id` int(11) unsigned NOT NULL,
 					`res_id` varchar(128),
 					`url` varchar(2048),
-					`url_oembed_xml` varchar(2048)
+					`url_oembed_xml` varchar(2048),
 					`title` varchar(2048),
 					`thumbnail_url` varchar(2048),
 					`oembed_xml` text,
