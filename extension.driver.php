@@ -124,7 +124,8 @@
 
 			$params_set_id = FieldOembed::updateFieldTable_ParamsSetId();
 
-			return $create && $unique && $thumbs && params && $params_set_id;
+			return $create && $unique && $thumbs && $params && $params_set_id;
+
 		}
 
 		/**
