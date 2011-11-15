@@ -319,9 +319,9 @@
 		 * from the section.
 		 * @return boolean
 		 */
-		public function tearDown() {
+		/*public function tearDown() {
 			return $this->removeParamsSet($this->get('id'));
-		}
+		}*/
 
 
 
