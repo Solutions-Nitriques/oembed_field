@@ -205,7 +205,7 @@
 				$message = __('Failed to load oEmbed XML data');
 				$status =  self::__INVALID_FIELDS__;
 
-				// set the array, as we still wan't to save the url
+				// set the array, as we still want to save the url
 				if (!is_array($xml)) {
 					$xml = array();
 				}
@@ -266,7 +266,7 @@
 			$thumbs = $this->get('thumbs');
 
 			// exit if there is no id
-			if($id === false) return false;
+			if($id == false) return false;
 
 			// declare an array contains the field's settings
 			$settings = array();
@@ -320,7 +320,8 @@
 		 * @return boolean
 		 */
 		public function tearDown() {
-			return $this->removeParamsSet($this->get('id'));
+			// remove params set for this field, since we are deleting it
+			return $this->removeParamsSet();
 		}
 
 
@@ -536,12 +537,14 @@
 			$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-sets-wrap'));
 			$par_title = new XMLElement('label', __('oEmbed Requests Parameters sets'));
 			$par_container = new XMLElement('div', NULL, array('class'=>'oembed-params-sets'));
+			$par_container->appendChild(new XMLElement('a', __('Add a params set'), array('href'=>'#', 'class'=>'oembed-add')));
+			$par_container->appendChild($this->generateParamsTable());
 			$par_wrap->appendChild($par_title);
 			$par_wrap->appendChild($par_container);
 
 			/* new line, check boxes */
 			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
-			$chk_wrap->appendChild(new XMLElement('label', __('Other properties')));
+			$chk_wrap->appendChild(new XMLElement('label', __('Other properties'), array('class'=>'oembed-other-title') ));
 			$this->appendRequiredCheckbox($chk_wrap);
 			$this->appendShowColumnCheckbox($chk_wrap);
 			$this->appendMustBeUniqueCheckbox($chk_wrap);
@@ -553,6 +556,35 @@
 			$wrapper->appendChild($par_wrap);
 			$wrapper->appendChild($chk_wrap);
 
+		}
+
+		private function generateParamsTable() {
+
+			// data
+			$data = $this->getParamsSet();
+
+			// header
+			$header = Widget::TableHead(array(
+				array(__('Name')),
+				array(__('Value'))
+			));
+
+			// body
+			$body = array();
+
+			$x = 0;
+			if (is_array($data)) {
+				foreach ($data as $row) {
+					$body[] = Widget::TableRow(array(
+						Widget::TableData(Widget::Input('fields['.$this->get('sortorder').'][ps-name]['.$x.']', $row['name'])),
+						Widget::TableData(Widget::Input('fields['.$this->get('sortorder').'][ps-value]['.$x.']', $row['value']))
+					));
+				}
+			}
+
+			return Widget::Table($header, null, Widget::TableBody($body), 'oembed-table', null,
+								array('cellspacing'=>'0', 'cellpadding'=>'1')
+					);
 		}
 
 		/**
@@ -789,32 +821,28 @@
 
 		// @todo: add phpdoc
 
-		private function removeParamsSet($field_id) {
-			if (!is_array($field_id)) {
-				$field_id = array($field_id);
-			}
-
+		private function removeParamsSet() {
 			$tbl = self::FIELD_PS_TBL_NAME;
 
-			foreach ($field_id as $id) {
-				Symphony::Database()->query("
-					DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1
-				");
-			}
+			$id = $this->get('id');
+
+			Symphony::Database()->query("
+				DELETE FROM `$tbl` WHERE `field_id` = '$id'
+			");
 
 			return true;
 		}
 
-		private function insertParamsSet($field_id, array $params) {
+		private function insertParamsSet(array $params) {
 
 			// remove all params first
-			if ($this->removeParamsSet($field_id)) {
+			if ($this->removeParamsSet()) {
 
 				// insert all individual combinations
 				foreach ($params as $p) {
 
 					$fields = array (
-						'field_id' => 0,
+						'field_id' => $this->get('id'),
 						'name' => $p['name'],
 						'value' => $p['value']
 					);
@@ -826,9 +854,11 @@
 			return true;
 		}
 
-		private function getParamsSet($field_id) {
+		private function getParamsSet() {
 
 			$tbl = self::FIELD_PS_TBL_NAME;
+
+			$id = $this->get('id');
 
 			return Symphony::Database()->query("
 				SELECT * FROM `$tbl` WHERE `field_id` = '$id'

@@ -68,5 +68,8 @@
 		'Services supportés <i>%s</i>',
 
 		'Show thumbnails in table' =>
-		'Afficher les images dans la table'
+		'Afficher les images dans la table',
+
+		'Add a params set' =>
+		'Ajouté un groupe de paramètre'
 	);
