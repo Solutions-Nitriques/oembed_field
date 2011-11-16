@@ -129,6 +129,26 @@
 		public function getRootTagName() {
 			return 'oembed';
 		}
+		
+		/**
+		 *
+		 * Method that returns the name of the Title tag.
+		 * Overrides at will. Default returns 'title'
+		 * @return string
+		 */
+		protected function getTitleTagName() {
+			return 'title';
+		}
+
+		/**
+		 *
+		 * Method that returns the name of the Thumbnail tag.
+		 * Overrides at will. Default returns 'thumbnail_url'
+		 * @return string
+		 */
+		protected function getThumbnailTagName() {
+			return 'thumbnail_url';
+		}
 
 		/**
 		 *
