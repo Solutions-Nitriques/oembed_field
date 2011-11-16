@@ -8,7 +8,7 @@
 		const BASE_URL = "http://dailymotion.com/video/";
 
 		public function __construct() {
-			parent::__construct('Dailmotion', 'dailymotion.com');
+			parent::__construct('Dailymotion', 'dailymotion.com');
 		}
 
 		public function about() {
