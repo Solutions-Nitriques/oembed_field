@@ -76,7 +76,6 @@
 			$errorFlag = !(@$doc->load($url));
 
 			if (!$errorFlag) {
-
 				$xml['xml'] = $doc->saveXML();
 
 				// add id to array
@@ -86,11 +85,12 @@
 				} else {
 					$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
 				}
-
+				
 				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
 				$xml['thumb'] = $doc->getElementsByTagName($this->getThumbnailTagName())->item(0)->nodeValue;
-
-			} else {
+				
+			}
+			else {
 				// return somthing since the column can't be null
 				$xml['xml'] = '<error>' . __('Symphony could not load XML from oEmbed remote service') . '</error>';
 			}
@@ -100,8 +100,8 @@
 
 		/**
 		 *
-		 * Abstract method that shall return the HTML code for embeding
-		 * this ressource into the backend
+		 * Abstract method that shall return the HTML code for embedding
+		 * this resource into the backend
 		 * @param array $data
 		 * @param array $options
 		 */
@@ -122,26 +122,6 @@
 
 		/**
 		 *
-		 * Method that returns the name of the Title tag.
-		 * Overrides at will. Default returns 'title'
-		 * @return string
-		 */
-		public function getTitleTagName() {
-			return 'title';
-		}
-
-		/**
-		 *
-		 * Method that returns the name of the Thumbnail tag.
-		 * Overrides at will. Default returns 'thumbnail_url'
-		 * @return string
-		 */
-		public function getThumbnailTagName() {
-			return 'thumbnail_url';
-		}
-
-		/**
-		 *
 		 * Method that returns the name of the root tag.
 		 * Overrides at will. Default returns 'oembed'
 		 * @return string
@@ -157,7 +137,6 @@
 		 * N.B: Can return null: Id will be a handle created from the url
 		 */
 		public abstract function getIdTagName();
-
 
 		/**
 		 *

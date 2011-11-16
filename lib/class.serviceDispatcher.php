@@ -159,9 +159,9 @@
 
 		public function __construct($url, Exception $ex = null) {
 			$this->InnerException = $ex;
-			$msg = vsprintf ("Error occured when searching driver for '%s'", $url);
+			$msg = vsprintf ("Error occurred when searching driver for '%s'", $url);
 			if ($ex) {
-				$msg = vsprintf ("Error occured when searching driver for '%s': %s", array($url, $ex->getMessage()));
+				$msg = vsprintf ("Error occurred when searching driver for '%s': %s", array($url, $ex->getMessage()));
 			}
 			parent::__construct($msg);
 		}
