@@ -673,8 +673,8 @@
 					`dateCreated` 		timestamp DEFAULT CURRENT_TIMESTAMP,
 					PRIMARY KEY  (`id`),
 					KEY `entry_id` (`entry_id`)
-				)"
-			);
+				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+			");
 		}
 
 		/**
@@ -686,13 +686,13 @@
 
 			return Symphony::Database()->query("
 				CREATE TABLE IF NOT EXISTS `$tbl` (
-					`id` int(11) unsigned NOT NULL auto_increment,
-					`field_id` int(11) unsigned NOT NULL,
-					`refresh` int(11) unsigned NULL,
-					`driver` varchar(150) NULL,
+					`id` 			int(11) unsigned NOT NULL auto_increment,
+					`field_id` 		int(11) unsigned NOT NULL,
+					`refresh` 		int(11) unsigned NULL,
+					`driver` 		varchar(150) NULL,
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
-				)
+				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
 		}
 
@@ -706,13 +706,13 @@
 
 			return Symphony::Database()->query("
 				CREATE TABLE IF NOT EXISTS `$tbl` (
-					`id` int(11) unsigned NOT NULL auto_increment,
-					`field_id` int(11) unsigned NOT NULL,
-					`name` varchar(50) NOT NULL,
-					`value` varchar(50) NOT NULL,
+					`id` 			int(11) unsigned NOT NULL auto_increment,
+					`field_id` 		int(11) unsigned NOT NULL,
+					`name` 			varchar(50) NOT NULL,
+					`value` 		varchar(50) NOT NULL,
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
-				)
+				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
 		}
 
