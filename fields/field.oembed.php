@@ -223,7 +223,7 @@
 				}
 				// else, if we can find a 'error' value
 				elseif (isset($xml['error'])) {
-					$message = __('Exception occured: %s', array( $xml['error'] ));
+					$message = __('Exception occurred: %s', array( $xml['error'] ));
 					$status =  self::__INVALID_FIELDS__;
 				}
 			}

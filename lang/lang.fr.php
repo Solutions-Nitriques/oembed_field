@@ -34,7 +34,7 @@
 		'Failed to load oEmbed XML data' =>
 		'Échec du chargement des données XML',
 
-		'Exception occured: %s' =>
+		'Exception occurred: %s' =>
 		'Une exception a été levée: %s',
 
 		'XML Data does not validate' =>
