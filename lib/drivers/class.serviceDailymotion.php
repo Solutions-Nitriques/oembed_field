@@ -24,43 +24,8 @@
 	 		);
 		}
 
-		public function getEmbedCode($data, $options) {
-			$player = null;
-			$xml_data = $data['oembed_xml'];
-
-			if(empty($xml_data)) return false;
-
-			$xml = new DOMDocument();
-
-			if (@$xml->loadXML($xml_data)) {
-				$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
-
-				if ($options['location'] == 'sidebar') {
-					// replace height and width to make it fit in the backend
-					$w = $this->getEmbedSize($options, 'width');
-					$h = $this->getEmbedSize($options, 'height');
-
-					$player = preg_replace(
-						array('/width="([^"]*)"/', '/height="([^"]*)"/'),
-						array("width=\"{$w}\"", "height=\"{$h}\""), $player);
-				}
-
-				return $player;
-			}
-
-			return false;
-		}
-
 		public function getOEmbedXmlApiUrl($params) {
 			$url = trim($params['url']);
-
-			// trying to fix url with # in it
-			if (strpos($params['url'], '#') !== FALSE) {
-				// split on every # or /
-				$exploded = preg_split('/[\/#]/', $url);
-
-				$url = self::BASE_URL . $exploded[count($exploded)-1];
-			}
 
 			return 'http://www.dailymotion.com/services/oembed?format=xml&url=' . $url;
 		}

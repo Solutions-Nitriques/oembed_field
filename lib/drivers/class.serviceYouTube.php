@@ -24,43 +24,6 @@
 	 		);
 		}
 
-		public function getEmbedCode($data, $options) {
-			// ref to the html string to output in the backend
-			$player = null;
-			// xml string from the DB
-			$xml_data = $data['oembed_xml'];
-
-			if(empty($xml_data)) return false;
-
-			// create a new DOMDocument to manipulate the XML string
-			$xml = new DOMDocument();
-
-			// if we can load the string into the document
-			if (@$xml->loadXML($xml_data)) {
-				// get the value of the html node
-				// NOTE: this could be the XML children if the html is not encoded
-				$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
-
-				// if the field is in the side bar
-				if ($options['location'] == 'sidebar') {
-					// replace height and width to make it fit in the backend
-					$w = $this->getEmbedSize($options, 'width');
-					$h = $this->getEmbedSize($options, 'height');
-
-					// actual replacement
-					$player = preg_replace(
-						array('/width="([^"]*)"/', '/height="([^"]*)"/'),
-						array("width=\"{$w}\"", "height=\"{$h}\""),
-						$player
-					);
-				}
-
-				return $player;
-			}
-
-			return false;
-		}
-
 		public function getOEmbedXmlApiUrl($params) {
 			$url = trim($params['url']);
 

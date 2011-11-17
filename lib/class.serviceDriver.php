@@ -85,10 +85,10 @@
 				} else {
 					$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
 				}
-				
+
 				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
 				$xml['thumb'] = $doc->getElementsByTagName($this->getThumbnailTagName())->item(0)->nodeValue;
-				
+
 			}
 			else {
 				// return somthing since the column can't be null
@@ -100,12 +100,47 @@
 
 		/**
 		 *
-		 * Abstract method that shall return the HTML code for embedding
+		 * Overridable method that shall return the HTML code for embedding
 		 * this resource into the backend
 		 * @param array $data
 		 * @param array $options
 		 */
-		public abstract function getEmbedCode($data, $options);
+		public function getEmbedCode($data, $options) {
+			// ref to the html string to output in the backend
+			$player = null;
+			// xml string from the DB
+			$xml_data = $data['oembed_xml'];
+
+			if(empty($xml_data)) return false;
+
+			// create a new DOMDocument to manipulate the XML string
+			$xml = new DOMDocument();
+
+			// if we can load the string into the document
+			if (@$xml->loadXML($xml_data)) {
+				// get the value of the html node
+				// NOTE: this could be the XML children if the html is not encoded
+				$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
+
+				// if the field is in the side bar
+				if ($options['location'] == 'sidebar') {
+					// replace height and width to make it fit in the backend
+					$w = $this->getEmbedSize($options, 'width');
+					$h = $this->getEmbedSize($options, 'height');
+
+					// actual replacement
+					$player = preg_replace(
+						array('/width="([^"]*)"/', '/height="([^"]*)"/'),
+						array("width=\"{$w}\"", "height=\"{$h}\""),
+						$player
+					);
+				}
+
+				return $player;
+			}
+
+			return false;
+		}
 
 		/**
 		 *
@@ -129,7 +164,7 @@
 		public function getRootTagName() {
 			return 'oembed';
 		}
-		
+
 		/**
 		 *
 		 * Method that returns the name of the Title tag.
