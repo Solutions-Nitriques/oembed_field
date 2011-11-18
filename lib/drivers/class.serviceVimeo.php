@@ -13,7 +13,7 @@
 			return array(
 				'name'			=> $this->Name,
 				'version'		=> '1.1',
-				'release-date'	=> '2011-10-19',
+				'release-date'	=> '2011-11-17',
 				'author'		=> array(
 					'name'			=> 'Solutions Nitriques',
 					'website'		=> 'http://www.nitriques.com/open-source/',
@@ -34,9 +34,8 @@
 		public function getOEmbedXmlApiUrl($params) {
 			// DO NOT CONCAT WITH + IN PHP ... USE .
 			// TABARNAK !!!
-			return 'http://vimeo.com/api/oembed.xml?url=' . $params['url'];
+			return 'http://vimeo.com/api/oembed.xml?url=' . trim($params['url']);
 		}
-
 
 		public function getIdTagName() {
 			return 'video_id';

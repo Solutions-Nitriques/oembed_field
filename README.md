@@ -47,10 +47,14 @@ http://www.nitriques.com/open-source/
 
 ### History ###
 
-- 1.3.2 - 2011-10-xx (`dev` branch)   
+- 1.3.2 - 2011-11-xx (`dev` branch)   
   Added the `show thumbnails in table` parameter: if disabled, title or url will be used
   Minor bug fixes    
   Added the `oembed requests parameters sets` field's setting (issue #11) ([see how it work])
+  Fixed a lot of typos (thanks brando)
+  Tables now uses utf_8 and MyISAM
+  Refactored the drivers: They are now more easy to implement
+  Changes between the two branches (master and dev) are now synced
 
 - 1.3.1 - 2011-10-16 (`master` branch)    
   Added assets for the blueprints>section pages  

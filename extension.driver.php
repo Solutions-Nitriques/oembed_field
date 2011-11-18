@@ -39,6 +39,8 @@
 				),
 				'description'	=> __('Easily embed videos/images from ANY website that implements the oEmbed format (http://oembed.com/)'),
 				'compatibility' => array(
+					'2.2.5' => true,
+					'2.2.4' => true,
 					'2.2.3' => true,
 					'2.2.2' => true,
 					'2.2.1' => true,

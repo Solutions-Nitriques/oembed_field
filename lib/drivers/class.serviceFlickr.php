@@ -36,7 +36,6 @@
 			return 'http://www.flickr.com/services/oembed?url=' . $params['url'];
 		}
 
-
 		public function getIdTagName() {
 			return 'url';
 		}

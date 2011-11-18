@@ -181,14 +181,15 @@
 					$status = self::__MISSING_FIELDS__;
 				}
 
-				return array(
+				/*return array(
 					'url' => null,
 					'res_id' => null,
 					'url_oembed_xml' => null,
 					'oembed_xml' => null,
 					'title' => null,
 					'thumbnail_url' => null
-				);
+				);*/
+				return false;
 			}
 
 			// store a pointer to the driver
@@ -235,7 +236,7 @@
 				'url_oembed_xml' => $xml['url'],
 				'oembed_xml' => $xml['xml'],
 				'title' => $xml['title'],
-				'thumbnail_url' => $xml['thumb']
+				'thumbnail_url' => $xml['thumbnail_url']
 			);
 		}
 
