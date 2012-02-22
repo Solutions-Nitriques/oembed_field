@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="oembed_field" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+	<name>oEmbed Field</name>
+	<description>Easily embed videos/images from ANY* website that implements the oEmbed format. See http://oembed.com. Supported services:
+	- **Vimeo**
+	- **Youtube**
+	- **Dailymotion**
+	- **Twitter**
+	- Flickr
+	- Qik
+	- Viddler
+	</description>
+	<repo type="github">https://github.com/Solutions-Nitriques/oembed_field</repo>
+	<url type="discuss">http://symphony-cms.com/discuss/thread/73696/</url>
+	<types>
+		<type>Field</type>
+		<type>Third Party Integration</type>
+	</types>
+	<authors>
+		<author>
+			<name github="Solutions-Nitriques" symphony="nitriques">Solutions Nitriques</name>
+			<website>http://www.nitriques.com/open-source/</website>
+		</author>
+		<author>
+			<name github="DeuxHuitHuit" symphony="">Deux Huit Huit</name>
+			<website>http://www.deuxhuithuit.com</website>
+		</author>
+	</authors>
+	<dependencies>
+		<!-- None -->
+	</dependencies>
+	<releases>
+		<release version="1.3.2" date="2012-02-xx" min="2.2.3">
+	### `dev` branch
+  - Added the `show thumbnails in table` parameter: if disabled, title or url will be used
+  - Minor bug fixes    
+  - Added the `oembed requests parameters sets` field's setting (issue #11) ([see how it work])
+  - Fixed a lot of typos (thanks brando)
+  - Tables now uses utf_8 and MyISAM
+  - Refactored the drivers: They are now more easy to implement
+  - Changes between the two branches (master and dev) are now synced 
+		</release>
+		<release version="1.3.1" date="2011-10-16" min="2.2.3">
+	### `master` branch  
+  - Added assets for the blueprints>section pages  
+  - Added the 'unique' option - url can now be unique across a section  
+  - Added Dailymotion, Qik (fix issue #9) and Viddler drivers (thanks Andrew!, pull request #8)
+  - Improved comments (a lot!)    
+  - Fix a typo (issue #6)    
+  - Added support for image (thumbnail) in table view (do not forget to add those site in JIT)   
+  - Refactored how the drivers are managed in the ServiceDispatcher (issue #10)
+  	
+  	- Public methods to get drivers and drivers names
+  	- Drivers are now all loaded by default
+  	- Drivers filename must now respect the `class.service[a-zA-Z0-9]+.php` regular expression
+  	- Drivers are now listed in section field and publish page  
+		</release>
+		<release version="1.3" date="2011-10-06" min="2.2.3">   
+  - Improved error management - Added a ref flag for that in the public method     
+  - Added a method that permit change of the root tag name in the oEmbed response   
+		</release>
+		<release version="1.2.2" date="2011-09-28" min="2.2.2"> 
+  - Update the YouTube driver to 1.2 - Fix when the entered url contains a #
+		</release>
+		<release version="1.2.1" date="2011-09-08 " min="2.2.2">  
+  - Update the YouTube driver to 1.1 - Fix the width when the field is in the sidebar
+		</release>
+		<release version="1.2" date="2011-08-19" min="2.2.2">   
+  - Update for Symphony 2.2.2 compatibility
+  	(do not need to check for the $simulate value as it seems to be always true) 
+		</release>
+		<release version="1.1" date="2011-07-25" min="2.2.2">   
+  - Couple of bug fixes    
+  - Adapted the code so oEmbed resources in the sidebar displays correctly
+		</release>
+		<release version="1.0.1" date="2011-07-17" min="2.2.2">  
+  - Added YouTube
+		</release>
+		<release version="1.0" date="2011-07-15" min="2.2.2">  
+  - First release
+		</release>
+	</releases>
+</extension>

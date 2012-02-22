@@ -16,6 +16,7 @@ see http://oembed.com
 	- **Vimeo**
 	- **Youtube**
 	- **Dailymotion**
+	- **Twitter**
 	- Flickr
 	- Qik
 	- Viddler
