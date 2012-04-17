@@ -178,7 +178,7 @@
 			// if no url is given
 			if (empty($url)) {
 				// If this is a required field, flag the missing fields status.
-				if($this->get('required') == 'yes') {
+				if ($this->get('required') == 'yes') {
 					$errorFlag = true;
 					$status = self::__MISSING_FIELDS__;
 					
@@ -252,18 +252,35 @@
 		 *	the data array to initialize if necessary.
 		 */
 		public function setFromPOST(Array $settings = array()) {
+
 			// call the default behavior
 			parent::setFromPOST($settings);
 
 			// declare a new setting array
 			$new_settings = array();
+			
+			//var_dump($settings['driver']);die;
 
 			// set new settings
-			$new_settings['unique'] = ( isset($settings['unique']) && $settings['unique'] == 'on' ? 'yes' : 'no');
-			$new_settings['thumbs'] = ( isset($settings['thumbs']) && $settings['thumbs'] == 'on' ? 'yes' : 'no');
+			$new_settings['unique'] = 		( isset($settings['unique']) 		&& $settings['unique'] == 'on' ? 'yes' : 'no');
+			$new_settings['thumbs'] = 		( isset($settings['thumbs']) 		&& $settings['thumbs'] == 'on' ? 'yes' : 'no');
+			$new_settings['driver'] = 		( isset($settings['driver']) 		&& is_array($settings['driver']) ? implode(',', $settings['driver']) : null);
+			$new_settings['query_params'] = ( isset($settings['query_params'])  && !!$settings['query_params'] ? $settings['query_params'] : null);
 
 			// save it into the array
 			$this->setArray($new_settings);
+		}
+
+		public function checkFields(Array &$errors, $checkForDuplicates) {
+			parent::checkFields($errors, $checkForDuplicates);
+			
+			$driver = $this->get('driver');
+			
+			if (empty($driver)) {
+				$errors['driver'] = __('You must select at least one service in order to use the oEmbed field.');
+			}
+			
+			return (!empty($errors) ? self::__ERROR__ : self::__OK__);
 		}
 
 		/**
@@ -281,6 +298,8 @@
 			$refresh = $this->get('refresh');
 			$unique = $this->get('unique');
 			$thumbs = $this->get('thumbs');
+			$drivers = $this->get('driver');
+			$query_params = $this->get('query_params');
 
 			// exit if there is no id
 			if($id == false) return false;
@@ -301,9 +320,15 @@
 			// do not comment the next line, as we can not store NULL into it
 			$settings['refresh'] = $refresh;
 
-			// @todo change this... permit only a specific driver
-			//$settings['driver'] = ;
-
+			// Permit only some specific drivers
+			$settings['driver'] = empty($drivers) || count($drivers) < 0 ? null : $drivers;
+			
+			// Extra request parameters (@see issue #11)
+			if (!!$query_params && $query_params{0} != '&') {
+				$query_params = '&' . $query_params;
+			}
+			$settings['query_params'] = empty($query_params) ? null : $query_params;
+	
 			$tbl = self::FIELD_TBL_NAME;
 
 			Symphony::Database()->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
@@ -325,8 +350,6 @@
 				return false;
 			}
 
-			// @todo: delete the data associated with the params
-
 			return true;
 		}
 
@@ -337,10 +360,8 @@
 		 * @return boolean
 		 */
 		public function tearDown() {
-			// remove params set for this field, since we are deleting it
-			return parent::tearDown(); //$this->removeParamsSet();
+			return parent::tearDown(); 
 		}
-
 
 
 
@@ -456,7 +477,6 @@
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
 
-
 			// required label
 			if($this->get('required') != 'yes') {
 				$label->appendChild(new XMLElement('i', __('Optional')));
@@ -547,10 +567,12 @@
 			parent::displaySettingsPanel($wrapper, $errors);
 
 			/* new line, drivers */
-			
 			$driv_wrap = new XMLElement('div', NULL, array('class'=>'oembed-drivers'));
-			$driv_title = new XMLElement('label',__('Supported services <i>Optional</i>'));
+			$driv_title = new XMLElement('label',__('Supported services <i>Select to enable the service in the publish page</i>'));
 			$driv_title->appendChild($this->generateDriversSelect());
+			if (isset($errors['driver'])) {
+				$driv_title = Widget::wrapFormElementWithError($driv_title, $errors['driver']);
+			}
 			$driv_wrap->appendChild($driv_title);
 
 			/* new line, update settings */
@@ -584,8 +606,9 @@
 			$this->appendShowThumbnailCheckbox($chk_wrap);
 
 			/* append to wrapper */
-			$wrapper->appendChild($par_wrap);
+			
 			$wrapper->appendChild($driv_wrap);
+			$wrapper->appendChild($par_wrap);
 			//$wrapper->appendChild($set_wrap);
 			$wrapper->appendChild($chk_wrap);
 
@@ -600,7 +623,7 @@
 				$drivers_options[] = array($driver, $selected);
 			}
 			
-			return Widget::Select('fields['.$this->get('sortorder').'][driver]', $drivers_options, array('multiple'=>'multiple'));
+			return Widget::Select('fields['.$this->get('sortorder').'][driver][]', $drivers_options, array('multiple'=>'multiple'));
 		}
 
 		/*private function generateParamsTable() {
@@ -843,6 +866,19 @@
 			return Symphony::Database()->query("
 				ALTER TABLE  `$tbl`
 					ADD COLUMN `driver` varchar(50) NOT NULL
+			");
+		}
+		
+		
+		public static function updateFieldData_Driver() {
+
+			$tbl = self::FIELD_TBL_NAME;
+			
+			$drivers = implode(',',ServiceDispatcher::getAllDriversNames());
+
+			return Symphony::Database()->query("
+				UPDATE `$tbl`
+					SET `driver` = $drivers
 			");
 		}
 		

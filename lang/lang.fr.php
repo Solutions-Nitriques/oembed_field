@@ -71,5 +71,8 @@
 		'Afficher les images dans la table',
 
 		'Add a params set' =>
-		'Ajouté un groupe de paramètre'
+		'Ajouté un groupe de paramètre',
+		
+		'You must select at least one service in order to use the oEmbed field.' =>
+		'Vous devez sélectionner au moins un service pour utiliser le champ oEmbed.'
 	);

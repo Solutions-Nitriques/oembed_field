@@ -30,7 +30,7 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
-		<release version="1.4" date="2012-04-xx" min="2.2.3">
+		<release version="1.4" date="2012-04-xx" min="2.2.5">
   - Major code review, adding more thoughness to the code
   - Fix issues #11, #19, #15
   - YouTube driver fix

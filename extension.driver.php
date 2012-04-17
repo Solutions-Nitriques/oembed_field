@@ -133,8 +133,9 @@
 			
 			// v1.4
 			$params = FieldOembed::updateFieldTable_QueryParams();
+			$driver = FieldOembed::updateFieldTable_Driver();
 
-			return $create && $unique && $thumbs && $params;
+			return $create && $unique && $thumbs && $params && $driver;
 
 		}
 
@@ -169,8 +170,8 @@
 				// update for the params settings
 				$ret_params = FieldOembed::updateFieldTable_QueryParams();
 				
-				// update for the driver column
-				$ret_driver = FieldOembed::updateFieldTable_Driver();
+				// update for the driver column && set all drivers as allowed by default
+				$ret_driver = FieldOembed::updateFieldTable_Driver() && FieldOembed::updateFieldData_Driver();
 
 				// set the return value
 				$ret = $ret_thumbs && $ret_params && $ret_driver;
