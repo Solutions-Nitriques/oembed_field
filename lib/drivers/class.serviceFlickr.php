@@ -11,7 +11,7 @@
 
 		public function about() {
 			return array(
-				'name'			=> $this->Name,
+				'name'			=> $this->getName(),
 				'version'		=> '1.0',
 				'release-date'	=> '2011-07-15',
 				'author'		=> array(

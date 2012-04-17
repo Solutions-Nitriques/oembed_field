@@ -15,7 +15,7 @@
           'name'    => 'Brian Drum',
           'website' => 'http://briandrum.net'
         ),
-        'name'         => $this->Name,
+        'name'         => $this->getName(),
         'release-date' => '2012-01-27',
         'version'      => '1.0'
       );

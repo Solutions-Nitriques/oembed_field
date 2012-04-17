@@ -13,13 +13,18 @@
 
 		public function about() {
 			return array(
-				'name'			=> $this->Name,
-				'version'		=> '1.2',
-				'release-date'	=> '2011-09-27',
+				'name'			=> $this->getName(),
+				'version'		=> '1.3',
+				'release-date'	=> '2012-04-17',
 				'author'		=> array(
 					'name'			=> 'Solutions Nitriques',
 					'website'		=> 'http://www.nitriques.com/open-source/',
 					'email'			=> 'open-source (at) nitriques.com'
+				),
+				array(
+					'name'			=> 'Deux Huit Huit',
+					'website'		=> 'http://www.deuxhuithuit.com',
+					'email'			=> 'open-source (at) deuxhuithuit.com'
 				)
 	 		);
 		}

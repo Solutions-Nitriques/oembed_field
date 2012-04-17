@@ -134,7 +134,7 @@
 		 * @param $url
 		 */
 		private function checkUniqueness($url, $entry_id = null) {
-			$id = $this->get('id');
+			$id = $this->get('field_id');
 
 			$query = "
 				SELECT count(`id`) as `c` FROM `tbl_entries_data_$id`
@@ -169,27 +169,26 @@
 			$errorFlag = false;
 
 			$xml = array();
+			
+			//var_dump($simulate);
 
 			// capture the url in the field's data
 			$url = trim($data);
-
 
 			// if no url is given
 			if (empty($url)) {
 				// If this is a required field, flag the missing fields status.
 				if($this->get('required') == 'yes') {
+					$errorFlag = true;
 					$status = self::__MISSING_FIELDS__;
+					
+					// stop the insert
+					return false;
+				} else {
+					
+					// let the value be empty
+					return true;
 				}
-
-				/*return array(
-					'url' => null,
-					'res_id' => null,
-					'url_oembed_xml' => null,
-					'oembed_xml' => null,
-					'title' => null,
-					'thumbnail_url' => null
-				);*/
-				return false;
 			}
 
 			// store a pointer to the driver
@@ -198,13 +197,15 @@
 			// check if we have a driver first
 			if(!$driver) {
 				$status =  self::__INVALID_FIELDS__;
+				$errorFlag = true;
+				return false;
 
 			} else {
 				// get xml data
 				$params = array(
 					'url' => $url
 				);
-				$xml = $driver->getXmlDataFromSource($params, $errorFlag);
+				$xml = $driver->getDataFromSource($params, $errorFlag);
 
 				// HACK: couldn't figure out how to validate in checkPostFieldData() and then prevent
 				// this processRawFieldData function executing, since it requires valid data to load the XML
@@ -214,16 +215,18 @@
 
 				// if $xml is NOT an array OR if $errorFlag and no error message...
 				if (!is_array($xml) || ($errorFlag && !isset($xml['error']))) {
-					$message = __('Failed to load oEmbed XML data');
+					//$errorFlag = true;
+					$message = __('Failed to load oEmbed data');
 					$status =  self::__INVALID_FIELDS__;
 
-					// set the array, as we still wan't to save the url
+					// set the array, as we still want to save the url
 					if (!is_array($xml)) {
 						$xml = array();
 					}
 				}
 				// else, if we can find a 'error' value
 				elseif (isset($xml['error'])) {
+					//$errorFlag = true;
 					$message = __('Exception occurred: %s', array( $xml['error'] ));
 					$status =  self::__INVALID_FIELDS__;
 				}
@@ -236,7 +239,8 @@
 				'url_oembed_xml' => $xml['url'],
 				'oembed_xml' => $xml['xml'],
 				'title' => $xml['title'],
-				'thumbnail_url' => $xml['thumbnail_url']
+				'thumbnail_url' => $xml['thumbnail_url'],
+				'driver' => $xml['driver'] 
 			);
 		}
 
@@ -304,7 +308,7 @@
 
 			Symphony::Database()->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
 
-			// return is the SQL command was successful
+			// return if the SQL command was successful
 			return Symphony::Database()->insert($settings, $tbl);
 
 		}
@@ -334,7 +338,7 @@
 		 */
 		public function tearDown() {
 			// remove params set for this field, since we are deleting it
-			return $this->removeParamsSet();
+			return parent::tearDown(); //$this->removeParamsSet();
 		}
 
 
@@ -384,6 +388,7 @@
 			$field->appendChild($title);
 			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
+			$field->appendChild(new XMLElement('driver', General::sanitize($data['driver'])));
 
 			$xml = new DomDocument();
 
@@ -468,7 +473,7 @@
 
 			if (strlen($value) == 0 || $flagWithError != NULL) {
 
-
+				// @todo find something...
 
 			} else {
 
@@ -548,13 +553,15 @@
 			$set_wrap->appendChild($label);
 
 			/* new line, request params set */
-			$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-sets-wrap'));
+			/*$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-sets-wrap'));
 			$par_title = new XMLElement('label', __('oEmbed Requests Parameters sets'));
 			$par_container = new XMLElement('div', NULL, array('class'=>'oembed-params-sets'));
 			$par_container->appendChild(new XMLElement('a', __('Add a params set'), array('href'=>'#', 'class'=>'oembed-add')));
 			$par_container->appendChild($this->generateParamsTable());
 			$par_wrap->appendChild($par_title);
-			$par_wrap->appendChild($par_container);
+			$par_wrap->appendChild($par_container);*/
+			
+			
 
 			/* new line, check boxes */
 			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
@@ -567,12 +574,12 @@
 			/* append to wrapper */
 			$wrapper->appendChild($driv_wrap);
 			//$wrapper->appendChild($set_wrap);
-			$wrapper->appendChild($par_wrap);
+			//$wrapper->appendChild($par_wrap);
 			$wrapper->appendChild($chk_wrap);
 
 		}
 
-		private function generateParamsTable() {
+		/*private function generateParamsTable() {
 
 			// data
 			$data = $this->getParamsSet();
@@ -599,7 +606,7 @@
 			return Widget::Table($header, null, Widget::TableBody($body), 'oembed-table', null,
 								array('cellspacing'=>'0', 'cellpadding'=>'1')
 					);
-		}
+		}*/
 
 		/**
 		 *
@@ -750,7 +757,7 @@
 		/**
 		 * Creates the table needed for the parameter sets of the field
 		 */
-		public static function createParamsSetTable() {
+		/*public static function createParamsSetTable() {
 
 			$tbl = self::FIELD_PS_TBL_NAME;
 
@@ -764,7 +771,7 @@
 					KEY `field_id` (`field_id`)
 				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
-		}
+		}*/
 
 		/**
 		 * Updates the table for the new settings: `unique`
@@ -795,16 +802,26 @@
 		/**
 		 * Updates the table for the new settings: `params_set_id`
 		 */
-		public static function updateFieldTable_ParamsSetId() {
+		public static function updateFieldTable_QueryParams() {
 
 			$tbl = self::FIELD_TBL_NAME;
 
 			return Symphony::Database()->query("
 				ALTER TABLE  `$tbl`
-					ADD COLUMN `params_set_id` int(11) unsigned NULL
+					ADD COLUMN `query_params` varchar(1024) NULL
 			");
 		}
 
+		public static function updateFieldTable_Driver() {
+
+			$tbl = self::FIELD_TBL_NAME;
+
+			return Symphony::Database()->query("
+				ALTER TABLE  `$tbl`
+					ADD COLUMN `driver` varchar(50) NOT NULL
+			");
+		}
+		
 		/**
 		 *
 		 * Drops the table needed for the settings of the field
@@ -821,13 +838,13 @@
 		 *
 		 * Drops the table needed for the parameters sets
 		 */
-		public static function deleteParamsSetTable() {
+		/*public static function deleteParamsSetTable() {
 			$tbl = self::FIELD_PS_TBL_NAME;
 
 			return Symphony::Database()->query("
 				DROP TABLE IF EXISTS `$tbl`
 			");
-		}
+		}*/
 
 
 
@@ -835,7 +852,7 @@
 
 		// @todo: add phpdoc
 
-		private function removeParamsSet() {
+		/*private function removeParamsSet() {
 			$tbl = self::FIELD_PS_TBL_NAME;
 
 			$id = $this->get('id');
@@ -877,7 +894,7 @@
 			return Symphony::Database()->query("
 				SELECT * FROM `$tbl` WHERE `field_id` = '$id'
 			");
-		}
+		}*/
 
 
 	}

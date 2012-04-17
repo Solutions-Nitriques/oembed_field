@@ -25,8 +25,8 @@
 			$doc->preserveWhiteSpace = false;
 			$doc->formatOutput = false;
 
-			// ignore errors, but save if it was successful
-			$errorFlag = !(@$doc->loadXML($url));
+			// ignore errors, but save it if was successful
+			$errorFlag = !(@$doc->loadXML($source));
 
 			if (!$errorFlag) {
 				$xml['xml'] = $doc->saveXML();
@@ -40,12 +40,12 @@
 				}
 
 				$xml['title'] = $doc->getElementsByTagName($driver->getTitleTagName())->item(0)->nodeValue;
-				$xml['thumb'] = $doc->getElementsByTagName($driver>getThumbnailTagName())->item(0)->nodeValue;
+				$xml['thumb'] = $doc->getElementsByTagName($driver->getThumbnailTagName())->item(0)->nodeValue;
 
 			}
 			else {
-				// return somthing since the column can't be null
-				$xml['xml'] = '<error>' . __('Symphony could not parse XML from oEmbed remote service') . '</error>';
+				// return error message
+				$xml['error'] = __('Symphony could not parse XML from oEmbed remote service');
 			}
 
 			return $xml;
@@ -57,7 +57,7 @@
 		 * @param string $source
 		 * @return string
 		 */
-		public function createXML($source, &$errorFlag) {
+		public function createXML($source, $driver, $url, &$errorFlag) {
 			// we do not have to do anything here since we already have xml
 			return $source;
 		}
@@ -68,7 +68,7 @@
 		 * @param string $source
 		 * @return string
 		 */
-		public function createJSON($source, &$errorFlag) {
+		public function createJSON($source, $driver, $url, &$errorFlag) {
 
 		}
 

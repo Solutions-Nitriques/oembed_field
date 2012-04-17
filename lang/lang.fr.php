@@ -31,8 +31,8 @@
 		"%s: This field must be unique. An entry already contains this url." =>
 		"%s: Ce champs doit être unique. Une entrée contient déjàa cet url.",
 
-		'Failed to load oEmbed XML data' =>
-		'Échec du chargement des données XML',
+		'Failed to load oEmbed data' =>
+		'Échec du chargement des données',
 
 		'Exception occurred: %s' =>
 		'Une exception a été levée: %s',

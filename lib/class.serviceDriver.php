@@ -79,19 +79,7 @@
 
 		/**
 		 *
-		 * Gets the oEmbed XML data from the Driver Source
-		 *
-		 * @param array $data
-		 * @param bool $errorFlag - ref parameter to flag if the operation was successful (new in 1.3)
-		 * @deprecated @see <code>getDataFromSource</code>
-		 */
-		public final function getXmlDataFromSource($data, &$errorFlag) {
-			return getXmlDataFromSource($data, $errorFlag);
-		}
-
-		/**
-		 *
-		 * Gets the oEmbed data from the Driver Source as an array
+		 * Gets the oEmbed data from the Driver Source, returned as an array
 		 *
 		 * @param array $data
 		 * @param bool $errorFlag - ref parameter to flag if the operation was successful (new in 1.3)
@@ -99,9 +87,10 @@
 		 * 			url => the url uses to get the data
 		 * 			xml => the raw xml data
 		 * 			json => the raw jason data, if any
-		 * 			id => the id the ressource
+		 * 			id => the id the resource
+		 * 			dirver => the driver's name used for this resource
 		 * 			title => the title of the ressource
-		 * 			thumb => the thumbnail of the ressource, if any
+		 * 			thumb => the thumbnail of the resource, if any
 		 * 			error => the error message, if any
 		 */
 		public final function getDataFromSource($data, &$errorFlag) {
@@ -110,26 +99,31 @@
 			$errorFlag = false;
 
 			// get the complete url
-			$url = $this->getOEmbedXmlApiUrl($data);
+			$url = $this->getOEmbedApiUrl($data);
 
 			// get the raw response
-			$response = @file_get_contents($url);
+			$response = file_get_contents($url, false);
 
 			// declare the result array
 			$data = array();
 
 			// add url to array
 			$data['url'] = $url;
+			
+			// add driver to array
+			$data['driver'] = $this->getName();
 
+			// if we have a valid response
 			if (!$response || strlen($response) < 1) {
 				$errorFlag = true;
-				// add error message
+				$data['error'] = __('Failed to load oEmbed data');
 
 			} else {
-				// get the parser
+				// get the good parser for the service format
+				// fixes Issue #15
 				$parser = ServiceParser::getServiceParser($this->getAPIFormat());
+
 				// merge the parsed data
-				// fix Issue #15
 				$data = array_merge($data, $parser->createArray($response, $this, $url, $errorFlag));
 			}
 
@@ -220,7 +214,7 @@
 		 * Overrides at will. Default returns 'title'
 		 * @return string
 		 */
-		protected function getThumbnailTagName() {
+		public function getThumbnailTagName() {
 			return 'thumbnail_url';
 		}
 
@@ -230,7 +224,7 @@
 		 * Overrides at will. Default returns 'title'
 		 * @return string
 		 */
-		protected function getTitleTagName() {
+		public function getTitleTagName() {
 			return 'title';
 		}
 
@@ -240,7 +234,7 @@
 		 * Overridable method that shall return the name of the tag
 		 * that will be used as ID. Default returns null
 		 */
-		protected function getIdTagName() {
+		public function getIdTagName() {
 			return null; // will use url as id
 		}
 

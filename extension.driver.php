@@ -13,7 +13,7 @@
 	 *
 	 * Embed Videos/Image Decorator/Extension
 	 * Leverage oEmbed standard in Symphony CMS (http://oembed.com/)
-	 * @author nicolasbrassard
+	 * @author nicolas
 	 *
 	 */
 	class extension_oembed_field extends Extension {
@@ -30,12 +30,17 @@
 		public function about() {
 			return array(
 				'name'			=> self::EXT_NAME,
-				'version'		=> '1.3.2',
-				'release-date'	=> '2011-10-xx',
+				'version'		=> '1.4',
+				'release-date'	=> '2012-04-xx',
 				'author'		=> array(
-					'name'			=> 'Solutions Nitriques',
-					'website'		=> 'http://www.nitriques.com/open-source/',
-					'email'			=> 'open-source (at) nitriques.com'
+					array (
+						'name'			=> 'Solutions Nitriques',
+						'website'		=> 'http://www.nitriques.com/open-source/',
+						'email'			=> 'open-source (at) nitriques.com' ),
+					array (
+						'name'			=> 'Deux Huit Huit',
+						'website'		=> 'http://www.deuxhuithuit.com',
+						'email'			=> 'open-source (at) deuxhuithuit.com' )
 				),
 				'description'	=> __('Easily embed videos/images from ANY website that implements the oEmbed format (http://oembed.com/)'),
 				'compatibility' => array(
@@ -122,11 +127,14 @@
 			// v1.3.2
 			$thumbs = FieldOembed::updateFieldTable_Thumbs();
 
-			$params = FieldOembed::createParamsSetTable();
+			// v1.3.2 - abandoned
+			// $params = FieldOembed::createParamsSetTable();
+			// $params_set_id = FieldOembed::updateFieldTable_ParamsSetId();
+			
+			// v1.4
+			$params = FieldOembed::updateFieldTable_QueryParams();
 
-			$params_set_id = FieldOembed::updateFieldTable_ParamsSetId();
-
-			return $create && $unique && $thumbs && $params && $params_set_id;
+			return $create && $unique && $thumbs && $params;
 
 		}
 
@@ -147,17 +155,25 @@
 
 			// are we updating from lower than 1.3.2 ?
 			if ($ret && version_compare($previousVersion, '1.3.2') == -1) {
-				// create the table needed for params set
-				$ret_params = FieldOembed::createParamsSetTable();
-
-				// updtae for the params set id settings
-				$ret_par_sid = FieldOembed::updateFieldTable_ParamsSetId();
-
+				
 				// update for the thumbs settings
 				$ret_thumbs = FieldOembed::updateFieldTable_Thumbs();
+				
+				// create the table needed for params set
+				//$ret_params = FieldOembed::createParamsSetTable();
+				// update for the params set id settings
+				//$ret_par_sid = FieldOembed::updateFieldTable_ParamsSetId();
+				
+				
+				// v1.4
+				// update for the params settings
+				$ret_params = FieldOembed::updateFieldTable_QueryParams();
+				
+				// update for the driver column
+				$ret_driver = FieldOembed::updateFieldTable_Driver();
 
 				// set the return value
-				$ret = $ret_thumbs && $ret_params && $ret_par_sid;
+				$ret = $ret_thumbs && $ret_params && $ret_driver;
 			}
 
 			return $ret;
@@ -169,12 +185,12 @@
 		 */
 		public function uninstall() {
 			// v1.3.2
-			$params = FieldOembed::deleteParamsSetTable();
+			//$params = FieldOembed::deleteParamsSetTable();
 
 			// pre v1.3.2
 			$field = FieldOembed::deleteFieldTable();
 
-			return $params && $field;
+			return $field;
 		}
 
 	}
