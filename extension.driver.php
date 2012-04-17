@@ -133,9 +133,8 @@
 			
 			// v1.4
 			$params = FieldOembed::updateFieldTable_QueryParams();
-			$driver = FieldOembed::updateFieldTable_Driver();
 
-			return $create && $unique && $thumbs && $params && $driver;
+			return $create && $unique && $thumbs && $params;
 
 		}
 

@@ -83,8 +83,12 @@
 			return false; // @todo: should we allow to output the url ?
 		}
 
-
-
+		/**
+		 * @return array
+		 */
+		public function getAllowedDrivers() {
+			return explode(',', $this->get('driver'));
+		}
 
 
 		/* ********** INPUT AND FIELD *********** */
@@ -109,11 +113,11 @@
 			}
 
 			$url = $data;
-			$driver = ServiceDispatcher::getServiceDriver($url);
+			$driver = ServiceDispatcher::getServiceDriver($url, $this->getAllowedDrivers());
 
 			// valid driver
 			if (!$driver && strlen($url) > 0) {
-				$message = __("No <code>ServiceDriver</code> found for '%s'.", array($url));
+				$message = __("%s: No <code>ServiceDriver</code> found for '%s'.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
 
@@ -170,8 +174,6 @@
 
 			$xml = array();
 			
-			//var_dump($simulate);
-
 			// capture the url in the field's data
 			$url = trim($data);
 
@@ -192,13 +194,15 @@
 			}
 
 			// store a pointer to the driver
-			$driver = ServiceDispatcher::getServiceDriver($url);
+			$driver = ServiceDispatcher::getServiceDriver($url, $this->getAllowedDrivers());
 
-			// check if we have a driver first
+			// check if we have a driver first and that this driver is allowed
 			if(!$driver) {
 				$status =  self::__INVALID_FIELDS__;
 				$errorFlag = true;
-				return false;
+				return array( // keep only the url, so the user do not have to type it back
+					'url' => $url
+				);
 
 			} else {
 				// get xml data
@@ -245,8 +249,7 @@
 		}
 
 		/**
-		 * Overrides of the normal function.
-		 * This permits parsing different field settings values
+		 * This function permits parsing different field settings values
 		 *
 		 * @param array $settings
 		 *	the data array to initialize if necessary.
@@ -271,6 +274,11 @@
 			$this->setArray($new_settings);
 		}
 
+
+		/**
+		 *
+		 * Validates the field settings before saving it into the field's table
+		 */
 		public function checkFields(Array &$errors, $checkForDuplicates) {
 			parent::checkFields($errors, $checkForDuplicates);
 			
@@ -427,17 +435,18 @@
 				// get the root node
 				$xml_root = $xml->getElementsByTagName($driver->getRootTagName())->item(0);
 
+				// not needed anymore
 				// if we did not found anything, try to look for a 'error' tag
-				if (empty($xml_root)) {
+				/*if (empty($xml_root)) {
 					$xml_root = $xml->getElementsByTagName('error')->item(0);
-				}
+				}*/
 
 				// if we've found a root node
 				if (!empty($xml_root)) {
 					// save it as a string
 					$xml = $xml->saveXML($xml_root);
 					// set it as the 'value' of the field
-					// BEWARE: it won't just be a string, since the
+					// BEWARE: it will be just a string, since the
 					// value we set is xml. It's just a hack to pass
 					// the value from the DOMDocument object to the XMLElement
 					$field->setValue($xml, false);
@@ -495,7 +504,7 @@
 
 			$drivers = new XMLElement('div',
 				__('Supported services <i>%s</i>',
-					array( implode(', ', ServiceDispatcher::getAllowedDriversNames()) )
+					array( /*str_replace(*/$this->get('driver') /*, ', ', ',')*/ )
 				)
 			);
 
@@ -530,7 +539,13 @@
 				);
 
 				// get the embed code
-				$embed = ServiceDispatcher::getServiceDriver($value)->getEmbedCode($data, $e_options);
+				$driver = ServiceDispatcher::getServiceDriver($value);
+				$embed = null;
+				if (!$driver) {
+					$embed = __('Error. Service unknown.');
+				} else {
+					$embed = $driver->getEmbedCode($data, $e_options);
+				}	
 
 				$res_container->setValue("<div>$embed</div>");
 
@@ -793,7 +808,7 @@
 					`id` 			int(11) unsigned NOT NULL auto_increment,
 					`field_id` 		int(11) unsigned NOT NULL,
 					`refresh` 		int(11) unsigned NULL,
-					`driver` 		varchar(150) NULL,
+					`driver` 		varchar(250) NOT NULL,
 					PRIMARY KEY (`id`),
 					KEY `field_id` (`field_id`)
 				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -865,7 +880,7 @@
 
 			return Symphony::Database()->query("
 				ALTER TABLE  `$tbl`
-					ADD COLUMN `driver` varchar(50) NOT NULL
+					MODIFY COLUMN `driver` varchar(250) NOT NULL
 			");
 		}
 		

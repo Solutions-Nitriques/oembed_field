@@ -98,9 +98,17 @@
 		 * drivers based on the $allowedList param
 		 * @param string|array $allowedList allowed class names
 		 */
-		public static final function getAllowedDrivers($allowedList = null) {
-			// @todo: implement this
-			return self::getAllDrivers();
+		public static final function getAllowedDrivers(array $allowedList = null) {
+			$allowedDrivers = array();
+			$allDrivers = self::getAllDrivers();
+			if (!empty($allowedList)) {
+				foreach ($allDrivers as $key => $driver) {
+					if (!!array_search($driver->getName(), $allowedList)) {
+						$allowedDrivers[$key] = $driver;
+					}
+				}
+			}
+			return $allowedDrivers;
 		}
 
 		/**
@@ -120,18 +128,26 @@
 		 * @return ServiceDriver
 		 * @throws ServiceDriverException
 		 */
-		public static final function getServiceDriver($url) {
+		public static final function getServiceDriver($url, $allowedList = null) {
 
 			// no url == no driver, exit soon
 			if (!$url || $url == null || strlen($url) == 0) {
 				return null;
 			}
 
-			// assure drivers are loaded
-			self::loadDrivers();
+			$drivers = null;
+
+			// get the good list of drivers
+			if (is_array($allowedList)) {
+				$drivers = self::getAllowedDrivers($allowedList);
+			} else {
+				$drivers = self::getAllDrivers();
+			}
+			
+			var_dump($allowedList, $driver);die;
 
 			// for each driver
-			foreach (self::$drivers as $className => $class) {
+			foreach ($drivers as $className => $class) {
 
 				// if it matches, return it
 				if ($class->isMatch($url)) {

@@ -25,8 +25,8 @@
 		'Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>' =>
 		'Mise à jour du cache <em>en minutes</em> (laisser vide pour aucune mise à jour) <i>Optionel</i>',
 
-		"%s: No ServiceDriver found for '%s'." =>
-		"%s: Aucun ServiceDriver trouvé pour '%s'.",
+		"%s: No <code>ServiceDriver</code> found for '%s'." =>
+		"%s: Aucun <code>ServiceDriver</code> trouvé pour '%s'.",
 
 		"%s: This field must be unique. An entry already contains this url." =>
 		"%s: Ce champs doit être unique. Une entrée contient déjàa cet url.",
@@ -74,5 +74,8 @@
 		'Ajouté un groupe de paramètre',
 		
 		'You must select at least one service in order to use the oEmbed field.' =>
-		'Vous devez sélectionner au moins un service pour utiliser le champ oEmbed.'
+		'Vous devez sélectionner au moins un service pour utiliser le champ oEmbed.',
+		
+		'Error. Service unknown.' => 
+		'Erreur. Service non-reconnu.' 
 	);
