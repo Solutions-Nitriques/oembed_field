@@ -2,6 +2,9 @@
 
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 
+	// include the Service Parser master class
+	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceParser.php');
+
 	/**
 	 *
 	 * Abstract class that represents a service that offers oEmbed API
@@ -10,13 +13,13 @@
 	 */
 	abstract class ServiceDriver {
 
-		protected $Name = null;
+		private $Name = null;
 
-		protected $Domains = null;
+		private $Domains = null;
 
 		/**
 		 *
-		 * Basic constructor that takes the name of the service and its Url as parameters
+		 * Basic constructor that takes the name of the service and its Urls as parameters
 		 * @param string $name
 		 * @param string|array $domains
 		 */
@@ -80,8 +83,28 @@
 		 *
 		 * @param array $data
 		 * @param bool $errorFlag - ref parameter to flag if the operation was successful (new in 1.3)
+		 * @deprecated @see <code>getDataFromSource</code>
 		 */
 		public final function getXmlDataFromSource($data, &$errorFlag) {
+			return getXmlDataFromSource($data, $errorFlag);
+		}
+
+		/**
+		 *
+		 * Gets the oEmbed data from the Driver Source as an array
+		 *
+		 * @param array $data
+		 * @param bool $errorFlag - ref parameter to flag if the operation was successful (new in 1.3)
+		 * @return array
+		 * 			url => the url uses to get the data
+		 * 			xml => the raw xml data
+		 * 			json => the raw jason data, if any
+		 * 			id => the id the ressource
+		 * 			title => the title of the ressource
+		 * 			thumb => the thumbnail of the ressource, if any
+		 * 			error => the error message, if any
+		 */
+		public final function getDataFromSource($data, &$errorFlag) {
 
 			// assure we have no error
 			$errorFlag = false;
@@ -89,50 +112,28 @@
 			// get the complete url
 			$url = $this->getOEmbedXmlApiUrl($data);
 
+			// get the raw response
+			$response = @file_get_contents($url);
 
-			$xml = array();
-
+			// declare the result array
+			$data = array();
 
 			// add url to array
-			$xml['url'] = $url;
+			$data['url'] = $url;
 
-			// trying to load XML into DOM Document
-			$doc = new DOMDocument();
-			$doc->preserveWhiteSpace = false;
-			$doc->formatOutput = false;
+			if (!$response || strlen($response) < 1) {
+				$errorFlag = true;
+				// add error message
 
-			// ignore errors, but save if it was successful
-			$errorFlag = !(@$doc->load($url));
-
-			if (!$errorFlag) {
-				$xml['xml'] = $doc->saveXML();
-
-				// add id to array
-				$idTagName = $this->getIdTagName();
-				if ($idTagName == null) {
-					$xml['id'] = Lang::createHandle($url);
-				} else {
-					$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
-				}
-
-				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
-				$xml['thumb'] = $doc->getElementsByTagName($this->getThumbnailTagName())->item(0)->nodeValue;
-
-			}
-			else {
-				// return somthing since the column can't be null
-				$xml['xml'] = '<error>' . __('Symphony could not load XML from oEmbed remote service') . '</error>';
+			} else {
+				// get the parser
+				$parser = ServiceParser::getServiceParser($this->getAPIFormat());
+				// merge the parsed data
+				// fix Issue #15
+				$data = array_merge($data, $parser->createArray($response, $this, $url, $errorFlag));
 			}
 
-			return $xml;
-		}
-
-		/**
-		 *
-		 * Enter description here ...
-		 * Issue #15
-		 */
-		public function formatDataFromSource() {
+			return $data;
 
 		}
 
@@ -199,7 +200,7 @@
 		 * Method that returns the format used in oEmbed API responses
 		 * @return string (xml|json)
 		 */
-		public function getRootTagName() {
+		public function getAPIFormat() {
 			return 'xml'; // xml || json
 		}
 

@@ -49,8 +49,8 @@
 		'Remove' =>
 		'Supprimer',
 
-		'Symphony could not load XML from oEmbed remote service' =>
-		"Symphony n'a pas pu charger les données XML à partir du service oEmbed",
+		'Symphony could not parse XML from oEmbed remote service' =>
+		"Symphony n'a pas pu lire les données XML à partir du service oEmbed",
 
 		'Error while loading the xml into the document' =>
 		'Une erreur est survenue lors du traitement des données xml',

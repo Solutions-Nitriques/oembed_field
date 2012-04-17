@@ -5,6 +5,8 @@
 	// include the Service Driver master class
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDriver.php');
 
+	define('OEMBED_DRIVERS_DIR', EXTENSIONS . '/oembed_field/lib/drivers/');
+
 	/**
 	 *
 	 * Class that groups functionality for working with Service Drivers
@@ -32,14 +34,11 @@
 			// if the pointer is null, when sould load the drivers
 			if (self::$drivers == null) {
 
-				// get the drivers directory
-				$dir = EXTENSIONS . '/oembed_field/lib/drivers/';
-
 				// create a new array
 				self::$drivers = array();
 
 				// get all files in the drivers folders
-				$drivers = General::listStructure($dir, '/class.service[a-zA-Z0-9]+.php/', 'asc');
+				$drivers = General::listStructure(OEMBED_DRIVERS_DIR, '/class.service[a-zA-Z0-9]+.php/', 'asc');
 
 				// for each file found
 				foreach ($drivers['filelist'] as $class) {
@@ -47,7 +46,7 @@
 					try {
 
 						// include the class code
-						require_once($dir . $class);
+						require_once(OEMBED_DRIVERS_DIR . $class);
 
 						// get class name
 						$class = str_replace(array('class.', '.php'), '', $class);
