@@ -456,10 +456,18 @@
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
 
-			if($this->get('required') != 'yes') {
-				$label->appendChild(new XMLElement('i', 'Optional'));
-			}
 
+			// required label
+			if($this->get('required') != 'yes') {
+				$label->appendChild(new XMLElement('i', __('Optional')));
+			}
+			
+			// unique label
+			if($this->get('unique') != 'yes') {
+				$label->appendChild(new XMLElement('i', __('Unique')));
+			}
+			
+			// input form
 			$url = new XMLElement('input');
 			$url->setAttribute('type', 'text');
 			$url->setAttribute('name', 'fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix);
@@ -473,7 +481,7 @@
 
 			if (strlen($value) == 0 || $flagWithError != NULL) {
 
-				// @todo find something...
+				// do nothing
 
 			} else {
 
@@ -501,6 +509,7 @@
 					'height_side' => '160'
 				);
 
+				// get the embed code
 				$embed = ServiceDispatcher::getServiceDriver($value)->getEmbedCode($data, $e_options);
 
 				$res_container->setValue("<div>$embed</div>");
@@ -538,12 +547,10 @@
 			parent::displaySettingsPanel($wrapper, $errors);
 
 			/* new line, drivers */
+			
 			$driv_wrap = new XMLElement('div', NULL, array('class'=>'oembed-drivers'));
-			$driv_title = new XMLElement('label',
-				__('Supported services <i>%s</i>',
-					array( implode(', ', ServiceDispatcher::getAllDriversNames()) )
-				)
-			);
+			$driv_title = new XMLElement('label',__('Supported services <i>Optional</i>'));
+			$driv_title->appendChild($this->generateDriversSelect());
 			$driv_wrap->appendChild($driv_title);
 
 			/* new line, update settings */
@@ -551,7 +558,14 @@
 			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
 			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
 			$set_wrap->appendChild($label);
-
+			
+			/* new line, request params */
+			// Fixes issue #11
+			$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-settings'));
+			$par_title = new XMLElement('label', __('Request URL Parameters (Appended to the query string) <i>Optional</i>'));
+			$par_title->appendChild(Widget::Input('fields['.$this->get('sortorder').'][query_params]', $this->get('query_params')));
+			$par_wrap->appendChild($par_title);
+			
 			/* new line, request params set */
 			/*$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-sets-wrap'));
 			$par_title = new XMLElement('label', __('oEmbed Requests Parameters sets'));
@@ -561,8 +575,6 @@
 			$par_wrap->appendChild($par_title);
 			$par_wrap->appendChild($par_container);*/
 			
-			
-
 			/* new line, check boxes */
 			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
 			$chk_wrap->appendChild(new XMLElement('label', __('Other properties'), array('class'=>'oembed-other-title') ));
@@ -572,11 +584,23 @@
 			$this->appendShowThumbnailCheckbox($chk_wrap);
 
 			/* append to wrapper */
+			$wrapper->appendChild($par_wrap);
 			$wrapper->appendChild($driv_wrap);
 			//$wrapper->appendChild($set_wrap);
-			//$wrapper->appendChild($par_wrap);
 			$wrapper->appendChild($chk_wrap);
 
+		}
+
+		private function generateDriversSelect() {
+			$drivers = ServiceDispatcher::getAllDriversNames();
+			sort($drivers, SORT_STRING);
+			$drivers_options = array();
+			foreach ($drivers as $driver) {
+				$selected = strpos($this->get('driver'), $driver) > -1;
+				$drivers_options[] = array($driver, $selected);
+			}
+			
+			return Widget::Select('fields['.$this->get('sortorder').'][driver]', $drivers_options, array('multiple'=>'multiple'));
 		}
 
 		/*private function generateParamsTable() {

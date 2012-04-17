@@ -94,11 +94,11 @@
 			// section page, new or edit
 			if($c['driver'] == 'blueprintssections') {
 
-				Administration::instance()->Page->addScriptToHead(
+				/*Administration::instance()->Page->addScriptToHead(
 					URL . '/extensions/oembed_field/assets/section.oembed.js',
 					time(),
 					false
-				);
+				);*/
 
 				Administration::instance()->Page->addStylesheetToHead(
 					URL . '/extensions/oembed_field/assets/section.oembed.css',
