@@ -32,7 +32,7 @@
 							);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			return 'http://www.flickr.com/services/oembed?url=' . $params['url'];
 		}
 

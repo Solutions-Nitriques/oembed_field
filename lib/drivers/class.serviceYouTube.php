@@ -8,7 +8,7 @@
 		const BASE_URL = "http://youtu.be/";
 
 		public function __construct() {
-			parent::__construct('YouTube', 'youtube.com');
+			parent::__construct('YouTube', array('youtube.com', 'youtu.be')); // Fix Issue #19
 		}
 
 		public function about() {
@@ -24,14 +24,14 @@
 	 		);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
 
 			// trying to fix url with # in it
 			// N.B. this is valid only for Youtube as other services
 			// may place the resource ID elsewhere in the hash (#) tag
 
-			// if the url contains '#' (the reel resource ID is the last part)
+			// if the url contains '#' (the real resource ID is the last part)
 			if (strpos($url, '#') !== FALSE) {
 				// split on every # or /
 				$exploded = preg_split('/[\/#]/', $url);

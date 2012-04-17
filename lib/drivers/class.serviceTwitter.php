@@ -21,7 +21,7 @@
       );
     }
 
-    public function getOEmbedXmlApiUrl($params) {
+    public function getOEmbedApiUrl($params) {
       $url = rawurlencode($params['url']);
       return 'https://api.twitter.com/1/statuses/oembed.xml?url=' . $url;
     }

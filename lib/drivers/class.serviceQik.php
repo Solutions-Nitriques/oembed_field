@@ -22,7 +22,7 @@
 	 		);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
 
 			return 'http://qik.com/api/oembed.xml?url=' . $url;

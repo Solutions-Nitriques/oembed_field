@@ -22,7 +22,7 @@
 	 		);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
 
 			return 'http://www.dailymotion.com/services/oembed?format=xml&url=' . $url;

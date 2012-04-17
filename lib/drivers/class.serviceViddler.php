@@ -22,7 +22,7 @@
 	 		);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
 
 			return 'http://lab.viddler.com/services/oembed/?type=simple&format=xml&url=' . $url;

@@ -10,24 +10,25 @@
 	 */
 	abstract class ServiceDriver {
 
-		protected $Name = '';
+		protected $Name = null;
 
-		protected $Domain = '';
+		protected $Domains = null;
 
 		/**
 		 *
 		 * Basic constructor that takes the name of the service and its Url as parameters
 		 * @param string $name
-		 * @param string $domain
+		 * @param string|array $domains
 		 */
-		protected function __construct($name, $domain) {
+		protected function __construct($name, $domains) {
 			$this->Name = $name;
-			$this->Domain = $domain;
+			$this->Domains = $domains;
 		}
 
 		/**
 		 *
 		 * Accessor for the Name property
+		 * @return string
 		 */
 		public final function getName() {
 			return $this->Name;
@@ -36,9 +37,24 @@
 		/**
 		 *
 		 * Accessor for the Domain property
+		 * @deprecated  @see <code>getDomains</code>
 		 */
 		public final function getDomain() {
-			return $this->Domain;
+			return $this->Domains;
+		}
+
+		/**
+		 *
+		 * Accessor for the unified Domains property
+		 * This will alway return an array, even if the domain was set as a string
+		 * Fix issue #19
+		 * @return Array
+		 */
+		public final function getDomains() {
+			if (!is_array($this->Domains)) {
+				return array($this->Domains);
+			}
+			return $this->Domains;
 		}
 
 		/**
@@ -46,9 +62,16 @@
 		 * Methods used to check if this drivers corresponds to the
 		 * data passed in parameter. Overrides at will
 		 * @param data $url
+		 * @return boolean
 		 */
 		public function isMatch($url) {
-			return strpos($url, $this->Domain) > -1;
+			$doms = $this->getDomains();
+			foreach ($doms as $d) {
+				if (strpos($url, $d) > -1) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		/**
@@ -60,9 +83,15 @@
 		 */
 		public final function getXmlDataFromSource($data, &$errorFlag) {
 
+			// assure we have no error
+			$errorFlag = false;
+
+			// get the complete url
 			$url = $this->getOEmbedXmlApiUrl($data);
 
+
 			$xml = array();
+
 
 			// add url to array
 			$xml['url'] = $url;
@@ -96,6 +125,15 @@
 			}
 
 			return $xml;
+		}
+
+		/**
+		 *
+		 * Enter description here ...
+		 * Issue #15
+		 */
+		public function formatDataFromSource() {
+
 		}
 
 		/**
@@ -147,7 +185,7 @@
 		 * Abstract method that shall return the URL for the oEmbed XML API
 		 * @param $params
 		 */
-		public abstract function getOEmbedXmlApiUrl($params);
+		public abstract function getOEmbedApiUrl($params);
 
 		/**
 		 *
@@ -155,6 +193,15 @@
 		 */
 		public abstract function about();
 
+
+		/**
+		 *
+		 * Method that returns the format used in oEmbed API responses
+		 * @return string (xml|json)
+		 */
+		public function getRootTagName() {
+			return 'xml'; // xml || json
+		}
 
 		/**
 		 *

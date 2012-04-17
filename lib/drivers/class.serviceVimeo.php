@@ -31,7 +31,7 @@
 					);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			// DO NOT CONCAT WITH + IN PHP ... USE .
 			// TABARNAK !!!
 			return 'http://vimeo.com/api/oembed.xml?url=' . trim($params['url']);
