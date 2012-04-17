@@ -30,7 +30,7 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
-		<release version="1.3.2" date="2012-02-xx" min="2.2.3">
+		<release version="1.3.2" date="2012-04-xx" min="2.2.3">
 	### `dev` branch
   - Fix issues #11, #19
   - Added the `show thumbnails in table` parameter: if disabled, title or url will be used
@@ -42,10 +42,10 @@
   - Changes between the two branches (master and dev) are now synced 
 		</release>
 		<release version="1.3.1.1" date="2012-02-01" min="2.2.3">
+  ### `master` branch
   - Added the Twitter Driver :) Thanks @briandrum !
 		</release>
-		<release version="1.3.1" date="2011-10-16" min="2.2.3">
-	### `master` branch  
+		<release version="1.3.1" date="2011-10-16" min="2.2.3">  
   - Added assets for the blueprints>section pages  
   - Added the 'unique' option - url can now be unique across a section  
   - Added Dailymotion, Qik (fix issue #9) and Viddler drivers (thanks Andrew!, pull request #8)
