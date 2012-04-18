@@ -243,7 +243,7 @@
 				'url_oembed_xml' => $xml['url'],
 				'oembed_xml' => $xml['xml'],
 				'title' => $xml['title'],
-				'thumbnail_url' => $xml['thumbnail_url'],
+				'thumbnail_url' => $xml['thumb'],
 				'driver' => $xml['driver'] 
 			);
 		}
@@ -503,7 +503,7 @@
 			$url->setAttribute('value', $value);
 
 			$drivers = new XMLElement('div',
-				__('Supported services <i>%s</i>',
+				__('Supported services: <i>%s</i>',
 					array( /*str_replace(*/$this->get('driver') /*, ', ', ',')*/ )
 				)
 			);
@@ -719,32 +719,34 @@
 
 			$url = $data['url'];
 			$thumb = $data['thumbnail_url'];
+			$textValue = $this->preparePlainTextValue($data, $data['res_id']);
 			$value = NULL;
 
 			// no url = early exit
 			if(strlen($url) == 0) return NULL;
 
-
 			// no thumbnail or the parameter is not set ?
 			if (empty($thumb) || $this->get('thumbs') != 'yes') {
 				// if not use the title or the url as value
-				$value = (isset($data['title'])? $data['title'] : $data['url']);
+				$value = $textValue;
 			} else {
-				$img_path = URL . '/image/1/0/50/1/' .  str_replace('http://', '',$thumb);
+				// create a image
+				$img_path = URL . '/image/1/0/40/1/' .  str_replace('http://', '',$thumb);
 
 				$value = '<img src="' . $img_path .'" alt="' . General::sanitize($data['title']) .'" height="40" />';
 			}
 
 			// does this cell serve as a link ?
-			if($link){
+			if (!!$link){
 				// if so, set our html as the link's value
 				$link->setValue($value);
+				$link->setAttribute('title', $textValue . ' | ' . $link->getAttribute('title'));
 
-			} else{
+			} else { 
 				// if not, wrap our html with a external link to the resource url
 				$link = new XMLElement('a',
 					$value,
-					array('href' => $url, 'target' => '_blank')
+					array('href' => $url, 'target' => '_blank', 'title' => $textValue)
 				);
 			}
 
@@ -762,7 +764,7 @@
 			return (
 				isset($data['title'])
 					? General::sanitize($data['title'])
-					: $data['url']
+					: (isset($data['url']) ? $data['url'] : $entry_id)
 			);
 		}
 

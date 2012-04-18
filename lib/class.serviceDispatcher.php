@@ -98,12 +98,14 @@
 		 * drivers based on the $allowedList param
 		 * @param string|array $allowedList allowed class names
 		 */
-		public static final function getAllowedDrivers(array $allowedList = null) {
+		public static final function getAllowedDrivers($allowedList = null) {
 			$allowedDrivers = array();
-			$allDrivers = self::getAllDrivers();
-			if (!empty($allowedList)) {
+			if (is_array($allowedList) && count($allowedList) > 0) {
+				
+				$allDrivers = self::getAllDrivers();
+				
 				foreach ($allDrivers as $key => $driver) {
-					if (!!array_search($driver->getName(), $allowedList)) {
+					if (array_search($key, $allowedList) !== false) {
 						$allowedDrivers[$key] = $driver;
 					}
 				}
@@ -143,8 +145,6 @@
 			} else {
 				$drivers = self::getAllDrivers();
 			}
-			
-			var_dump($allowedList, $driver);die;
 
 			// for each driver
 			foreach ($drivers as $className => $class) {

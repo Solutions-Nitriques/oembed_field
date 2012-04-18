@@ -101,8 +101,8 @@
 			// get the complete url
 			$url = $this->getOEmbedApiUrl($data);
 
-			// get the raw response
-			$response = file_get_contents($url, false);
+			// get the raw response, ignore errors
+			$response = @file_get_contents($url, false);
 
 			// declare the result array
 			$data = array();
