@@ -33,7 +33,8 @@
 		}
 
 		public function getOEmbedApiUrl($params) {
-			return 'http://www.flickr.com/services/oembed?url=' . $params['url'];
+			$query_params = $params['query_params'];
+			return 'http://www.flickr.com/services/oembed?url=' . $params['url']. $query_params;
 		}
 
 		public function getIdTagName() {

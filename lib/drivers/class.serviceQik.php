@@ -24,8 +24,9 @@
 
 		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
-
-			return 'http://qik.com/api/oembed.xml?url=' . $url;
+			$query_params = $params['query_params'];
+			
+			return 'http://qik.com/api/oembed.xml?url=' . $url . $query_params;
 		}
 
 		//Qik Service uses "hash" as root node.

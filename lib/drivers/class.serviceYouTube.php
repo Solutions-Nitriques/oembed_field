@@ -31,6 +31,7 @@
 
 		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
+			$query_params = $params['query_params'];
 
 			// trying to fix url with # in it
 			// N.B. this is valid only for Youtube as other services
@@ -45,7 +46,7 @@
 				$url = self::BASE_URL . $exploded[count($exploded)-1];
 			}
 
-			return 'http://www.youtube.com/oembed?format=xml&url=' . $url;
+			return 'http://www.youtube.com/oembed?format=xml&url=' . $url . $query_params;
 		}
 
 	}

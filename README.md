@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.3.2
+Version: 1.4
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
@@ -25,7 +25,7 @@ Version: 1.3.2
 
 ### REQUIREMENTS ###
 
-- Symphony CMS version 2.2.3 and up (as of the day of the last release of this extension)
+- Symphony CMS version 2.2.5 and up (as of the day of the last release of this extension)
 
 ### INSTALLATION ###
 
@@ -36,16 +36,27 @@ Version: 1.3.2
 
 *Voila !*
 
+### HOW TO USE ###
+
+- After installation, add a oEmbed field to a section
+- Configure the field
+	- Select at least one supported driver
+	- You can add extra parameters to the oEmbed request's query string
+- All the data will be available as xml in a datasource
+- Use the `oembed` tag for embeding the resource into your frontend
+
+### TODO ###
+
+- Adds a auto-refresh data mechanism
+- Automatically add sites in the JIT authorized sites (for thumbnail and image services)
+- Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
+
+### CREDITS ###
+
 <http://www.nitriques.com/open-source/>
 
 <http://www.deuxhuithuit.com/>
 
-### TODO ###
-
-- Allow appending parameters to oEmbed request from section editor
-- Adds a auto-refresh data mechanism
-- Automatically add sites in the JIT authorized sites (for thumbnail and image services)
-- Add a field setting: Authorize only certain drivers (needs discussion on that)
-- Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
+And thanks to everybody that added ServiceDrivers, reported bugs or submitted any improvements !
 
 

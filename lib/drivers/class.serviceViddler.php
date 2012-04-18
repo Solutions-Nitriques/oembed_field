@@ -24,8 +24,9 @@
 
 		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
+			$query_params = $params['query_params'];
 
-			return 'http://lab.viddler.com/services/oembed/?type=simple&format=xml&url=' . $url;
+			return 'http://lab.viddler.com/services/oembed/?type=simple&format=xml&url=' . $url . $query_params;
 		}
 
 	}

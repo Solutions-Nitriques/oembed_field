@@ -23,7 +23,8 @@
 
     public function getOEmbedApiUrl($params) {
       $url = rawurlencode($params['url']);
-      return 'https://api.twitter.com/1/statuses/oembed.xml?url=' . $url;
+	  $query_params = $params['query_params'];
+      return 'https://api.twitter.com/1/statuses/oembed.xml?url=' . $url . $query_params;
     }
 
     public function getIdTagName() {

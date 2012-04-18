@@ -81,7 +81,7 @@
 		 *
 		 * Gets the oEmbed data from the Driver Source, returned as an array
 		 *
-		 * @param array $data
+		 * @param array $params - parameters for the oEmbed API request
 		 * @param bool $errorFlag - ref parameter to flag if the operation was successful (new in 1.3)
 		 * @return array
 		 * 			url => the url uses to get the data
@@ -93,13 +93,13 @@
 		 * 			thumb => the thumbnail of the resource, if any
 		 * 			error => the error message, if any
 		 */
-		public final function getDataFromSource($data, &$errorFlag) {
+		public final function getDataFromSource($params, &$errorFlag) {
 
 			// assure we have no error
 			$errorFlag = false;
 
 			// get the complete url
-			$url = $this->getOEmbedApiUrl($data);
+			$url = $this->getOEmbedApiUrl($params);
 
 			// get the raw response, ignore errors
 			$response = @file_get_contents($url, false);
@@ -243,8 +243,8 @@
 		 * This method will be called when adding sites
 		 * to the authorized JIT image manipulations external urls.
 		 *
-		 * It should return url as value
-		 * i.e. array('http://*.example.org/*', 'http://*.example.org/images/*')
+		 * It should return domains as value
+		 * i.e. array('*.example.org*', '*.example.org/images/*')
 		 *
 		 * @return array|null
 		 */

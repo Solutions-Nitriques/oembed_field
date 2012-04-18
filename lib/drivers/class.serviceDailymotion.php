@@ -24,8 +24,9 @@
 
 		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
+			$query_params = $params['query_params'];
 
-			return 'http://www.dailymotion.com/services/oembed?format=xml&url=' . $url;
+			return 'http://www.dailymotion.com/services/oembed?format=xml&url=' . $url . $query_params;
 		}
 
 	}

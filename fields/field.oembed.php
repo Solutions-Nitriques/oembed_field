@@ -207,7 +207,8 @@
 			} else {
 				// get xml data
 				$params = array(
-					'url' => $url
+					'url' => $url,
+					'query_params' => $this->get('query_params')
 				);
 				$xml = $driver->getDataFromSource($params, $errorFlag);
 
@@ -229,7 +230,7 @@
 					}
 				}
 				// else, if we can find a 'error' value
-				elseif (isset($xml['error'])) {
+				else if (isset($xml['error'])) {
 					//$errorFlag = true;
 					$message = __('Exception occurred: %s', array( $xml['error'] ));
 					$status =  self::__INVALID_FIELDS__;
@@ -261,8 +262,6 @@
 
 			// declare a new setting array
 			$new_settings = array();
-			
-			//var_dump($settings['driver']);die;
 
 			// set new settings
 			$new_settings['unique'] = 		( isset($settings['unique']) 		&& $settings['unique'] == 'on' ? 'yes' : 'no');
@@ -295,7 +294,7 @@
 		 *
 		 * Save field settings into the field's table
 		 */
-		public function commit(){
+		public function commit() {
 
 			// if the default implementation works...
 			if(!parent::commit()) return false;
@@ -384,8 +383,6 @@
 		 */
 		public function fetchIncludableElements() {
 			$elements = parent::fetchIncludableElements();
-
-			//var_dump($elements); die;
 
 			return $elements;
 		}
