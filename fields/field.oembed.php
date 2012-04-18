@@ -216,7 +216,7 @@
 				// this processRawFieldData function executing, since it requires valid data to load the XML
 				// thanks @nickdunn
 				// NOTE: The $message stuff won't do anything due to a Symphony bug
-				// https://github.com/symphonycms/symphony-2/issues/879 ^BA
+				// https://github.com/symphonycms/symphony-2/issues/879
 
 				// if $xml is NOT an array OR if $errorFlag and no error message...
 				if (!is_array($xml) || ($errorFlag && !isset($xml['error']))) {
