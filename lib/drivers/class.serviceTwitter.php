@@ -15,15 +15,16 @@
           'name'    => 'Brian Drum',
           'website' => 'http://briandrum.net'
         ),
-        'name'         => $this->Name,
+        'name'         => $this->getName(),
         'release-date' => '2012-01-27',
         'version'      => '1.0'
       );
     }
 
-    public function getOEmbedXmlApiUrl($params) {
+    public function getOEmbedApiUrl($params) {
       $url = rawurlencode($params['url']);
-      return 'https://api.twitter.com/1/statuses/oembed.xml?url=' . $url;
+	  $query_params = $params['query_params'];
+      return 'https://api.twitter.com/1/statuses/oembed.xml?url=' . $url . $query_params;
     }
 
     public function getIdTagName() {

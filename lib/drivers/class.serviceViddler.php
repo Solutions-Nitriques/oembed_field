@@ -5,17 +5,15 @@
 
 	class serviceViddler extends ServiceDriver {
 
-		const BASE_URL = "http://www.viddler.com/explore";
-
 		public function __construct() {
 			parent::__construct('Viddler', 'viddler.com');
 		}
 
 		public function about() {
 			return array(
-				'name'			=> $this->Name,
-				'version'		=> '1.0',
-				'release-date'	=> '2011-10-07',
+				'name'			=> $this->getName(),
+				'version'		=> '1.1',
+				'release-date'	=> '2011-11-17',
 				'author'		=> array(
 					'name'			=> 'Andrew Minton',
 					'website'		=> 'http://andrewminton.co.uk/',
@@ -24,13 +22,11 @@
 	 		);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
+			$query_params = $params['query_params'];
 
-			return 'http://lab.viddler.com/services/oembed/?type=simple&format=xml&url=' . $url;
+			return 'http://lab.viddler.com/services/oembed/?type=simple&format=xml&url=' . $url . $query_params;
 		}
 
-		public function getIdTagName() {
-			return null; // will use url as id
-		}
 	}

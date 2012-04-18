@@ -5,17 +5,15 @@
 
 	class serviceDailymotion extends ServiceDriver {
 
-		const BASE_URL = "http://dailymotion.com/video/";
-
 		public function __construct() {
 			parent::__construct('Dailymotion', 'dailymotion.com');
 		}
 
 		public function about() {
 			return array(
-				'name'			=> $this->Name,
-				'version'		=> '1.0',
-				'release-date'	=> '2011-10-07',
+				'name'			=> $this->getName(),
+				'version'		=> '1.1',
+				'release-date'	=> '2011-11-17',
 				'author'		=> array(
 					'name'			=> 'Andrew Minton',
 					'website'		=> 'http://andrewminton.co.uk/',
@@ -24,13 +22,11 @@
 	 		);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
+			$query_params = $params['query_params'];
 
-			return 'http://www.dailymotion.com/services/oembed?format=xml&url=' . $url;
+			return 'http://www.dailymotion.com/services/oembed?format=xml&url=' . $url . $query_params;
 		}
 
-		public function getIdTagName() {
-			return null; // will use url as id
-		}
 	}

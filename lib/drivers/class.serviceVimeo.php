@@ -11,9 +11,9 @@
 
 		public function about() {
 			return array(
-				'name'			=> $this->Name,
-				'version'		=> '1.0',
-				'release-date'	=> '2011-07-15',
+				'name'			=> $this->getName(),
+				'version'		=> '1.1',
+				'release-date'	=> '2011-11-17',
 				'author'		=> array(
 					'name'			=> 'Solutions Nitriques',
 					'website'		=> 'http://www.nitriques.com/open-source/',
@@ -31,13 +31,22 @@
 					);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			// DO NOT CONCAT WITH + IN PHP ... USE .
 			// TABARNAK !!!
-			return 'http://vimeo.com/api/oembed.xml?url=' . trim($params['url']);
+			$query_params = $params['query_params'];
+			return 'http://vimeo.com/api/oembed.xml?url=' . trim($params['url']) . $query_params;
 		}
 
 		public function getIdTagName() {
 			return 'video_id';
+		}
+
+		public function getNeededUrlsToJITimages() {
+			return array(
+				'http://a.vimeocdn.com/*',
+				'http://b.vimeocdn.com/*',
+				'http://c.vimeocdn.com/*'
+			);
 		}
 	}

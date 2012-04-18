@@ -6,14 +6,13 @@
 /**
  * CSS for the blueprintsection driver
  * 
- * @author nicolasbrassard
+ * @author nicolas
  */
-.oembed-params-sets-wrap {
-	
+
+div.compact label.oembed-other-title {
+	width:90%;
 }
 
-.oembed-params-sets {
-	padding: 1em;
+.oembed-params-settings {
 	margin: 0 0 1.5em 0;
-	background-color: #fff;
 }

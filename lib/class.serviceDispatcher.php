@@ -5,6 +5,8 @@
 	// include the Service Driver master class
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDriver.php');
 
+	define('OEMBED_DRIVERS_DIR', EXTENSIONS . '/oembed_field/lib/drivers/');
+
 	/**
 	 *
 	 * Class that groups functionality for working with Service Drivers
@@ -32,14 +34,11 @@
 			// if the pointer is null, when sould load the drivers
 			if (self::$drivers == null) {
 
-				// get the drivers directory
-				$dir = EXTENSIONS . '/oembed_field/lib/drivers/';
-
 				// create a new array
 				self::$drivers = array();
 
 				// get all files in the drivers folders
-				$drivers = General::listStructure($dir, '/class.service[a-zA-Z0-9]+.php/', 'asc');
+				$drivers = General::listStructure(OEMBED_DRIVERS_DIR, '/class.service[a-zA-Z0-9]+.php/', 'asc');
 
 				// for each file found
 				foreach ($drivers['filelist'] as $class) {
@@ -47,7 +46,7 @@
 					try {
 
 						// include the class code
-						require_once($dir . $class);
+						require_once(OEMBED_DRIVERS_DIR . $class);
 
 						// get class name
 						$class = str_replace(array('class.', '.php'), '', $class);
@@ -100,8 +99,18 @@
 		 * @param string|array $allowedList allowed class names
 		 */
 		public static final function getAllowedDrivers($allowedList = null) {
-			// @todo: implement this
-			return self::getAllDrivers();
+			$allowedDrivers = array();
+			if (is_array($allowedList) && count($allowedList) > 0) {
+				
+				$allDrivers = self::getAllDrivers();
+				
+				foreach ($allDrivers as $key => $driver) {
+					if (array_search($key, $allowedList) !== false) {
+						$allowedDrivers[$key] = $driver;
+					}
+				}
+			}
+			return $allowedDrivers;
 		}
 
 		/**
@@ -121,18 +130,24 @@
 		 * @return ServiceDriver
 		 * @throws ServiceDriverException
 		 */
-		public static final function getServiceDriver($url) {
+		public static final function getServiceDriver($url, $allowedList = null) {
 
 			// no url == no driver, exit soon
 			if (!$url || $url == null || strlen($url) == 0) {
 				return null;
 			}
 
-			// assure drivers are loaded
-			self::loadDrivers();
+			$drivers = null;
+
+			// get the good list of drivers
+			if (is_array($allowedList)) {
+				$drivers = self::getAllowedDrivers($allowedList);
+			} else {
+				$drivers = self::getAllDrivers();
+			}
 
 			// for each driver
-			foreach (self::$drivers as $className => $class) {
+			foreach ($drivers as $className => $class) {
 
 				// if it matches, return it
 				if ($class->isMatch($url)) {

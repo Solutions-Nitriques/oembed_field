@@ -2,6 +2,9 @@
 
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 
+	// include the Service Parser master class
+	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceParser.php');
+
 	/**
 	 *
 	 * Abstract class that represents a service that offers oEmbed API
@@ -10,24 +13,25 @@
 	 */
 	abstract class ServiceDriver {
 
-		protected $Name = '';
+		private $Name = null;
 
-		protected $Domain = '';
+		private $Domains = null;
 
 		/**
 		 *
-		 * Basic constructor that takes the name of the service and its Url as parameters
+		 * Basic constructor that takes the name of the service and its Urls as parameters
 		 * @param string $name
-		 * @param string $domain
+		 * @param string|array $domains
 		 */
-		protected function __construct($name, $domain) {
+		protected function __construct($name, $domains) {
 			$this->Name = $name;
-			$this->Domain = $domain;
+			$this->Domains = $domains;
 		}
 
 		/**
 		 *
 		 * Accessor for the Name property
+		 * @return string
 		 */
 		public final function getName() {
 			return $this->Name;
@@ -36,9 +40,24 @@
 		/**
 		 *
 		 * Accessor for the Domain property
+		 * @deprecated  @see <code>getDomains</code>
 		 */
 		public final function getDomain() {
-			return $this->Domain;
+			return $this->Domains;
+		}
+
+		/**
+		 *
+		 * Accessor for the unified Domains property
+		 * This will alway return an array, even if the domain was set as a string
+		 * Fix issue #19
+		 * @return Array
+		 */
+		public final function getDomains() {
+			if (!is_array($this->Domains)) {
+				return array($this->Domains);
+			}
+			return $this->Domains;
 		}
 
 		/**
@@ -46,56 +65,70 @@
 		 * Methods used to check if this drivers corresponds to the
 		 * data passed in parameter. Overrides at will
 		 * @param data $url
+		 * @return boolean
 		 */
 		public function isMatch($url) {
-			return strpos($url, $this->Domain) > -1;
+			$doms = $this->getDomains();
+			foreach ($doms as $d) {
+				if (strpos($url, $d) > -1) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		/**
 		 *
-		 * Gets the oEmbed XML data from the Driver Source
+		 * Gets the oEmbed data from the Driver Source, returned as an array
 		 *
-		 * @param array $data
+		 * @param array $params - parameters for the oEmbed API request
 		 * @param bool $errorFlag - ref parameter to flag if the operation was successful (new in 1.3)
+		 * @return array
+		 * 			url => the url uses to get the data
+		 * 			xml => the raw xml data
+		 * 			json => the raw jason data, if any
+		 * 			id => the id the resource
+		 * 			dirver => the driver's name used for this resource
+		 * 			title => the title of the ressource
+		 * 			thumb => the thumbnail of the resource, if any
+		 * 			error => the error message, if any
 		 */
-		public final function getXmlDataFromSource($data, &$errorFlag) {
+		public final function getDataFromSource($params, &$errorFlag) {
 
-			$url = $this->getOEmbedXmlApiUrl($data);
+			// assure we have no error
+			$errorFlag = false;
 
-			$xml = array();
+			// get the complete url
+			$url = $this->getOEmbedApiUrl($params);
+
+			// get the raw response, ignore errors
+			$response = @file_get_contents($url, false);
+
+			// declare the result array
+			$data = array();
 
 			// add url to array
-			$xml['url'] = $url;
+			$data['url'] = $url;
+			
+			// add driver to array
+			$data['driver'] = $this->getName();
 
-			// trying to load XML into DOM Document
-			$doc = new DOMDocument();
-			$doc->preserveWhiteSpace = false;
-			$doc->formatOutput = false;
+			// if we have a valid response
+			if (!$response || strlen($response) < 1) {
+				$errorFlag = true;
+				$data['error'] = __('Failed to load oEmbed data');
 
-			// ignore errors, but save if it was successful
-			$errorFlag = !(@$doc->load($url));
+			} else {
+				// get the good parser for the service format
+				// fixes Issue #15
+				$parser = ServiceParser::getServiceParser($this->getAPIFormat());
 
-			if (!$errorFlag) {
-				$xml['xml'] = $doc->saveXML();
-
-				// add id to array
-				$idTagName = $this->getIdTagName();
-				if ($idTagName == null) {
-					$xml['id'] = Lang::createHandle($url);
-				} else {
-					$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
-				}
-
-				$xml['title'] = $doc->getElementsByTagName($this->getTitleTagName())->item(0)->nodeValue;
-				$xml['thumb'] = $doc->getElementsByTagName($this->getThumbnailTagName())->item(0)->nodeValue;
-
-			}
-			else {
-				// return somthing since the column can't be null
-				$xml['xml'] = '<error>' . __('Symphony could not load XML from oEmbed remote service') . '</error>';
+				// merge the parsed data
+				$data = array_merge($data, $parser->createArray($response, $this, $url, $errorFlag));
 			}
 
-			return $xml;
+			return $data;
+
 		}
 
 		/**
@@ -147,13 +180,23 @@
 		 * Abstract method that shall return the URL for the oEmbed XML API
 		 * @param $params
 		 */
-		public abstract function getOEmbedXmlApiUrl($params);
+		public abstract function getOEmbedApiUrl($params);
 
 		/**
 		 *
 		 * Basic about method that returns an array for the credits of the driver
 		 */
 		public abstract function about();
+
+
+		/**
+		 *
+		 * Method that returns the format used in oEmbed API responses
+		 * @return string (xml|json)
+		 */
+		public function getAPIFormat() {
+			return 'xml'; // xml || json
+		}
 
 		/**
 		 *
@@ -167,39 +210,41 @@
 
 		/**
 		 *
-		 * Method that returns the name of the Title tag.
+		 * Method that returns the name of the Thumbnail_url tag.
 		 * Overrides at will. Default returns 'title'
 		 * @return string
 		 */
-		protected function getTitleTagName() {
-			return 'title';
-		}
-
-		/**
-		 *
-		 * Method that returns the name of the Thumbnail tag.
-		 * Overrides at will. Default returns 'thumbnail_url'
-		 * @return string
-		 */
-		protected function getThumbnailTagName() {
+		public function getThumbnailTagName() {
 			return 'thumbnail_url';
 		}
 
 		/**
 		 *
-		 * Abstract method that shall return the name of the tag that will be used as ID.
-		 *
-		 * N.B: Can return null: Id will be a handle created from the url
+		 * Method that returns the name of the Title tag.
+		 * Overrides at will. Default returns 'title'
+		 * @return string
 		 */
-		public abstract function getIdTagName();
+		public function getTitleTagName() {
+			return 'title';
+		}
+
+
+		/**
+		 *
+		 * Overridable method that shall return the name of the tag
+		 * that will be used as ID. Default returns null
+		 */
+		public function getIdTagName() {
+			return null; // will use url as id
+		}
 
 		/**
 		 *
 		 * This method will be called when adding sites
 		 * to the authorized JIT image manipulations external urls.
 		 *
-		 * It should return url as value
-		 * i.e. array('http://*.example.org', 'http://*.example.org')
+		 * It should return domains as value
+		 * i.e. array('*.example.org*', '*.example.org/images/*')
 		 *
 		 * @return array|null
 		 */

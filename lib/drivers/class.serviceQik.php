@@ -5,17 +5,15 @@
 
 	class serviceQik extends ServiceDriver {
 
-		const BASE_URL = "http://qik.com/video/";
-
 		public function __construct() {
 			parent::__construct('Qik', 'qik.com');
 		}
 
 		public function about() {
 			return array(
-				'name'			=> $this->Name,
-				'version'		=> '1.0',
-				'release-date'	=> '2011-10-07',
+				'name'			=> $this->getName(),
+				'version'		=> '1.1',
+				'release-date'	=> '2011-11-17',
 				'author'		=> array(
 					'name'			=> 'Andrew Minton',
 					'website'		=> 'http://andrewminton.co.uk/',
@@ -24,10 +22,11 @@
 	 		);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
-
-			return 'http://qik.com/api/oembed.xml?url=' . $url;
+			$query_params = $params['query_params'];
+			
+			return 'http://qik.com/api/oembed.xml?url=' . $url . $query_params;
 		}
 
 		//Qik Service uses "hash" as root node.
@@ -35,7 +34,4 @@
 			return 'hash';
 		}
 
-		public function getIdTagName() {
-			return null; // will use url as id
-		}
 	}

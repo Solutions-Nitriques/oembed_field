@@ -11,7 +11,7 @@
 
 		public function about() {
 			return array(
-				'name'			=> $this->Name,
+				'name'			=> $this->getName(),
 				'version'		=> '1.0',
 				'release-date'	=> '2011-07-15',
 				'author'		=> array(
@@ -32,11 +32,19 @@
 							);
 		}
 
-		public function getOEmbedXmlApiUrl($params) {
-			return 'http://www.flickr.com/services/oembed?url=' . $params['url'];
+		public function getOEmbedApiUrl($params) {
+			$query_params = $params['query_params'];
+			return 'http://www.flickr.com/services/oembed?url=' . $params['url']. $query_params;
 		}
 
 		public function getIdTagName() {
 			return 'url';
+		}
+
+		public function getNeededUrlsToJITimages() {
+			return array(
+				'http://www.flickr.com/*'
+				// @todo: complete
+			);
 		}
 	}
