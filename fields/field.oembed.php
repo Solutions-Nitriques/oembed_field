@@ -478,18 +478,22 @@
 		 */
 		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL) {
 
-			//var_dump($data);die;
+			$isRequired = $this->get('required') != 'yes';
+			$isUnique = $this->get('unique') != 'yes';
 
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
-
+	
+			// required and unique label
+			if($isRequired && $isUnique) {
+				$label->appendChild(new XMLElement('i', __('Optional') . ', ' . __('Unique')));
+			
 			// required label
-			if($this->get('required') != 'yes') {
-				$label->appendChild(new XMLElement('i', __('Optional')));
-			}
+			} else if($isRequired) {
+				$label->appendChild(new XMLElement('i', __('Optional') . ', ' . __('Unique')));
 			
 			// unique label
-			if($this->get('unique') != 'yes') {
+			} else if($isUnique) { 
 				$label->appendChild(new XMLElement('i', __('Unique')));
 			}
 			
@@ -888,11 +892,11 @@
 
 			$tbl = self::FIELD_TBL_NAME;
 			
-			$drivers = implode(',',ServiceDispatcher::getAllDriversNames());
+			$drivers = MySQL::cleanValue( implode(',',ServiceDispatcher::getAllDriversNames()) );
 
 			return Symphony::Database()->query("
 				UPDATE `$tbl`
-					SET `driver` = $drivers
+					SET `driver` = '$drivers'
 			");
 		}
 		
