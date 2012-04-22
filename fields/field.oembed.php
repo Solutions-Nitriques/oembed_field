@@ -173,7 +173,7 @@
 			$errorFlag = false;
 
 			$xml = array();
-			
+
 			// capture the url in the field's data
 			$url = trim($data);
 
@@ -183,11 +183,11 @@
 				if ($this->get('required') == 'yes') {
 					$errorFlag = true;
 					$status = self::__MISSING_FIELDS__;
-					
+
 					// stop the insert
 					return false;
 				} else {
-					
+
 					// let the value be empty
 					return true;
 				}
@@ -245,7 +245,7 @@
 				'oembed_xml' => $xml['xml'],
 				'title' => $xml['title'],
 				'thumbnail_url' => $xml['thumb'],
-				'driver' => $xml['driver'] 
+				'driver' => $xml['driver']
 			);
 		}
 
@@ -280,13 +280,13 @@
 		 */
 		public function checkFields(Array &$errors, $checkForDuplicates) {
 			parent::checkFields($errors, $checkForDuplicates);
-			
+
 			$driver = $this->get('driver');
-			
+
 			if (empty($driver)) {
 				$errors['driver'] = __('You must select at least one service in order to use the oEmbed field.');
 			}
-			
+
 			return (!empty($errors) ? self::__ERROR__ : self::__OK__);
 		}
 
@@ -329,13 +329,13 @@
 
 			// Permit only some specific drivers
 			$settings['driver'] = empty($drivers) || count($drivers) < 0 ? null : $drivers;
-			
+
 			// Extra request parameters (@see issue #11)
 			if (!!$query_params && $query_params{0} != '&') {
 				$query_params = '&' . $query_params;
 			}
 			$settings['query_params'] = empty($query_params) ? null : $query_params;
-	
+
 			$tbl = self::FIELD_TBL_NAME;
 
 			Symphony::Database()->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
@@ -367,7 +367,7 @@
 		 * @return boolean
 		 */
 		public function tearDown() {
-			return parent::tearDown(); 
+			return parent::tearDown();
 		}
 
 
@@ -427,6 +427,7 @@
 				$xml->normalize();
 
 				// store a pointer to the driver
+				// @todo: use the `driver` column
 				$driver = ServiceDispatcher::getServiceDriver($data['url']);
 
 				// get the root node
@@ -483,20 +484,20 @@
 
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
-	
+
 			// required and unique label
 			if($isRequired && $isUnique) {
 				$label->appendChild(new XMLElement('i', __('Optional') . ', ' . __('Unique')));
-			
+
 			// required label
 			} else if($isRequired) {
 				$label->appendChild(new XMLElement('i', __('Optional') . ', ' . __('Unique')));
-			
+
 			// unique label
-			} else if($isUnique) { 
+			} else if($isUnique) {
 				$label->appendChild(new XMLElement('i', __('Unique')));
 			}
-			
+
 			// input form
 			$url = new XMLElement('input');
 			$url->setAttribute('type', 'text');
@@ -546,7 +547,7 @@
 					$embed = __('Error. Service unknown.');
 				} else {
 					$embed = $driver->getEmbedCode($data, $e_options);
-				}	
+				}
 
 				$res_container->setValue("<div>$embed</div>");
 
@@ -596,23 +597,14 @@
 			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
 			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
 			$set_wrap->appendChild($label);
-			
+
 			/* new line, request params */
 			// Fixes issue #11
 			$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-settings'));
 			$par_title = new XMLElement('label', __('Request URL Parameters (Appended to the query string) <i>Optional</i>'));
 			$par_title->appendChild(Widget::Input('fields['.$this->get('sortorder').'][query_params]', $this->get('query_params')));
 			$par_wrap->appendChild($par_title);
-			
-			/* new line, request params set */
-			/*$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-sets-wrap'));
-			$par_title = new XMLElement('label', __('oEmbed Requests Parameters sets'));
-			$par_container = new XMLElement('div', NULL, array('class'=>'oembed-params-sets'));
-			$par_container->appendChild(new XMLElement('a', __('Add a params set'), array('href'=>'#', 'class'=>'oembed-add')));
-			$par_container->appendChild($this->generateParamsTable());
-			$par_wrap->appendChild($par_title);
-			$par_wrap->appendChild($par_container);*/
-			
+
 			/* new line, check boxes */
 			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
 			$chk_wrap->appendChild(new XMLElement('label', __('Other properties'), array('class'=>'oembed-other-title') ));
@@ -622,10 +614,8 @@
 			$this->appendShowThumbnailCheckbox($chk_wrap);
 
 			/* append to wrapper */
-			
 			$wrapper->appendChild($driv_wrap);
 			$wrapper->appendChild($par_wrap);
-			//$wrapper->appendChild($set_wrap);
 			$wrapper->appendChild($chk_wrap);
 
 		}
@@ -638,38 +628,9 @@
 				$selected = strpos($this->get('driver'), $driver) > -1;
 				$drivers_options[] = array($driver, $selected);
 			}
-			
+
 			return Widget::Select('fields['.$this->get('sortorder').'][driver][]', $drivers_options, array('multiple'=>'multiple'));
 		}
-
-		/*private function generateParamsTable() {
-
-			// data
-			$data = $this->getParamsSet();
-
-			// header
-			$header = Widget::TableHead(array(
-				array(__('Name')),
-				array(__('Value'))
-			));
-
-			// body
-			$body = array();
-
-			$x = 0;
-			if (is_array($data)) {
-				foreach ($data as $row) {
-					$body[] = Widget::TableRow(array(
-						Widget::TableData(Widget::Input('fields['.$this->get('sortorder').'][ps-name]['.$x.']', $row['name'])),
-						Widget::TableData(Widget::Input('fields['.$this->get('sortorder').'][ps-value]['.$x.']', $row['value']))
-					));
-				}
-			}
-
-			return Widget::Table($header, null, Widget::TableBody($body), 'oembed-table', null,
-								array('cellspacing'=>'0', 'cellpadding'=>'1')
-					);
-		}*/
 
 		/**
 		 *
@@ -743,7 +704,7 @@
 				$link->setValue($value);
 				$link->setAttribute('title', $textValue . ' | ' . $link->getAttribute('title'));
 
-			} else { 
+			} else {
 				// if not, wrap our html with a external link to the resource url
 				$link = new XMLElement('a',
 					$value,
@@ -793,6 +754,7 @@
 					`thumbnail_url` 	varchar(2048),
 					`oembed_xml` 		text,
 					`dateCreated` 		timestamp DEFAULT CURRENT_TIMESTAMP,
+					`driver`			varchar(50),
 					PRIMARY KEY  (`id`),
 					KEY `entry_id` (`entry_id`)
 				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -817,26 +779,6 @@
 				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
 		}
-
-
-		/**
-		 * Creates the table needed for the parameter sets of the field
-		 */
-		/*public static function createParamsSetTable() {
-
-			$tbl = self::FIELD_PS_TBL_NAME;
-
-			return Symphony::Database()->query("
-				CREATE TABLE IF NOT EXISTS `$tbl` (
-					`id` 			int(11) unsigned NOT NULL auto_increment,
-					`field_id` 		int(11) unsigned NOT NULL,
-					`name` 			varchar(50) NOT NULL,
-					`value` 		varchar(50) NOT NULL,
-					PRIMARY KEY (`id`),
-					KEY `field_id` (`field_id`)
-				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-			");
-		}*/
 
 		/**
 		 * Updates the table for the new settings: `unique`
@@ -886,12 +828,13 @@
 					MODIFY COLUMN `driver` varchar(250) NOT NULL
 			");
 		}
-		
-		
+
+
 		public static function updateFieldData_Driver() {
 
 			$tbl = self::FIELD_TBL_NAME;
-			
+
+			// allow all drivers for fields that already exists
 			$drivers = MySQL::cleanValue( implode(',',ServiceDispatcher::getAllDriversNames()) );
 
 			return Symphony::Database()->query("
@@ -899,7 +842,42 @@
 					SET `driver` = '$drivers'
 			");
 		}
-		
+
+		public static function updateDataTable_Driver() {
+
+			$fm = new FieldManager(Symphony::Engine());
+
+			// get all entries tables of type oEmbed
+			$fields = $fm->fetch(null, null, 'ASC', 'id', 'oembed');
+
+			// make sure the new driver column is add to
+			// fields that already exists
+			foreach ($fields as $field) {
+
+				$id = $field->get('id');
+
+				// test is the colum exist
+				$col = Symphony::Database()->fetch("
+					SHOW COLUMNS FROM `tbl_entries_data_$id`
+						WHERE `field` = 'driver'
+				");
+
+				// if the col doest not exists
+				if (!is_array($col) || count($col) == 0) {
+
+					$ret = Symphony::Database()->query("
+						ALTER TABLE  `tbl_entries_data_$id`
+							ADD COLUMN `driver`	varchar(50) NOT NULL
+					");
+
+					if (!$ret) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
 		/**
 		 *
 		 * Drops the table needed for the settings of the field
@@ -911,68 +889,5 @@
 				DROP TABLE IF EXISTS `$tbl`
 			");
 		}
-
-		/**
-		 *
-		 * Drops the table needed for the parameters sets
-		 */
-		/*public static function deleteParamsSetTable() {
-			$tbl = self::FIELD_PS_TBL_NAME;
-
-			return Symphony::Database()->query("
-				DROP TABLE IF EXISTS `$tbl`
-			");
-		}*/
-
-
-
-		/* *************** PARAMS SETS *********** */
-
-		// @todo: add phpdoc
-
-		/*private function removeParamsSet() {
-			$tbl = self::FIELD_PS_TBL_NAME;
-
-			$id = $this->get('id');
-
-			Symphony::Database()->query("
-				DELETE FROM `$tbl` WHERE `field_id` = '$id'
-			");
-
-			return true;
-		}
-
-		private function insertParamsSet(array $params) {
-
-			// remove all params first
-			if ($this->removeParamsSet()) {
-
-				// insert all individual combinations
-				foreach ($params as $p) {
-
-					$fields = array (
-						'field_id' => $this->get('id'),
-						'name' => $p['name'],
-						'value' => $p['value']
-					);
-
-					Symphony::Database()->insert($fields, self::FIELD_PS_TBL_NAME);
-				}
-			}
-
-			return true;
-		}
-
-		private function getParamsSet() {
-
-			$tbl = self::FIELD_PS_TBL_NAME;
-
-			$id = $this->get('id');
-
-			return Symphony::Database()->query("
-				SELECT * FROM `$tbl` WHERE `field_id` = '$id'
-			");
-		}*/
-
 
 	}

@@ -30,7 +30,8 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
-		<release version="1.4" date="2012-04-18" min="2.2.5">
+		<release version="1.4" date="2012-04-22" min="2.2.5">
+  - Issue #22 fixed
   - Major code review, adding more thoughness to the code
   - Added a new class, <code>ServiceParser</code> which will enable working with services that only provides JSON
   - Fix issues #10, #11, #19, #15, #20

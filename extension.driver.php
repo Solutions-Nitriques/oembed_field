@@ -94,12 +94,6 @@
 			// section page, new or edit
 			if($c['driver'] == 'blueprintssections') {
 
-				/*Administration::instance()->Page->addScriptToHead(
-					URL . '/extensions/oembed_field/assets/section.oembed.js',
-					time(),
-					false
-				);*/
-
 				Administration::instance()->Page->addStylesheetToHead(
 					URL . '/extensions/oembed_field/assets/section.oembed.css',
 					'screen',
@@ -127,10 +121,6 @@
 			// v1.3.2
 			$thumbs = FieldOembed::updateFieldTable_Thumbs();
 
-			// v1.3.2 - abandoned
-			// $params = FieldOembed::createParamsSetTable();
-			// $params_set_id = FieldOembed::updateFieldTable_ParamsSetId();
-			
 			// v1.4
 			$params = FieldOembed::updateFieldTable_QueryParams();
 
@@ -155,25 +145,26 @@
 
 			// are we updating from lower than 1.3.2 ?
 			if ($ret && version_compare($previousVersion, '1.3.2') == -1) {
-				
+
 				// update for the thumbs settings
 				$ret_thumbs = FieldOembed::updateFieldTable_Thumbs();
-				
-				// create the table needed for params set
-				//$ret_params = FieldOembed::createParamsSetTable();
-				// update for the params set id settings
-				//$ret_par_sid = FieldOembed::updateFieldTable_ParamsSetId();
-				
-				
+
 				// v1.4
 				// update for the params settings
 				$ret_params = FieldOembed::updateFieldTable_QueryParams();
-				
+
 				// update for the driver column && set all drivers as allowed by default
-				$ret_driver = FieldOembed::updateFieldTable_Driver() && FieldOembed::updateFieldData_Driver();
+				$ret_driver = FieldOembed::updateFieldTable_Driver() &&
+							  FieldOembed::updateFieldData_Driver();
 
 				// set the return value
 				$ret = $ret_thumbs && $ret_params && $ret_driver;
+			}
+
+			// are we updating from lower or equal to 1.4 ?
+			if ($ret && version_compare($previousVersion, '1.4') < 1) {
+				// Fixes issue #22
+				$ret = FieldOembed::updateDataTable_Driver();
 			}
 
 			return $ret;
