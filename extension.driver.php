@@ -30,7 +30,7 @@
 		public function about() {
 			return array(
 				'name'			=> self::EXT_NAME,
-				'version'		=> '1.4',
+				'version'		=> '1.4.1',
 				'release-date'	=> '2012-04-xx',
 				'author'		=> array(
 					array (
@@ -44,12 +44,13 @@
 				),
 				'description'	=> __('Easily embed videos/images from ANY website that implements the oEmbed format (http://oembed.com/)'),
 				'compatibility' => array(
-					'2.2.5' => true,
-					'2.2.4' => true,
-					'2.2.3' => true,
-					'2.2.2' => true,
-					'2.2.1' => true,
-					'2.2' => true
+					'2.3' => true,
+					'2.2.5' => false,
+					'2.2.4' => false,
+					'2.2.3' => false,
+					'2.2.2' => false,
+					'2.2.1' => false,
+					'2.2' => false
 				)
 	 		);
 		}

@@ -30,9 +30,12 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+	<release version="1.4" date="2012-05-26" min="2.3">
+	- Made compatible with Symphony 2.3
+	</release>
 		<release version="1.4" date="2012-04-22" min="2.2.5">
   - Issue #22 fixed
-  - Major code review, adding more thoughness to the code
+  - Major code review, adding more toughness to the code
   - Added a new class, <code>ServiceParser</code> which will enable working with services that only provides JSON
   - Fix issues #10, #11, #19, #15, #20
   - Refactored the request url parameters feature: You can add values to the oEmbed query string

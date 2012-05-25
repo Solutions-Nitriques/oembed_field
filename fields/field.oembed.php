@@ -34,9 +34,9 @@
 		 * Constructor the the oEmbed Field object
 		 * @param mixed $parent
 		 */
-		public function __construct(&$parent){
+		public function __construct(){
 			// call the prent ctor
-			parent::__construct($parent);
+			parent::__construct();
 			// set the name of the field
 			$this->_name = __('oEmbed Resource');
 			// permits to make it required
@@ -50,7 +50,7 @@
 			// set to show thumbs in table by default
 			$this->set('thumbs', 'yes');
 		}
-
+		
 		public function isSortable(){
 			return false; // @todo: should we allow to sort by url ?
 		}
@@ -167,7 +167,7 @@
 		 *
 		 * @return Array - data to be inserted into DB
 		 */
-		public function processRawFieldData($data, &$status, $simulate = false, $entry_id = null) {
+		public function processRawFieldData($data, &$status, &$message=null, $simulate = false, $entry_id = null) {
 			$status = self::__OK__;
 
 			$errorFlag = false;
