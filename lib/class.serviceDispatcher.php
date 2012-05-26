@@ -36,37 +36,44 @@
 
 				// create a new array
 				self::$drivers = array();
-
+				
 				// get all files in the drivers folders
 				$drivers = General::listStructure(OEMBED_DRIVERS_DIR, '/class.service[a-zA-Z0-9]+.php/', 'asc');
-
+                //var_dump($drivers); 
+				
 				// for each file found
 				foreach ($drivers['filelist'] as $class) {
 
+				
 					try {
-
-						// include the class code
-						require_once(OEMBED_DRIVERS_DIR . $class);
 
 						// get class name
 						$class = str_replace(array('class.', '.php'), '', $class);
-
+						
+						// include the class code
+						require_once(OEMBED_DRIVERS_DIR . $class);
+						
 						// create new instance
 						$class = new $class($url);
-
+                        //var_dump($class);
+						
 						// add the class to the stack
 						self::$drivers[$class->getName()] = $class;
-
+						
+						
 					} catch (Exception $ex) {
+					
 						throw new ServiceDriverException($url, $ex);
+						
 					}
 
 				}
 
 				// set return value
 				$load = true;
+				
 			}
-
+			
 			return $load;
 		}
 
@@ -81,6 +88,7 @@
 
 			// return the array
 			return self::$drivers;
+			
 		}
 
 		/**

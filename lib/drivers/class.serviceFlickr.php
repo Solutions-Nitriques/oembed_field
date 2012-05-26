@@ -9,19 +9,6 @@
 			parent::__construct('Flickr', 'flickr.com');
 		}
 
-		public function about() {
-			return array(
-				'name'			=> $this->getName(),
-				'version'		=> '1.0',
-				'release-date'	=> '2011-07-15',
-				'author'		=> array(
-					'name'			=> 'Solutions Nitriques',
-					'website'		=> 'http://www.nitriques.com/open-source/',
-					'email'			=> 'open-source (at) nitriques.com'
-				)
-	 		);
-		}
-
 		public function getEmbedCode($data, $options) {
 			return vsprintf('<img src="%s" width="%d" height="%d" alt="%s" />',
 							array(	$data['res_id'],

@@ -9,18 +9,6 @@
 			parent::__construct('Vimeo', 'vimeo.com');
 		}
 
-		public function about() {
-			return array(
-				'name'			=> $this->getName(),
-				'version'		=> '1.1',
-				'release-date'	=> '2011-11-17',
-				'author'		=> array(
-					'name'			=> 'Solutions Nitriques',
-					'website'		=> 'http://www.nitriques.com/open-source/',
-					'email'			=> 'open-source (at) nitriques.com'
-				)
-	 		);
-		}
 
 		public function getEmbedCode($data, $options) {
 			return vsprintf('<iframe src="http://player.vimeo.com/video/%s" width="%d" height="%d" frameborder="0"></iframe>',

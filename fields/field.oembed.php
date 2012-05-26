@@ -31,11 +31,11 @@
 
 		/**
 		 *
-		 * Constructor the the oEmbed Field object
+		 * Constructor for the oEmbed Field object
 		 * @param mixed $parent
 		 */
 		public function __construct(){
-			// call the prent ctor
+			// call the parent constructor
 			parent::__construct();
 			// set the name of the field
 			$this->_name = __('oEmbed Resource');
@@ -49,6 +49,7 @@
 			$this->set('unique', 'no');
 			// set to show thumbs in table by default
 			$this->set('thumbs', 'yes');
+			
 		}
 		
 		public function isSortable(){
@@ -57,7 +58,7 @@
 
 		public function canFilter(){
 			return false; // @todo: should we allow to filter by url ?
-		}
+			}
 
 		public function canImport(){
 			return false;
@@ -167,7 +168,7 @@
 		 *
 		 * @return Array - data to be inserted into DB
 		 */
-		public function processRawFieldData($data, &$status, &$message=null, $simulate = false, $entry_id = null) {
+		public function processRawFieldData($data, &$status, &$message = null, $simulate = false, $entry_id = null) {
 			$status = self::__OK__;
 
 			$errorFlag = false;
@@ -196,6 +197,7 @@
 			// store a pointer to the driver
 			$driver = ServiceDispatcher::getServiceDriver($url, $this->getAllowedDrivers());
 
+			
 			// check if we have a driver first and that this driver is allowed
 			if(!$driver) {
 				$status =  self::__INVALID_FIELDS__;
@@ -622,6 +624,7 @@
 
 		private function generateDriversSelect() {
 			$drivers = ServiceDispatcher::getAllDriversNames();
+			
 			sort($drivers, SORT_STRING);
 			$drivers_options = array();
 			foreach ($drivers as $driver) {

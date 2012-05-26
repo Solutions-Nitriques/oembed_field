@@ -23,10 +23,10 @@
 		 * @param string $name
 		 * @param string|array $domains
 		 */
-		protected function __construct($name, $domains) {
+		/*protected function __construct($name, $domains) {
 			$this->Name = $name;
 			$this->Domains = $domains;
-		}
+		}*/
 
 		/**
 		 *
@@ -186,7 +186,7 @@
 		 *
 		 * Basic about method that returns an array for the credits of the driver
 		 */
-		public abstract function about();
+		/*public abstract function about();*/
 
 
 		/**
