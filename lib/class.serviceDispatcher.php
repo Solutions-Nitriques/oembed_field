@@ -38,7 +38,7 @@
 				self::$drivers = array();
 				
 				// get all files in the drivers folders
-				$drivers = General::listStructure(OEMBED_DRIVERS_DIR, '/class.service[a-zA-Z0-9]+.php/', 'asc');
+				$drivers = General::listStructure(OEMBED_DRIVERS_DIR, '/class.service[a-zA-Z0-9]+.php/', true, 'asc', null, array(), false);
                 //var_dump($drivers); 
 				
 				// for each file found
@@ -47,12 +47,12 @@
 				
 					try {
 
+					    // include the class code
+						require_once(OEMBED_DRIVERS_DIR . $class);
+					
 						// get class name
 						$class = str_replace(array('class.', '.php'), '', $class);
-						
-						// include the class code
-						require_once(OEMBED_DRIVERS_DIR . $class);
-						
+							
 						// create new instance
 						$class = new $class($url);
                         //var_dump($class);

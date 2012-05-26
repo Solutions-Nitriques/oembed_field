@@ -23,10 +23,10 @@
 		 * @param string $name
 		 * @param string|array $domains
 		 */
-		/*protected function __construct($name, $domains) {
+		protected function __construct($name, $domains) {
 			$this->Name = $name;
 			$this->Domains = $domains;
-		}*/
+		}
 
 		/**
 		 *
