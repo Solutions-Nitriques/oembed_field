@@ -9,6 +9,14 @@
 			parent::__construct('Dailymotion', 'dailymotion.com');
 		}
 
+		public function getNeededUrlsToJITimages() {
+			return array(
+			
+				'static2.dmcdn.net/*'
+
+			);
+		}
+		
 		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
 			$query_params = $params['query_params'];
