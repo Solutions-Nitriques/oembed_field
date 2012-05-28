@@ -1,5 +1,6 @@
 <?php
 	/*
+	Copyight: Deux Huit Huit 2012
 	Copyight: Solutions Nitriques 2011
 	License: MIT, see the LICENCE file
 	*/
@@ -31,7 +32,7 @@
 			return array(
 				'name'			=> self::EXT_NAME,
 				'version'		=> '1.4',
-				'release-date'	=> '2012-04-xx',
+				'release-date'	=> '2012-05-01',
 				'author'		=> array(
 					array (
 						'name'			=> 'Solutions Nitriques',
@@ -175,9 +176,6 @@
 		 * Drops the table needed for the settings of the field
 		 */
 		public function uninstall() {
-			// v1.3.2
-			//$params = FieldOembed::deleteParamsSetTable();
-
 			// pre v1.3.2
 			$field = FieldOembed::deleteFieldTable();
 
