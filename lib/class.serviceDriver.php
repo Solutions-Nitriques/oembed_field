@@ -39,15 +39,6 @@
 
 		/**
 		 *
-		 * Accessor for the Domain property
-		 * @deprecated  @see <code>getDomains</code>
-		 */
-		public final function getDomain() {
-			return $this->Domains;
-		}
-
-		/**
-		 *
 		 * Accessor for the unified Domains property
 		 * This will alway return an array, even if the domain was set as a string
 		 * Fix issue #19
@@ -109,7 +100,7 @@
 
 			// add url to array
 			$data['url'] = $url;
-			
+
 			// add driver to array
 			$data['driver'] = $this->getName();
 
@@ -232,7 +223,9 @@
 		/**
 		 *
 		 * Overridable method that shall return the name of the tag
-		 * that will be used as ID. Default returns null
+		 * that will be used as ID. Default returns null.
+		 *
+		 * NOT CURRENTLY IMPLEMENTED - FOR FUTURE USE ONLY
 		 */
 		public function getIdTagName() {
 			return null; // will use url as id
