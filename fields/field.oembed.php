@@ -34,9 +34,9 @@
 		 * Constructor the the oEmbed Field object
 		 * @param mixed $parent
 		 */
-		public function __construct(&$parent){
+		public function __construct(){
 			// call the prent ctor
-			parent::__construct($parent);
+			parent::__construct();
 			// set the name of the field
 			$this->_name = __('oEmbed Resource');
 			// permits to make it required

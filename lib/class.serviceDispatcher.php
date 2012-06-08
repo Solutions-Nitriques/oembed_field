@@ -42,6 +42,7 @@
 
 				// for each file found
 				foreach ($drivers['filelist'] as $class) {
+					$class = basename($class);
 
 					try {
 
@@ -101,9 +102,9 @@
 		public static final function getAllowedDrivers($allowedList = null) {
 			$allowedDrivers = array();
 			if (is_array($allowedList) && count($allowedList) > 0) {
-				
+
 				$allDrivers = self::getAllDrivers();
-				
+
 				foreach ($allDrivers as $key => $driver) {
 					if (array_search($key, $allowedList) !== false) {
 						$allowedDrivers[$key] = $driver;
