@@ -38,10 +38,26 @@
 					'page' => '/backend/',
 					'delegate' => 'InitaliseAdminPageHead',
 					'callback' => 'appendJS'
+				),
+				array(
+					'page' => '*',
+					'delegate' => 'AppendContentType',
+					'callback' => 'appendContentType'
 				)
 			);
 		}
 
+		/**
+		 *
+		 * Append the content type for the Content Field.
+		 * @param array $context
+		 */
+		public function appendContentType(&$context) {
+			require_once __DIR__ . '/lib/oembed-content.php';
+
+			$context['items']->{'oembed'} = new OembedContentType();
+		}
+		
 		/**
 		 *
 		 * Appends javascript file referneces into the head, if needed

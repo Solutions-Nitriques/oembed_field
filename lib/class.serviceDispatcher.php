@@ -42,15 +42,16 @@
 				
 				// for each file found
 				foreach ($drivers['filelist'] as $class) {
-
+						
+					$class = basename($class);
 				
 					try {
 
-					    // include the class code
-						require_once($class);
-						
+						// include the class code
+						require_once(OEMBED_DRIVERS_DIR . $class);
+
 						// get class name
-						$class = str_replace(array(OEMBED_DRIVERS_DIR, 'class.', '.php'), '', $class);
+						$class = str_replace(array('class.', '.php'), '', $class);
 							
 						// create new instance
 						$class = new $class($url);
