@@ -9,6 +9,7 @@
 	- Flickr
 	- Qik
 	- Viddler
+	- SlideShare
 	</description>
 	<repo type="github">https://github.com/Solutions-Nitriques/oembed_field</repo>
 	<url type="discuss">http://symphony-cms.com/discuss/thread/73696/</url>
@@ -25,13 +26,19 @@
 			<name github="DeuxHuitHuit" symphony="">Deux Huit Huit</name>
 			<website>http://www.deuxhuithuit.com</website>
 		</author>
+		<author>
+			<name github="rowan-lewis" symphony="buzzomatic">Rowan Lewis</name>
+			<website>http://www.deuxhuithuit.com</website>
+		</author>
 	</authors>
 	<dependencies>
 		<!-- None -->
 	</dependencies>
 	<releases>
-	<release version="1.4" date="2012-05-26" min="2.3">
+	<release version="1.4" date="2012-06-18" min="2.3">
 	- Made compatible with Symphony 2.3
+	- Added Slideshare driver
+	- Added Oembed Content field for Rowan Lewis' Content Field extension
 	</release>
 		<release version="1.4" date="2012-04-22" min="2.2.5">
   - Issue #22 fixed
