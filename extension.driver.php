@@ -26,51 +26,38 @@
 		const EXT_NAME = 'Field: oEmbed';
 
 		/**
-		 * Credits for the extension
-		 */
-		public function about() {
-			return array(
-				'name'			=> self::EXT_NAME,
-				'version'		=> '1.4',
-				'release-date'	=> '2012-05-01',
-				'author'		=> array(
-					array (
-						'name'			=> 'Solutions Nitriques',
-						'website'		=> 'http://www.nitriques.com/open-source/',
-						'email'			=> 'open-source (at) nitriques.com' ),
-					array (
-						'name'			=> 'Deux Huit Huit',
-						'website'		=> 'http://www.deuxhuithuit.com',
-						'email'			=> 'open-source (at) deuxhuithuit.com' )
-				),
-				'description'	=> __('Easily embed videos/images from ANY website that implements the oEmbed format (http://oembed.com/)'),
-				'compatibility' => array(
-					'2.2.5' => true,
-					'2.2.4' => true,
-					'2.2.3' => true,
-					'2.2.2' => true,
-					'2.2.1' => true,
-					'2.2' => true
-				)
-	 		);
-		}
-
-		/**
 		 *
 		 * Symphony utility function that permits to
 		 * implement the Observer/Observable pattern.
 		 * We register here delegate that will be fired by Symphony
 		 */
+		 
 		public function getSubscribedDelegates(){
 			return array(
 				array(
 					'page' => '/backend/',
 					'delegate' => 'InitaliseAdminPageHead',
 					'callback' => 'appendJS'
+				),
+				array(
+					'page' => '*',
+					'delegate' => 'AppendContentType',
+					'callback' => 'appendContentType'
 				)
 			);
 		}
 
+		/**
+		 *
+		 * Append the content type for the Content Field.
+		 * @param array $context
+		 */
+		public function appendContentType(&$context) {
+			require_once __DIR__ . '/lib/oembed-content.php';
+
+			$context['items']->{'oembed'} = new OembedContentType();
+		}
+		
 		/**
 		 *
 		 * Appends javascript file referneces into the head, if needed
@@ -92,6 +79,7 @@
 				return;
 			}
 
+			
 			// section page, new or edit
 			if($c['driver'] == 'blueprintssections') {
 

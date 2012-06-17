@@ -9,19 +9,6 @@
 			parent::__construct('Qik', 'qik.com');
 		}
 
-		public function about() {
-			return array(
-				'name'			=> $this->getName(),
-				'version'		=> '1.1',
-				'release-date'	=> '2011-11-17',
-				'author'		=> array(
-					'name'			=> 'Andrew Minton',
-					'website'		=> 'http://andrewminton.co.uk/',
-					'email'			=> 'moonoo dot am (at) gmail.com'
-				)
-	 		);
-		}
-
 		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
 			$query_params = $params['query_params'];

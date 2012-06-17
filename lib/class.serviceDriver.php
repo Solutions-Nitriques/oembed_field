@@ -177,7 +177,7 @@
 		 *
 		 * Basic about method that returns an array for the credits of the driver
 		 */
-		public abstract function about();
+		/*public abstract function about();*/
 
 
 		/**

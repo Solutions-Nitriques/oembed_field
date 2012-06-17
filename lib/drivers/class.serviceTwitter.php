@@ -7,20 +7,7 @@
     public function __construct() {
       parent::__construct('Twitter', 'twitter.com');
     }
-
-    public function about() {
-      return array(
-        'author'       => array(
-          'email'   => 'brian@briandrum.net',
-          'name'    => 'Brian Drum',
-          'website' => 'http://briandrum.net'
-        ),
-        'name'         => $this->getName(),
-        'release-date' => '2012-01-27',
-        'version'      => '1.0'
-      );
-    }
-
+	
     public function getOEmbedApiUrl($params) {
       $url = rawurlencode($params['url']);
 	  $query_params = $params['query_params'];
