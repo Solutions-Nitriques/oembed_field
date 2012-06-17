@@ -28,7 +28,15 @@
 		</author>
 		<author>
 			<name github="rowan-lewis" symphony="buzzomatic">Rowan Lewis</name>
-			<website>http://www.deuxhuithuit.com</website>
+			<website>http://nbsp.io/</website>
+		</author>
+		<author>
+			<name github="briandrum" symphony="briandrum">Brian Drum</name>
+			<website>http://briandrum.net</website>
+		</author>
+		<author>
+			<name github="andrewminton" symphony="moonoo2">Andrew Minton</name>
+			<website>http://andrewminton.co.uk</website>
 		</author>
 	</authors>
 	<dependencies>

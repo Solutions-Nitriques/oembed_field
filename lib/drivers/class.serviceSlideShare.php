@@ -32,10 +32,6 @@
 		}
 
 		public function getNeededUrlsToJITimages() {
-			return array(
-				'http://a.vimeocdn.com/*',
-				'http://b.vimeocdn.com/*',
-				'http://c.vimeocdn.com/*'
-			);
+			return array();
 		}
 	}
