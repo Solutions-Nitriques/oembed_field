@@ -11,24 +11,19 @@
 			parent::__construct('YouTube', array('youtube.com', 'youtu.be')); // Fix Issue #19
 		}
 
-		public function about() {
+		public function getNeededUrlsToJITimages() {
 			return array(
-				'name'			=> $this->getName(),
-				'version'		=> '1.3',
-				'release-date'	=> '2012-04-17',
-				'author'		=> array(
-					'name'			=> 'Solutions Nitriques',
-					'website'		=> 'http://www.nitriques.com/open-source/',
-					'email'			=> 'open-source (at) nitriques.com'
-				),
-				array(
-					'name'			=> 'Deux Huit Huit',
-					'website'		=> 'http://www.deuxhuithuit.com',
-					'email'			=> 'open-source (at) deuxhuithuit.com'
-				)
-	 		);
-		}
+				
+				'http://i1.ytimg.com/*',
+				'http://i2.ytimg.com/*',
+				'http://i3.ytimg.com/*',
+				'http://i4.ytimg.com/*',
+				'http://i5.ytimg.com/*'
 
+			);
+		}
+		
+		
 		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
 			$query_params = $params['query_params'];

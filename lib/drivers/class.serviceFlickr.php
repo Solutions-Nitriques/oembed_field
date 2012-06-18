@@ -9,19 +9,6 @@
 			parent::__construct('Flickr', 'flickr.com');
 		}
 
-		public function about() {
-			return array(
-				'name'			=> $this->getName(),
-				'version'		=> '1.0',
-				'release-date'	=> '2011-07-15',
-				'author'		=> array(
-					'name'			=> 'Solutions Nitriques',
-					'website'		=> 'http://www.nitriques.com/open-source/',
-					'email'			=> 'open-source (at) nitriques.com'
-				)
-	 		);
-		}
-
 		public function getEmbedCode($data, $options) {
 			return vsprintf('<img src="%s" width="%d" height="%d" alt="%s" />',
 							array(	$data['res_id'],
@@ -43,8 +30,27 @@
 
 		public function getNeededUrlsToJITimages() {
 			return array(
-				'http://www.flickr.com/*'
-				// @todo: complete
+				'http://www.flickr.com/*',
+				'http://farm1.static.flickr.com/*',
+				'http://farm2.static.flickr.com/*',
+				'http://farm3.static.flickr.com/*',
+				'http://farm4.static.flickr.com/*',
+				'http://farm5.static.flickr.com/*',
+				'http://farm6.static.flickr.com/*',
+				'http://farm7.static.flickr.com/*',
+				'http://farm8.static.flickr.com/*',
+				'http://farm9.static.flickr.com/*',
+				'http://farm10.static.flickr.com/*',
+				'http://farm1.staticflickr.com/*',
+				'http://farm2.staticflickr.com/*',
+				'http://farm3.staticflickr.com/*',
+				'http://farm4.staticflickr.com/*',
+				'http://farm5.staticflickr.com/*',
+				'http://farm6.staticflickr.com/*',
+				'http://farm7.staticflickr.com/*',
+				'http://farm8.staticflickr.com/*',
+				'http://farm9.staticflickr.com/*',
+				'http://farm10.staticflickr.com/*'
 			);
 		}
 	}
