@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.4
+Version: 1.5
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
@@ -25,7 +25,7 @@ Version: 1.4
 
 ### REQUIREMENTS ###
 
-- Symphony CMS version 2.2.5 and up (as of the day of the last release of this extension)
+- Symphony CMS version 2.3 and up (as of the day of the last release of this extension)
 
 ### INSTALLATION ###
 
