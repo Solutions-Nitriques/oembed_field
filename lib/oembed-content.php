@@ -105,8 +105,8 @@
 		public function appendPublishInterface(XMLElement $wrapper, $field_name, StdClass $settings, StdClass $data, MessageStack $errors, $entry_id = null) {
 			$url = new XMLElement('input');
 			$url->setAttribute('type', 'text');
-			$url->setAttribute('name', "{$field_name}[data][value]");
-			$url->setAttribute('value', $data->{'value'});
+			$url->setAttribute('name', "{$field_name}[data][url]");
+			$url->setAttribute('value', $data->{'url'});
 
 			$drivers = new XMLElement('div', __(
 				'Supported services: <i>%s</i>', array(
@@ -114,13 +114,13 @@
 				)
 			));
 
-			if (isset($errors->{'value'})) {
+			if (isset($errors->{'url'})) {
 				$url = Widget::wrapFormElementWithError(
-					$url, $errors->{'value'}
+					$url, $errors->{'url'}
 				);
 			}
 
-			if (strlen($data->{'value'})) {
+			if (strlen($data->{'url'})) {
 				// Hides input and drivers:
 				$url->setAttribute('class', 'irrelevant');
 				$drivers->setAttribute('class', 'irrelevant');
@@ -138,7 +138,7 @@
 				$remove->setAttribute('class', 'change remove');
 
 				// Get the embed code:
-				$driver = ServiceDispatcher::getServiceDriver($data->{'value'});
+				$driver = ServiceDispatcher::getServiceDriver($data->{'url'});
 				$embed = __('Error. Service unknown.');
 
 				if ($driver instanceof ServiceDriver) {
@@ -172,19 +172,18 @@
 
 		public function processData(StdClass $settings, StdClass $data, $entry_id = null) {
 			// Load the driver and fetch the data:
-			$driver = ServiceDispatcher::getServiceDriver($data->{'value'});
+			$driver = ServiceDispatcher::getServiceDriver($data->{'url'});
 
 			// Couldn't load the driver, return as we where.
 			if (($driver instanceof ServiceDriver) === false) return $data;
 
 			$params = array(
-				'url'			=> $data->{'value'},
+				'url'			=> $data->{'url'},
 				'query_params'	=> $settings->{'parameters'}
 			);
 			$values = $driver->getDataFromSource($params, $driver_data);
 
 			return $this->sanitizeData($settings, array(
-				'value'		=> $data->{'value'},
 				'id'		=> $values['id'],
 				'title'		=> $values['title'],
 				'driver'	=> $values['driver'],
@@ -194,12 +193,17 @@
 			));
 		}
 
+		public function processRowData(StdClass $settings, StdClass $data, $entry_id = null) {
+			return (object)array(
+				'handle'			=> General::createHandle($data->{'title'}),
+				'value'				=> $data->{'title'},
+				'value_formatted'	=> General::sanitize($data->{'title'})
+			);
+		}
+
 		public function sanitizeData(StdClass $settings, $data) {
-			$accept = array('value', 'id', 'title', 'driver', 'url', 'thumb', 'xml');
+			$accept = array('id', 'title', 'driver', 'url', 'thumb', 'xml');
 			$result = (object)array(
-				'handle'			=> null,
-				'value'				=> null,
-				'value_formatted'	=> null,
 				'id'				=> null,
 				'title'				=> null,
 				'driver'			=> null,
@@ -217,33 +221,33 @@
 			}
 
 			if (is_string($data) && strlen(trim($data))) {
-				$result->{'value'} = $data;
+				$result->{'url'} = $data;
 			}
 
 			return $result;
 		}
 
 		public function validateData(StdClass $settings, StdClass $data, MessageStack $errors, $entry_id = null) {
-			if ($data->{'value'} === null || strlen(trim($data->{'value'})) == 0) {
-				$errors->{'value'} = __('URL is a required field.');
+			if ($data->{'url'} === null || strlen(trim($data->{'url'})) == 0) {
+				$errors->{'url'} = __('URL is a required field.');
 
 				return false;
 			}
 
 			// Attempt to load the driver:
 			$driver = ServiceDispatcher::getServiceDriver(
-				$data->{'value'}, $settings->{'drivers'}
+				$data->{'url'}, $settings->{'drivers'}
 			);
 
 			if (($driver instanceof ServiceDriver) === false) {
-				$errors->{'value'} = __('No <code>ServiceDriver</code> found.');
+				$errors->{'url'} = __('No <code>ServiceDriver</code> found.');
 
 				return false;
 			}
 
 			// Check that the driver will return data:
 			$params = array(
-				'url'			=> $data->{'value'},
+				'url'			=> $data->{'url'},
 				'query_params'	=> $settings->{'parameters'}
 			);
 			$values = $driver->getDataFromSource($params, $driver_error);
@@ -253,14 +257,14 @@
 				is_array($values) === false
 				|| ($driver_error && isset($values['error']) === false)
 			) {
-				$errors->{'value'} = __('Failed to load oEmbed data');
+				$errors->{'url'} = __('Failed to load oEmbed data');
 
 				return false;
 			}
 
 			// An error message was returned:
 			if (isset($values['error'])) {
-				$errors->{'value'} = __(
+				$errors->{'url'} = __(
 					'Exception occurred: %s', array(
 						$values['error']
 					)
@@ -281,7 +285,7 @@
 			$wrapper->appendChild($title);
 
 			$wrapper->appendChild(new XMLElement(
-				'url', General::sanitize($data->{'value'})
+				'url', General::sanitize($data->{'url'})
 			));
 			$wrapper->appendChild(new XMLElement(
 				'thumbnail', General::sanitize($data->{'thumb'})
@@ -293,7 +297,7 @@
 			// Enable better error handling:
 			libxml_use_internal_errors(true);
 
-			$driver = ServiceDispatcher::getServiceDriver($data->{'value'});
+			$driver = ServiceDispatcher::getServiceDriver($data->{'url'});
 			$xml = new DOMDocument();
 			$xml->loadXML($data->{'xml'});
 
