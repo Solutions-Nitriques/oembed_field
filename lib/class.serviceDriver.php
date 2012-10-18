@@ -92,8 +92,14 @@
 			// get the complete url
 			$url = $this->getOEmbedApiUrl($params);
 
+			// create the Gateway object
+			$gateway = new Gateway();
+
+			// set our url
+			$gateway->init($url);
+
 			// get the raw response, ignore errors
-			$response = @file_get_contents($url, false);
+			$response = $gateway->exec();
 
 			// declare the result array
 			$data = array();
