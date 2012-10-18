@@ -481,19 +481,19 @@
 		 */
 		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL) {
 
-			$isRequired = $this->get('required') != 'yes';
-			$isUnique = $this->get('unique') != 'yes';
+			$isRequired = $this->get('required') == 'yes';
+			$isUnique = $this->get('unique') == 'yes';
 
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
 
-			// required and unique label
-			if($isRequired && $isUnique) {
+			// not required and unique label
+			if(!$isRequired && $isUnique) {
 				$label->appendChild(new XMLElement('i', __('Optional') . ', ' . __('Unique')));
 
-			// required label
-			} else if($isRequired) {
-				$label->appendChild(new XMLElement('i', __('Optional') . ', ' . __('Unique')));
+			// not required label
+			} else if(!$isRequired) {
+				$label->appendChild(new XMLElement('i', __('Optional')));
 
 			// unique label
 			} else if($isUnique) {
