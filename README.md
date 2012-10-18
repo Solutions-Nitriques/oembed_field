@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.5
+Version: 1.5.1
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
@@ -20,6 +20,7 @@ Version: 1.5
 	- Flickr
 	- Qik
 	- Viddler
+	- SlideShare
 		- Anybody can add a service       
 		  Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
 
@@ -50,6 +51,7 @@ Version: 1.5
 - Adds a auto-refresh data mechanism
 - Automatically add sites in the JIT authorized sites (for thumbnail and image services)
 - Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
+- Add a JSON parser implementation
 
 ### CREDITS ###
 

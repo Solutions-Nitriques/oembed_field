@@ -94,10 +94,10 @@
 
 			// create the Gateway object
 			$gateway = new Gateway();
-
+			
 			// set our url
 			$gateway->init($url);
-
+			
 			// get the raw response, ignore errors
 			$response = $gateway->exec();
 
