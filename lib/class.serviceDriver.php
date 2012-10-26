@@ -5,6 +5,8 @@
 	// include the Service Parser master class
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceParser.php');
 
+	require_once(TOOLKIT . '/class.gateway.php');
+	
 	/**
 	 *
 	 * Abstract class that represents a service that offers oEmbed API
