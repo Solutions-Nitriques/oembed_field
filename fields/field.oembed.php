@@ -233,7 +233,7 @@
 				}
 				// else, if we can find a 'error' value
 				else if (isset($xml['error'])) {
-					//$errorFlag = true;
+					$errorFlag = true;
 					$message = __('Exception occurred: %s', array( $xml['error'] ));
 					$status =  self::__INVALID_FIELDS__;
 				}
@@ -508,7 +508,7 @@
 
 			$drivers = new XMLElement('div',
 				__('Supported services: <i>%s</i>',
-					array( /*str_replace(*/$this->get('driver') /*, ', ', ',')*/ )
+					array($this->get('driver'))
 				)
 			);
 

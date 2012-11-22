@@ -29,21 +29,25 @@
 			$errorFlag = !(@$doc->loadXML($source));
 
 			if (!$errorFlag) {
-				$xml['xml'] = $doc->saveXML();
+				$xml['xml'] = @$doc->saveXML();
 
-				// add id to array
-				$idTagName = $driver->getIdTagName();
-				if ($idTagName == null) {
-					$xml['id'] = Lang::createHandle($url);
-				} else {
-					$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
+				if ($xml['xml'] === FALSE) {
+					$errorFlag = true;
 				}
-
-				$xml['title'] = $doc->getElementsByTagName($driver->getTitleTagName())->item(0)->nodeValue;
-				$xml['thumb'] = $doc->getElementsByTagName($driver->getThumbnailTagName())->item(0)->nodeValue;
-
+				else {
+					// add id to array
+					$idTagName = $driver->getIdTagName();
+					if ($idTagName == null) {
+						$xml['id'] = Lang::createHandle($url);
+					} else {
+						$xml['id'] = $doc->getElementsByTagName($idTagName)->item(0)->nodeValue;
+					}
+					$xml['title'] = $doc->getElementsByTagName($driver->getTitleTagName())->item(0)->nodeValue;
+					$xml['thumb'] = $doc->getElementsByTagName($driver->getThumbnailTagName())->item(0)->nodeValue;
+				}
 			}
-			else {
+
+			if ($errorFlag) {
 				// return error message
 				$xml['error'] = __('Symphony could not parse XML from oEmbed remote service');
 			}
@@ -69,7 +73,7 @@
 		 * @return string
 		 */
 		public function createJSON($source, $driver, $url, &$errorFlag) {
-
+			return NULL;
 		}
 
 	}

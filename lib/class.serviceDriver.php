@@ -101,7 +101,7 @@
 			$gateway->init($url);
 			
 			// get the raw response, ignore errors
-			$response = $gateway->exec();
+			$response = @$gateway->exec();
 
 			// declare the result array
 			$data = array();
@@ -121,9 +121,17 @@
 				// get the good parser for the service format
 				// fixes Issue #15
 				$parser = ServiceParser::getServiceParser($this->getAPIFormat());
-
-				// merge the parsed data
-				$data = array_merge($data, $parser->createArray($response, $this, $url, $errorFlag));
+				
+				$parsedAray = @$parser->createArray($response, $this, $url, $errorFlag);
+				
+				if (!$errorFlag && $parsedAray !== FALSE) {
+					// merge the parsed data
+					$data = array_merge($data, $parsedAray);
+				} else {
+					$errorFlag = true;
+					$data['error'] = __('Failed to parse oEmbed data: %s', array($parsedAray['error']));
+				}
+				
 			}
 
 			return $data;
