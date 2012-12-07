@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Field: oEmbed #
 
 Version: 1.5.1
@@ -62,3 +63,9 @@ Version: 1.5.1
 And thanks to everybody that added ServiceDrivers, reported bugs or submitted any improvements !
 
 
+=======
+sections_visualization
+======================
+
+Symphony extensions that offers a global view of the sections (Data Model)
+>>>>>>> 06297c384143afa255fca880dca684f23450cf5b
