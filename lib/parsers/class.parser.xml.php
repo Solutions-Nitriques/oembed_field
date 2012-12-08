@@ -73,7 +73,7 @@
 		 * @return string
 		 */
 		public function createJSON($source, $driver, $url, &$errorFlag) {
-			return NULL;
+			return json_encode($source);
 		}
 
 	}
