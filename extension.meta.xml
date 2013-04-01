@@ -43,6 +43,11 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.6" date="2013-04-01" min="2.3">
+	- Added Russian translation
+	- Added SSL support for some drivers (fixes #33)
+	- Added a basic JSON parser
+		</release>
 		<release version="1.5.1" date="2012-10-17" min="2.3">
 	- Minor bug fixes
 		</release>
