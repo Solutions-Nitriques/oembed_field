@@ -80,5 +80,8 @@
 		'Vous devez sélectionner au moins un service pour utiliser le champ oEmbed.',
 		
 		'Error. Service unknown.' => 
-		'Erreur. Service non-reconnu.' 
+		'Erreur. Service non-reconnu.',
+		
+		'Force SSL embeding (only if the drivers supports it)' =>
+		"Forcer l'embed en SSL (seulement si le service le supporte)"
 	);

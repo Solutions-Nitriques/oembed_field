@@ -135,7 +135,6 @@
 			}
 
 			return $data;
-
 		}
 
 		/**
@@ -188,12 +187,6 @@
 		 * @param $params
 		 */
 		public abstract function getOEmbedApiUrl($params);
-
-		/**
-		 *
-		 * Basic about method that returns an array for the credits of the driver
-		 */
-		/*public abstract function about();*/
 
 
 		/**
@@ -254,11 +247,45 @@
 		 *
 		 * It should return domains as value
 		 * i.e. array('*.example.org*', '*.example.org/images/*')
+		 * 
+		 * NOT CURRENTLY IMPLEMENTED - FOR FUTURE USE ONLY
 		 *
 		 * @return array|null
 		 */
 		public function getNeededUrlsToJITimages() {
 			return null;
+		}
+		
+		
+		/**
+		 * If this method returns true, the driver support SSL embeding.
+		 * Defaults to false.
+		 * 
+		 * @return boolean
+		 */
+		public function supportsSSL() {
+			return false;
+		}
+		
+		/**
+		 * Converts http:// to https://
+		 * @param string $value
+		 * 
+		 * @return string
+		 */
+		private static function httpToHttps($value) {
+			
+		}
+		
+		/**
+		 * This method converts data in order to support SSL embeding
+		 * @param array $data
+		 * @return array - the data to be inserted in the DB
+		 */
+		public function convertToSSL(array &$data) {
+			if ($this->supportsSSL()) {
+				//$data[''] = ;
+			}
 		}
 
 		/**

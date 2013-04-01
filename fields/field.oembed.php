@@ -53,12 +53,12 @@
 		}
 		
 		public function isSortable(){
-			return false; // @todo: should we allow to sort by url ?
+			return false; // @todo: should we allow to sort by url/driver ?
 		}
 
 		public function canFilter(){
-			return false; // @todo: should we allow to filter by url ?
-			}
+			return false; // @todo: should we allow to filter by url/driver ?
+		}
 
 		public function canImport(){
 			return false;
@@ -73,7 +73,7 @@
 		}
 
 		public function allowDatasourceOutputGrouping(){
-			return false; // @todo: should we allow to group by url ?
+			return false; // @todo: should we allow to group by url/driver ?
 		}
 
 		public function requiresSQLGrouping(){
@@ -89,6 +89,10 @@
 		 */
 		public function getAllowedDrivers() {
 			return explode(',', $this->get('driver'));
+		}
+		
+		public function forceSSL() {
+			return ($this->get('force_ssl') == 'yes');
 		}
 
 
@@ -238,9 +242,8 @@
 					$status =  self::__INVALID_FIELDS__;
 				}
 			}
-
-			// return row
-			return array(
+			
+			$row = array(
 				'url' => $url,
 				'res_id' => $xml['id'],
 				'url_oembed_xml' => $xml['url'],
@@ -249,6 +252,14 @@
 				'thumbnail_url' => $xml['thumb'],
 				'driver' => $xml['driver']
 			);
+			
+			// SSL
+			if ($this->forceSSL()) {
+				$driver->convertToSSL($row);
+			}
+			
+			// return row
+			return $row;
 		}
 
 		/**
@@ -270,7 +281,8 @@
 			$new_settings['thumbs'] = 		( isset($settings['thumbs']) 		&& $settings['thumbs'] == 'on' ? 'yes' : 'no');
 			$new_settings['driver'] = 		( isset($settings['driver']) 		&& is_array($settings['driver']) ? implode(',', $settings['driver']) : null);
 			$new_settings['query_params'] = ( isset($settings['query_params'])  && !!$settings['query_params'] ? $settings['query_params'] : null);
-
+			$new_settings['force_ssl'] = 	( isset($settings['force_ssl']) 	&& $settings['force_ssl'] == 'on' ? 'yes' : 'no');
+			
 			// save it into the array
 			$this->setArray($new_settings);
 		}
@@ -309,6 +321,7 @@
 			$thumbs = $this->get('thumbs');
 			$drivers = $this->get('driver');
 			$query_params = $this->get('query_params');
+			$force_ssl = $this->get('force_ssl');
 
 			// exit if there is no id
 			if($id == false) return false;
@@ -331,6 +344,9 @@
 
 			// Permit only some specific drivers
 			$settings['driver'] = empty($drivers) || count($drivers) < 0 ? null : $drivers;
+			
+			// Force SSL setting
+			$settings['force_ssl'] = empty($force_ssl) ? 'no' : $force_ssl;
 
 			// Extra request parameters (@see issue #11)
 			if (!!$query_params && $query_params{0} != '&') {
@@ -614,6 +630,7 @@
 			$this->appendShowColumnCheckbox($chk_wrap);
 			$this->appendMustBeUniqueCheckbox($chk_wrap);
 			$this->appendShowThumbnailCheckbox($chk_wrap);
+			$this->appendForceSSLCheckbox($chk_wrap);
 
 			/* append to wrapper */
 			$wrapper->appendChild($driv_wrap);
@@ -670,6 +687,25 @@
 				$chk->setAttribute('checked','checked');
 			}
 
+			$wrapper->appendChild($label);
+		}
+		
+		/**
+		 *
+		 * Utility (private) function to append a checkbox for the 'force_ssl' setting
+		 * @param XMLElement $wrapper
+		 */
+		private function appendForceSSLCheckbox(&$wrapper) {
+			$label = new XMLElement('label');
+			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][force_ssl]', 'type' => 'checkbox'));
+		
+			$label->appendChild($chk);
+			$label->setValue(__('Force SSL embeding (only if the drivers supports it)'), false);
+		
+			if ($this->forceSSL()) {
+				$chk->setAttribute('checked','checked');
+			}
+		
 			$wrapper->appendChild($label);
 		}
 
@@ -832,7 +868,6 @@
 			");
 		}
 
-
 		public static function updateFieldData_Driver() {
 
 			$tbl = self::FIELD_TBL_NAME;
@@ -881,6 +916,16 @@
 			return true;
 		}
 
+		public static function updateFieldTable_ForceSSL() {
+		
+			$tbl = self::FIELD_TBL_NAME;
+		
+			return Symphony::Database()->query("
+					ALTER TABLE  `$tbl`
+					ADD COLUMN `force_ssl` ENUM('yes','no') NOT NULL DEFAULT 'no'
+					");
+		}
+		
 		/**
 		 *
 		 * Drops the table needed for the settings of the field

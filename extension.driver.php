@@ -155,6 +155,11 @@
 				// Fixes issue #22
 				$ret = FieldOembed::updateDataTable_Driver();
 			}
+			
+			// are we updating from lower then 1.6 ?
+			if ($ret && version_compare($previousVersion, '1.6') < 0) {
+				$ret = FieldOembed::updateFieldTable_ForceSSL();
+			}
 
 			return $ret;
 		}
