@@ -13,8 +13,8 @@ Version: 1.6
 	- Easily incorporate this XML via your Data Sources
 	- Refreshes the info each time the entry is saved
 - *Currently supported services: 
-	- **Vimeo**
-	- **Youtube**
+	- **Vimeo** (SSL)
+	- **Youtube** (SSL)
 	- **Dailymotion**
 	- **Twitter**
 	- Flickr
@@ -30,10 +30,12 @@ Version: 1.6
 
 ### INSTALLATION ###
 
-- Unzip the oembed_field.zip file
+- `git clone` / download and unpack the tarball file
 - (re)Name the folder **oembed_field**
 - Put into the extension directory
 - Enable/install just like any other extension
+
+See <http://getsymphony.com/learn/tasks/view/install-an-extension/>
 
 *Voila !*
 
@@ -42,7 +44,7 @@ Version: 1.6
 - After installation, add a oEmbed field to a section
 - Configure the field
 	- Select at least one supported driver
-	- You can add extra parameters to the oEmbed request's query string
+	- You can add extra parameters to the oEmbed request's query string: this is usefull for settings embed sizes
 - All the data will be available as xml in a datasource
 - Use the `oembed` tag for embeding the resource into your frontend
 
@@ -54,9 +56,7 @@ Version: 1.6
 
 ### CREDITS ###
 
-<http://www.nitriques.com/open-source/>
-
-<http://www.deuxhuithuit.com/>
+Come say hi! -> <http://www.deuxhuithuit.com/>
 
 And thanks to everybody that added ServiceDrivers, reported bugs or submitted any improvements !
 

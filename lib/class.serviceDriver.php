@@ -274,7 +274,7 @@
 		 * @return string
 		 */
 		private static function httpToHttps($value) {
-			
+			return str_replace('http://', 'https://', $value);
 		}
 		
 		/**
@@ -284,7 +284,8 @@
 		 */
 		public function convertToSSL(array &$data) {
 			if ($this->supportsSSL()) {
-				//$data[''] = ;
+				$data['oembed_xml'] = self::httpToHttps($data['oembed_xml']);
+				$data['thumbnail_url'] = self::httpToHttps($data['thumbnail_url']);
 			}
 		}
 
