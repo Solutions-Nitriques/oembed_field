@@ -10,6 +10,10 @@
 		public function __construct() {
 			parent::__construct('YouTube', array('youtube.com', 'youtu.be')); // Fix Issue #19
 		}
+		
+		public function supportsSSL() {
+			return true;
+		}
 
 		public function getNeededUrlsToJITimages() {
 			return array(

@@ -29,6 +29,10 @@
 		public function getIdTagName() {
 			return 'video_id';
 		}
+		
+		public function supportsSSL() {
+			return true;
+		}
 
 		public function getNeededUrlsToJITimages() {
 			return array(
