@@ -428,11 +428,17 @@
 
 			$title = new XMLElement('title', General::sanitize($data['title']));
 			$title->setAttribute('handle', Lang::createHandle($data['title']));
-
 			$field->appendChild($title);
 			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
 			$field->appendChild(new XMLElement('driver', General::sanitize($data['driver'])));
+
+			$protocols = new XMLElement('protocols');
+			if ($this->forceSSL()) {
+				$protocols->appendChild('item', 'https');
+			}
+			$protocols->appendChild('item', 'http');
+			$field->appendChild($protocols);
 
 			$xml = new DomDocument();
 
