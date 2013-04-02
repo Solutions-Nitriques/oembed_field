@@ -6,7 +6,7 @@
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceParser.php');
 
 	require_once(TOOLKIT . '/class.gateway.php');
-	
+
 	/**
 	 *
 	 * Abstract class that represents a service that offers oEmbed API
@@ -96,10 +96,10 @@
 
 			// create the Gateway object
 			$gateway = new Gateway();
-			
+
 			// set our url
 			$gateway->init($url);
-			
+
 			// get the raw response, ignore errors
 			$response = @$gateway->exec();
 
@@ -121,9 +121,9 @@
 				// get the good parser for the service format
 				// fixes Issue #15
 				$parser = ServiceParser::getServiceParser($this->getAPIFormat());
-				
+
 				$parsedAray = @$parser->createArray($response, $this, $url, $errorFlag);
-				
+
 				if (!$errorFlag && $parsedAray !== FALSE) {
 					// merge the parsed data
 					$data = array_merge($data, $parsedAray);
@@ -131,7 +131,7 @@
 					$errorFlag = true;
 					$data['error'] = __('Failed to parse oEmbed data: %s', array($parsedAray['error']));
 				}
-				
+
 			}
 
 			return $data;
@@ -247,7 +247,7 @@
 		 *
 		 * It should return domains as value
 		 * i.e. array('*.example.org*', '*.example.org/images/*')
-		 * 
+		 *
 		 * NOT CURRENTLY IMPLEMENTED - FOR FUTURE USE ONLY
 		 *
 		 * @return array|null
@@ -255,28 +255,28 @@
 		public function getNeededUrlsToJITimages() {
 			return null;
 		}
-		
-		
+
+
 		/**
 		 * If this method returns true, the driver support SSL embeding.
 		 * Defaults to false.
-		 * 
+		 *
 		 * @return boolean
 		 */
 		public function supportsSSL() {
 			return false;
 		}
-		
+
 		/**
 		 * Converts http:// to https://
 		 * @param string $value
-		 * 
+		 *
 		 * @return string
 		 */
-		private static function httpToHttps($value) {
-			return str_replace('http://', 'https://', $value);
+		private static function removeHTTPProtocol($value) {
+			return str_replace('http://', '//', $value);
 		}
-		
+
 		/**
 		 * This method converts data in order to support SSL embeding
 		 * @param array $data
@@ -284,8 +284,8 @@
 		 */
 		public function convertToSSL(array &$data) {
 			if ($this->supportsSSL()) {
-				$data['oembed_xml'] = self::httpToHttps($data['oembed_xml']);
-				$data['thumbnail_url'] = self::httpToHttps($data['thumbnail_url']);
+				$data['oembed_xml'] = self::removeHTTPProtocol($data['oembed_xml']);
+				$data['thumbnail_url'] = self::removeHTTPProtocol($data['thumbnail_url']);
 			}
 		}
 

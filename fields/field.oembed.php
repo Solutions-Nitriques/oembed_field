@@ -49,9 +49,9 @@
 			$this->set('unique', 'no');
 			// set to show thumbs in table by default
 			$this->set('thumbs', 'yes');
-			
+
 		}
-		
+
 		public function isSortable(){
 			return false; // @todo: should we allow to sort by url/driver ?
 		}
@@ -90,7 +90,7 @@
 		public function getAllowedDrivers() {
 			return explode(',', $this->get('driver'));
 		}
-		
+
 		public function forceSSL() {
 			return ($this->get('force_ssl') == 'yes');
 		}
@@ -201,7 +201,7 @@
 			// store a pointer to the driver
 			$driver = ServiceDispatcher::getServiceDriver($url, $this->getAllowedDrivers());
 
-			
+
 			// check if we have a driver first and that this driver is allowed
 			if(!$driver) {
 				$status =  self::__INVALID_FIELDS__;
@@ -242,7 +242,7 @@
 					$status =  self::__INVALID_FIELDS__;
 				}
 			}
-			
+
 			$row = array(
 				'url' => $url,
 				'res_id' => $xml['id'],
@@ -252,12 +252,12 @@
 				'thumbnail_url' => $xml['thumb'],
 				'driver' => $xml['driver']
 			);
-			
+
 			// SSL
 			if ($this->forceSSL()) {
 				$driver->convertToSSL($row);
 			}
-			
+
 			// return row
 			return $row;
 		}
@@ -282,7 +282,7 @@
 			$new_settings['driver'] = 		( isset($settings['driver']) 		&& is_array($settings['driver']) ? implode(',', $settings['driver']) : null);
 			$new_settings['query_params'] = ( isset($settings['query_params'])  && !!$settings['query_params'] ? $settings['query_params'] : null);
 			$new_settings['force_ssl'] = 	( isset($settings['force_ssl']) 	&& $settings['force_ssl'] == 'on' ? 'yes' : 'no');
-			
+
 			// save it into the array
 			$this->setArray($new_settings);
 		}
@@ -344,7 +344,7 @@
 
 			// Permit only some specific drivers
 			$settings['driver'] = empty($drivers) || count($drivers) < 0 ? null : $drivers;
-			
+
 			// Force SSL setting
 			$settings['force_ssl'] = empty($force_ssl) ? 'no' : $force_ssl;
 
@@ -641,7 +641,7 @@
 
 		private function generateDriversSelect() {
 			$drivers = ServiceDispatcher::getAllDriversNames();
-			
+
 			sort($drivers, SORT_STRING);
 			$drivers_options = array();
 			foreach ($drivers as $driver) {
@@ -689,7 +689,7 @@
 
 			$wrapper->appendChild($label);
 		}
-		
+
 		/**
 		 *
 		 * Utility (private) function to append a checkbox for the 'force_ssl' setting
@@ -698,14 +698,14 @@
 		private function appendForceSSLCheckbox(&$wrapper) {
 			$label = new XMLElement('label');
 			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][force_ssl]', 'type' => 'checkbox'));
-		
+
 			$label->appendChild($chk);
-			$label->setValue(__('Force SSL embeding (only if the drivers supports it)'), false);
-		
+			$label->setValue(__('Force protocol-less embeding (allow ssl, only if the drivers supports it)'), false);
+
 			if ($this->forceSSL()) {
 				$chk->setAttribute('checked','checked');
 			}
-		
+
 			$wrapper->appendChild($label);
 		}
 
@@ -917,15 +917,15 @@
 		}
 
 		public static function updateFieldTable_ForceSSL() {
-		
+
 			$tbl = self::FIELD_TBL_NAME;
-		
+
 			return Symphony::Database()->query("
 					ALTER TABLE  `$tbl`
 					ADD COLUMN `force_ssl` ENUM('yes','no') NOT NULL DEFAULT 'no'
 					");
 		}
-		
+
 		/**
 		 *
 		 * Drops the table needed for the settings of the field

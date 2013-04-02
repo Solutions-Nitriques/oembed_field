@@ -45,7 +45,8 @@
 	<releases>
 		<release version="1.6" date="2013-04-01" min="2.3">
 	- Added Russian translation
-	- Added SSL support for some drivers (fixes #33)
+	- Added SSL support for some drivers via protocol-less embedding (fixes #33)
+	- Added a new XML node in the DS, which lists supported protocols
 	- Added a basic JSON parser
 	- Fixed issue #35 when duplicating a section
 		</release>

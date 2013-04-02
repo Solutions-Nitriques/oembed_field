@@ -13,16 +13,16 @@ Version: 1.6
 	- Easily incorporate this XML via your Data Sources
 	- Refreshes the info each time the entry is saved
 - *Currently supported services: 
-	- **Vimeo** (SSL)
-	- **Youtube** (SSL)
-	- **Dailymotion**
-	- **Twitter**
-	- Flickr
-	- Qik
-	- Viddler
-	- SlideShare
-		- Anybody can add a service       
-		  Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
+	- **Vimeo** (https?)
+	- **Youtube** (https?)
+	- **Dailymotion** (http)
+	- **Twitter** (http)
+	- Flickr (http)
+	- Qik (http)
+	- Viddler (http)
+	- SlideShare (http)
+	- Yours... Anybody can add a service!       
+	  Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
 
 ### REQUIREMENTS ###
 

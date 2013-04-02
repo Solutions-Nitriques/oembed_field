@@ -66,7 +66,7 @@
 
 		'Supported services: <i>%s</i>' =>
 		'Services supportés: <i>%s</i>',
-		
+
 		'Supported services <i>Select to enable the service in the publish page</i>' =>
 		'Services supportés <i>Veuillez choisir les services disponibles aux usagers</i>',
 
@@ -75,13 +75,13 @@
 
 		'Add a params set' =>
 		'Ajouté un groupe de paramètre',
-		
+
 		'You must select at least one service in order to use the oEmbed field.' =>
 		'Vous devez sélectionner au moins un service pour utiliser le champ oEmbed.',
-		
-		'Error. Service unknown.' => 
+
+		'Error. Service unknown.' =>
 		'Erreur. Service non-reconnu.',
-		
-		'Force SSL embeding (only if the drivers supports it)' =>
-		"Forcer l'embed en SSL (seulement si le service le supporte)"
+
+		'Force protocol-less embeding (allow ssl, only if the drivers supports it)' =>
+		"Forcer l'embed sans protocole (permet SSL - seulement si le service le supporte)"
 	);
