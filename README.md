@@ -13,8 +13,8 @@ Version: 1.6
 	- Easily incorporate this XML via your Data Sources
 	- Refreshes the info each time the entry is saved
 - *Currently supported services: 
-	- **Vimeo** (https?)
-	- **Youtube** (https?)
+	- **Vimeo** (http/https)
+	- **Youtube** (https/https)
 	- **Dailymotion** (http)
 	- **Twitter** (http)
 	- Flickr (http)
