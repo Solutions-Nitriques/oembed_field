@@ -435,9 +435,9 @@
 
 			$protocols = new XMLElement('protocols');
 			if ($this->forceSSL()) {
-				$protocols->appendChild('item', 'https');
+				$protocols->appendChild(new XMLElement('item', 'https'));
 			}
-			$protocols->appendChild('item', 'http');
+			$protocols->appendChild(new XMLElement('item', 'http'));
 			$field->appendChild($protocols);
 
 			$xml = new DomDocument();
