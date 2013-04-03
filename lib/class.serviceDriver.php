@@ -21,7 +21,8 @@
 
 		/**
 		 *
-		 * Basic constructor that takes the name of the service and its Urls as parameters
+		 * Basic constructor that takes the name of the service and its Urls as parameters.
+		 *
 		 * @param string $name
 		 * @param string|array $domains
 		 */
@@ -42,9 +43,10 @@
 		/**
 		 *
 		 * Accessor for the unified Domains property
-		 * This will alway return an array, even if the domain was set as a string
-		 * Fix issue #19
-		 * @return Array
+		 * This will alway return an array, even if the domain was set as a string.
+		 * Fix issue #19.
+		 *
+		 * @return array
 		 */
 		public final function getDomains() {
 			if (!is_array($this->Domains)) {
@@ -56,7 +58,8 @@
 		/**
 		 *
 		 * Methods used to check if this drivers corresponds to the
-		 * data passed in parameter. Overrides at will
+		 * data passed in parameter. Overrides at will.
+		 *
 		 * @param data $url
 		 * @return boolean
 		 */
@@ -76,6 +79,7 @@
 		 *
 		 * @param array $params - parameters for the oEmbed API request
 		 * @param bool $errorFlag - ref parameter to flag if the operation was successful (new in 1.3)
+		 *
 		 * @return array
 		 * 			url => the url uses to get the data
 		 * 			xml => the raw xml data
@@ -140,7 +144,9 @@
 		/**
 		 *
 		 * Overridable method that shall return the HTML code for embedding
-		 * this resource into the backend
+		 * this resource into the backend. Default implementation uses the
+		 * embed code provided by the service.
+		 *
 		 * @param array $data
 		 * @param array $options
 		 */
@@ -234,7 +240,6 @@
 		 * Overridable method that shall return the name of the tag
 		 * that will be used as ID. Default returns null.
 		 *
-		 * NOT CURRENTLY IMPLEMENTED - FOR FUTURE USE ONLY
 		 */
 		public function getIdTagName() {
 			return null; // will use url as id
@@ -261,6 +266,8 @@
 		 * If this method returns true, the driver support SSL embeding.
 		 * Defaults to false.
 		 *
+		 * @since 1.6
+		 *
 		 * @return boolean
 		 */
 		public function supportsSSL() {
@@ -268,17 +275,20 @@
 		}
 
 		/**
-		 * Converts http:// to https://
-		 * @param string $value
+		 * Converts https:// and http:// to //
 		 *
+		 * @param string $value
 		 * @return string
 		 */
 		private static function removeHTTPProtocol($value) {
-			return str_replace('http://', '//', $value);
+			$value = str_replace('https://', '//', $value);
+			$value = str_replace('http://', '//', $value);
+			return $value;
 		}
 
 		/**
-		 * This method converts data in order to support SSL embeding
+		 * This method converts data in order to support SSL embeding.
+		 *
 		 * @param array $data
 		 * @return array - the data to be inserted in the DB
 		 */
@@ -291,7 +301,8 @@
 
 		/**
 		 *
-		 * Utility method that returns the good size based on the location of the field
+		 * Utility method that returns the good size based on the location of the field.
+		 *
 		 * @param array $options
 		 * @param string $size (width and/or height)
 		 * @return array
