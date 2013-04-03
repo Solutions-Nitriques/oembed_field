@@ -9,9 +9,8 @@
 			parent::__construct('Vimeo', 'vimeo.com');
 		}
 
-
 		public function getEmbedCode($data, $options) {
-			return vsprintf('<iframe src="http://player.vimeo.com/video/%s" width="%d" height="%d" frameborder="0"></iframe>',
+			return vsprintf('<iframe src="//player.vimeo.com/video/%s" width="%d" height="%d" frameborder="0"></iframe>',
 							array(	$data['res_id'],
 									$this->getEmbedSize($options, 'width'),
 									$this->getEmbedSize($options, 'height')
@@ -29,7 +28,7 @@
 		public function getIdTagName() {
 			return 'video_id';
 		}
-		
+
 		public function supportsSSL() {
 			return true;
 		}
@@ -38,7 +37,11 @@
 			return array(
 				'http://a.vimeocdn.com/*',
 				'http://b.vimeocdn.com/*',
-				'http://c.vimeocdn.com/*'
+				'http://c.vimeocdn.com/*',
+
+				'https://a.vimeocdn.com/*',
+				'https://b.vimeocdn.com/*',
+				'https://c.vimeocdn.com/*',
 			);
 		}
 	}

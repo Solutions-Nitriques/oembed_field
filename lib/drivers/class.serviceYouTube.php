@@ -10,24 +10,30 @@
 		public function __construct() {
 			parent::__construct('YouTube', array('youtube.com', 'youtu.be')); // Fix Issue #19
 		}
-		
+
 		public function supportsSSL() {
 			return true;
 		}
 
 		public function getNeededUrlsToJITimages() {
 			return array(
-				
+
 				'http://i1.ytimg.com/*',
 				'http://i2.ytimg.com/*',
 				'http://i3.ytimg.com/*',
 				'http://i4.ytimg.com/*',
-				'http://i5.ytimg.com/*'
+				'http://i5.ytimg.com/*',
+
+				'https://i1.ytimg.com/*',
+				'https://i2.ytimg.com/*',
+				'https://i3.ytimg.com/*',
+				'https://i4.ytimg.com/*',
+				'https://i5.ytimg.com/*'
 
 			);
 		}
-		
-		
+
+
 		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
 			$query_params = $params['query_params'];
