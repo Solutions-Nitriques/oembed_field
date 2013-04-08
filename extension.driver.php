@@ -31,7 +31,7 @@
 		 * implement the Observer/Observable pattern.
 		 * We register here delegate that will be fired by Symphony
 		 */
-		 
+
 		public function getSubscribedDelegates(){
 			return array(
 				array(
@@ -57,7 +57,7 @@
 
 			$context['items']->{'oembed'} = new OembedContentType();
 		}
-		
+
 		/**
 		 *
 		 * Appends javascript file referneces into the head, if needed
@@ -79,7 +79,7 @@
 				return;
 			}
 
-			
+
 			// section page, new or edit
 			if($c['driver'] == 'blueprintssections') {
 
@@ -113,7 +113,10 @@
 			// v1.4
 			$params = FieldOembed::updateFieldTable_QueryParams();
 
-			return $create && $unique && $thumbs && $params;
+			// v1.6
+			$ssl = FieldOembed::updateFieldTable_ForceSSL();
+
+			return $create && $unique && $thumbs && $params && $ssl;
 
 		}
 
@@ -155,7 +158,7 @@
 				// Fixes issue #22
 				$ret = FieldOembed::updateDataTable_Driver();
 			}
-			
+
 			// are we updating from lower then 1.6 ?
 			if ($ret && version_compare($previousVersion, '1.6') < 0) {
 				$ret = FieldOembed::updateFieldTable_ForceSSL();
