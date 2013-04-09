@@ -27,6 +27,11 @@
 		public function getAPIFormat() {
 			return 'json';
 		}
+		
+		public function getRootTagName() {
+			// json format must use data as root node
+			return 'data';
+		}
 
 		public function getThumbnailTagName() {
 			return 'url';

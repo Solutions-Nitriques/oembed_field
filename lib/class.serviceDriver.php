@@ -159,7 +159,7 @@
 			if(empty($xml_data)) return false;
 
 			// create a new DOMDocument to manipulate the XML string
-			$xml = new DOMDocument();
+			$xml = new DOMDocument('1.0', 'utf-8');
 
 			// if we can load the string into the document
 			if (@$xml->loadXML($xml_data)) {

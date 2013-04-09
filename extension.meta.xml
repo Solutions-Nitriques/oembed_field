@@ -45,6 +45,7 @@
 	<releases>
 		<release version="1.7" date="TBA" min="2.3">
 	- Added Instagram driver, first driver usign json as format
+	- Fixed a bug in the embed protocols (output if the setting is on AND if the driver supports it)
 	- Issue #35 ???
 		</release>
 		<release version="1.6" date="2013-04-01" min="2.3">

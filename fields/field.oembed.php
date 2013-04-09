@@ -432,36 +432,39 @@
 			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
 			$field->appendChild(new XMLElement('driver', General::sanitize($data['driver'])));
+			
+			// store a pointer to the driver
+			// @todo: use the `driver` column
+			$driver = ServiceDispatcher::getServiceDriver($data['url']);
+			$parser = ServiceParser::getServiceParser($driver->getAPIFormat());
 
 			$protocols = new XMLElement('protocols');
-			if ($this->forceSSL()) {
+			if ($this->forceSSL() && $driver->supportsSSL()) {
 				$protocols->appendChild(new XMLElement('item', 'https'));
 			}
 			$protocols->appendChild(new XMLElement('item', 'http'));
 			$field->appendChild($protocols);
 
-			$xml = new DomDocument();
+			// oembed data
+			$xml = new DomDocument('1.0', 'utf-8');
+			$errorFlag = false;
+			
+			// use our parser in order to get the xml string
+			$xml_data = $parser->createXML($data['oembed_xml'], $driver, $data['url'], $errorFlag);
 
+var_dump($xml_data, $errorFlag);
 			// if we can successfully load the XML data into the
 			// DOM object while ignoring errors (@)
-			if (@$xml->loadXML($data['oembed_xml'])) {
+			if (!$errorFlag || @$xml->loadXML($xml_data)) {
 
 				$xml->preserveWhiteSpace = true;
 				$xml->formatOutput = true;
 				$xml->normalize();
 
-				// store a pointer to the driver
-				// @todo: use the `driver` column
-				$driver = ServiceDispatcher::getServiceDriver($data['url']);
-
 				// get the root node
 				$xml_root = $xml->getElementsByTagName($driver->getRootTagName())->item(0);
 
-				// not needed anymore
-				// if we did not found anything, try to look for a 'error' tag
-				/*if (empty($xml_root)) {
-					$xml_root = $xml->getElementsByTagName('error')->item(0);
-				}*/
+var_dump($xml_root, $xml);
 
 				// if we've found a root node
 				if (!empty($xml_root)) {
@@ -472,12 +475,18 @@
 					// value we set is xml. It's just a hack to pass
 					// the value from the DOMDocument object to the XMLElement
 					$field->setValue($xml, false);
+				} else {
+					$errorFlag = true;
 				}
-
-			} else {
+			}
+			else {
+				$errorFlag = true;
+			}
+			
+			if ($errorFlag) {
 				// loading the xml string into the DOMDocument did not work
 				// so we will add a errors message into the result
-				$error = new XMLElement();
+				$error = new XMLElement('error');
 
 				$error->setValue(__('Error while loading the xml into the document'));
 
