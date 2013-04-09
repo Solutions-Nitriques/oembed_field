@@ -459,14 +459,23 @@
 				$xml->preserveWhiteSpace = true;
 				$xml->formatOutput = true;
 				$xml->normalizeDocument();
+				
+				$root_name = $driver->getRootTagName();
 
 				// get the root node
-				$xml_root = $xml->getElementsByTagName($driver->getRootTagName())->item(0);
+				$xml_root = $xml->getElementsByTagName($root_name)->item(0);
 
 				// if we've found a root node
 				if (!empty($xml_root)) {
 					// save it as a string
 					$xml = $xml->saveXML($xml_root);
+					
+					// replace the 'root' element with 'oembed'
+					if ($root_name != 'oembed') {
+						$xml = preg_replace('/^<' . $root_name . '>/', '<oembed>', $xml);
+						$xml = preg_replace('/<\/' . $root_name . '>/', '</oembed>', $xml);
+					}
+					
 					// set it as the 'value' of the field
 					// BEWARE: it will be just a string, since the
 					// value we set is xml. It's just a hack to pass

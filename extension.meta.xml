@@ -44,6 +44,7 @@
 	</dependencies>
 	<releases>
 		<release version="1.7beta1" date="TBA" min="2.3">
+	- Normalizing DS ouput to always be named `oembed`. This introduce a breaking change in DS output versus previous versions
 	- Added Instagram driver, first driver usign json as format - covers issue #15 as well
 	- Fixed a bug in the embed protocols (output if the setting is on AND if the driver supports it)
 	- Fixed Issue #36
