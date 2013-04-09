@@ -19,12 +19,12 @@
 	</types>
 	<authors>
 		<author>
-			<name github="Solutions-Nitriques" symphony="nitriques">Solutions Nitriques</name>
-			<website>http://www.nitriques.com/open-source/</website>
-		</author>
-		<author>
 			<name github="DeuxHuitHuit" symphony="">Deux Huit Huit</name>
 			<website>http://www.deuxhuithuit.com</website>
+		</author>
+		<author>
+			<name github="Solutions-Nitriques" symphony="nitriques">Solutions Nitriques</name>
+			<website>http://www.nitriques.com/open-source/</website>
 		</author>
 		<author>
 			<name github="rowan-lewis" symphony="buzzomatic">Rowan Lewis</name>
@@ -43,6 +43,10 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.7" date="TBA" min="2.3">
+	- Added Instagram driver, first driver usign json as format
+	- Issue #35 ???
+		</release>
 		<release version="1.6" date="2013-04-01" min="2.3">
 	- Added Russian translation
 	- Added SSL support for some drivers via protocol-less embedding (fixes #33)

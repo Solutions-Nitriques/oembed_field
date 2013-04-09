@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.6
+Version: 1.7
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
@@ -17,6 +17,7 @@ Version: 1.6
 	- **Youtube** (https/https)
 	- **Dailymotion** (http)
 	- **Twitter** (http)
+	- **Instagram** (http)
 	- Flickr (http)
 	- Qik (http)
 	- Viddler (http)
@@ -53,6 +54,7 @@ See <http://getsymphony.com/learn/tasks/view/install-an-extension/>
 - Adds a auto-refresh data mechanism
 - Automatically add sites in the JIT authorized sites (for thumbnail and image services)
 - Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
+- Add Cinemagram driver: Waiting for **MySpace** to complete their oEmbed service
 
 ### CREDITS ###
 

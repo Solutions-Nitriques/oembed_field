@@ -6,6 +6,8 @@
 	/**
 	 *
 	 * This class parses XML source into different other representation
+	 *
+	 * @since 1.7
 	 * @author Nicolas
 	 *
 	 */
@@ -20,7 +22,33 @@
 		 * @return string
 		 */
 		public function createArray($source, $driver, $url, &$errorFlag) {
+			// get the data as an array
+			$data = @json_decode($source, true);
+			
+			if ($data === FALSE) {
+				$errorFlag = true;	
+			}
+			
+			if (!$errorFlag) {
+				// original content
+				$xml['xml'] = $source;
+				
+				$idTagName = $driver->getIdTagName();
+				if ($idTagName == null || !isset($data[$idTagName])) {
+					$xml['id'] = Lang::createHandle($url);
+				} else {
+					$xml['id'] = $data[$idTagName];
+				}
+				$xml['title'] = $data[$driver->getTitleTagName()];
+				$xml['thumb'] = $data[$driver->getThumbnailTagName()];
+			}
 
+			if ($errorFlag) {
+				// return error message
+				$xml['error'] = __('Symphony could not parse JSON from oEmbed remote service');
+			}
+
+			return $xml;
 		}
 
 		/**
@@ -30,7 +58,7 @@
 		 * @return string
 		 */
 		public function createXML($source, $driver, $url, &$errorFlag) {
-			// @see http://getsymphony.com/learn/api/2.3.1/toolkit/json/
+			// @see http://getsymphony.com/learn/api/2.3.2/toolkit/json/
 			return JSON::convertToXML($source);
 		}
 
