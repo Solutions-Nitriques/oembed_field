@@ -21,10 +21,11 @@
 		}
 		
 		public function getEmbedCode($data, $options) {
-			return vsprintf('<img src="%s" width="%d" alt="" />',
+			$title = General::sanitize($data['title']);
+			return vsprintf('<img src="%s" width="%d" alt="%s" title="%s" />',
 							array(	$data['thumbnail_url'],
 									$this->getEmbedSize($options, 'width'),
-									General::sanitize($data['title'])
+									$title, $title
 								  )
 					);
 		}
