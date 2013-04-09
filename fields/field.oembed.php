@@ -439,7 +439,7 @@
 			$parser = ServiceParser::getServiceParser($driver->getAPIFormat());
 
 			$protocols = new XMLElement('protocols');
-			if ($this->forceSSL() && $driver->supportsSSL()) {
+			if ($driver->supportsSSL()) {
 				$protocols->appendChild(new XMLElement('item', 'https'));
 			}
 			$protocols->appendChild(new XMLElement('item', 'http'));
@@ -452,19 +452,16 @@
 			// use our parser in order to get the xml string
 			$xml_data = $parser->createXML($data['oembed_xml'], $driver, $data['url'], $errorFlag);
 
-var_dump($xml_data, $errorFlag);
 			// if we can successfully load the XML data into the
 			// DOM object while ignoring errors (@)
-			if (!$errorFlag || @$xml->loadXML($xml_data)) {
+			if (!$errorFlag && @$xml->loadXML($xml_data)) {
 
 				$xml->preserveWhiteSpace = true;
 				$xml->formatOutput = true;
-				$xml->normalize();
+				$xml->normalizeDocument();
 
 				// get the root node
 				$xml_root = $xml->getElementsByTagName($driver->getRootTagName())->item(0);
-
-var_dump($xml_root, $xml);
 
 				// if we've found a root node
 				if (!empty($xml_root)) {
