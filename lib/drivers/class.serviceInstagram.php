@@ -19,6 +19,15 @@
 
 			return 'http://api.instagram.com/oembed?url=' . $url . $query_params;
 		}
+		
+		public function getEmbedCode($data, $options) {
+			return vsprintf('<img src="%s" width="%d" alt="" />',
+							array(	$data['thumbnail_url'],
+									$this->getEmbedSize($options, 'width'),
+									General::sanitize($data['title'])
+								  )
+					);
+		}
 
 		public function getIdTagName() {
 			return 'media_id';
