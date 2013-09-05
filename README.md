@@ -18,6 +18,7 @@ Version: 1.7
 	- **Dailymotion** (http)
 	- **Twitter** (http)
 	- **Instagram** (http)
+	- Embed.ly (http/https)
 	- Flickr (http)
 	- Qik (http)
 	- Viddler (http)
@@ -54,7 +55,9 @@ See <http://getsymphony.com/learn/tasks/view/install-an-extension/>
 - Adds a auto-refresh data mechanism
 - Automatically add sites in the JIT authorized sites (for thumbnail and image services)
 - Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
-- Add Cinemagram driver: Waiting for **MySpace** to complete their oEmbed service
+- Add Cinemagram driver: Waiting for **Cinemagram** to complete their oEmbed service
+- Add Issuu driver: Waiting for **Issuu** to complete their oEmbed service
+- Add UStream driver: Waiting for **UStream** to complete their oEmbed service
 
 ### CREDITS ###
 
