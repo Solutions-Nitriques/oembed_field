@@ -432,7 +432,7 @@
 			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
 			$field->appendChild(new XMLElement('driver', General::sanitize($data['driver'])));
-			
+
 			// store a pointer to the driver
 			// @todo: use the `driver` column
 			$driver = ServiceDispatcher::getServiceDriver($data['url']);
@@ -448,7 +448,7 @@
 			// oembed data
 			$xml = new DomDocument('1.0', 'utf-8');
 			$errorFlag = false;
-			
+
 			// use our parser in order to get the xml string
 			$xml_data = $parser->createXML($data['oembed_xml'], $driver, $data['url'], $errorFlag);
 
@@ -459,7 +459,7 @@
 				$xml->preserveWhiteSpace = true;
 				$xml->formatOutput = true;
 				$xml->normalizeDocument();
-				
+
 				$root_name = $driver->getRootTagName();
 
 				// get the root node
@@ -469,13 +469,13 @@
 				if (!empty($xml_root)) {
 					// save it as a string
 					$xml = $xml->saveXML($xml_root);
-					
+
 					// replace the 'root' element with 'oembed'
 					if ($root_name != 'oembed') {
 						$xml = preg_replace('/^<' . $root_name . '>/', '<oembed>', $xml);
 						$xml = preg_replace('/<\/' . $root_name . '>/', '</oembed>', $xml);
 					}
-					
+
 					// set it as the 'value' of the field
 					// BEWARE: it will be just a string, since the
 					// value we set is xml. It's just a hack to pass
@@ -488,7 +488,7 @@
 			else {
 				$errorFlag = true;
 			}
-			
+
 			if ($errorFlag) {
 				// loading the xml string into the DOMDocument did not work
 				// so we will add a errors message into the result
@@ -662,14 +662,21 @@
 
 		private function generateDriversSelect() {
 			$drivers = ServiceDispatcher::getAllDriversNames();
-
+			
 			sort($drivers, SORT_STRING);
 			$drivers_options = array();
+			
+			// patch
+			$d = $this->get('driver');
+			if (is_array($d)) {
+				$d = implode(',', $d);
+			}
+			
 			foreach ($drivers as $driver) {
-				$selected = strpos($this->get('driver'), $driver) > -1;
+				$selected = strpos($d, $driver) > -1;
 				$drivers_options[] = array($driver, $selected);
 			}
-
+			
 			return Widget::Select('fields['.$this->get('sortorder').'][driver][]', $drivers_options, array('multiple'=>'multiple'));
 		}
 
