@@ -144,7 +144,8 @@
 				if ($driver instanceof ServiceDriver) {
 					$embed = $driver->getEmbedCode(
 						array(
-							'oembed_xml'	=> $data->{'xml'}
+							'oembed_xml'	=> $data->{'xml'},
+							'res_id' => $data->{'id'}
 						),
 						array(
 							'location'		=> 'sidebar',
