@@ -1,10 +1,11 @@
 All source code included in this Symphony Extension
-archive is, unless otherwise specified, released under the MIT licence as
+archive is, unless otherwise specified, released under the MIT license as
 follows:
 
 ----- begin license block -----
 
-Copyright 2011 Solutions Nitriques
+Copyright 2011 Solutions Nitriques inc.
+Copyright 2011-2013 Deux Huit Huit inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

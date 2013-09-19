@@ -8,71 +8,50 @@
 		const BASE_URL = "http://youtu.be/";
 
 		public function __construct() {
-			parent::__construct('YouTube', 'youtube.com');
+			parent::__construct('YouTube', array('youtube.com', 'youtu.be')); // Fix Issue #19
 		}
 
-		public function about() {
+		public function supportsSSL() {
+			return true;
+		}
+
+		public function getNeededUrlsToJITimages() {
 			return array(
-				'name'			=> $this->Name,
-				'version'		=> '1.2',
-				'release-date'	=> '2011-09-27',
-				'author'		=> array(
-					'name'			=> 'Solutions Nitriques',
-					'website'		=> 'http://www.nitriques.com/open-source/',
-					'email'			=> 'open-source (at) nitriques.com'
-				)
-	 		);
+
+				'http://i1.ytimg.com/*',
+				'http://i2.ytimg.com/*',
+				'http://i3.ytimg.com/*',
+				'http://i4.ytimg.com/*',
+				'http://i5.ytimg.com/*',
+
+				'https://i1.ytimg.com/*',
+				'https://i2.ytimg.com/*',
+				'https://i3.ytimg.com/*',
+				'https://i4.ytimg.com/*',
+				'https://i5.ytimg.com/*'
+
+			);
 		}
 
-		public function getEmbedCode($data, $options) {
 
-			$player = null;
-
-			$xml_data = $data['oembed_xml'];
-
-			//var_dump($data);die;
-
-			if (!empty($xml_data)) {
-				$xml = new DOMDocument();
-
-				if (@$xml->loadXML($xml_data)) {
-
-					$player = $xml->getElementsByTagName('html')->item(0)->nodeValue;
-
-					if ($options['location'] == 'sidebar') {
-						// replace height and width to make it fit in the backend
-						$w = $this->getEmbedSize($options, 'width');
-						$h = $this->getEmbedSize($options, 'height');
-
-						$player = preg_replace(
-							array('/width="([^"]*)"/', '/height="([^"]*)"/'),
-							array("width=\"{$w}\"", "height=\"{$h}\""), $player);
-					}
-
-				}
-			}
-
-			return $player;
-		}
-
-		public function getOEmbedXmlApiUrl($params) {
+		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
+			$query_params = $params['query_params'];
 
 			// trying to fix url with # in it
-			if (strpos($params['url'], '#') !== FALSE) {
+			// N.B. this is valid only for Youtube as other services
+			// may place the resource ID elsewhere in the hash (#) tag
+
+			// if the url contains '#' (the real resource ID is the last part)
+			if (strpos($url, '#') !== FALSE) {
 				// split on every # or /
 				$exploded = preg_split('/[\/#]/', $url);
 
+				// use the last item
 				$url = self::BASE_URL . $exploded[count($exploded)-1];
 			}
 
-			//var_dump($url); die;
-
-			return 'http://www.youtube.com/oembed?format=xml&url=' . $url;
+			return 'http://www.youtube.com/oembed?format=xml&url=' . $url . $query_params;
 		}
 
-
-		public function getIdTagName() {
-			return null; // will use url as id
-		}
 	}
