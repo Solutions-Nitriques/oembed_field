@@ -625,7 +625,7 @@
 			/* new line, drivers */
 			$driv_wrap = new XMLElement('div', NULL, array('class'=>'oembed-drivers'));
 			$driv_title = new XMLElement('label',__('Supported services <i>Select to enable the service in the publish page</i>'));
-			$driv_title->appendChild($this->generateDriversSelect());
+			$driv_title->appendChild(self::generateDriversSelectOptions($this->get(), 'fields['.$this->get('sortorder').'][driver][]'));
 			if (isset($errors['driver'])) {
 				$driv_title = Widget::wrapFormElementWithError($driv_title, $errors['driver']);
 			}
@@ -660,14 +660,17 @@
 
 		}
 
-		private function generateDriversSelect() {
+		public static function generateDriversSelectOptions($settings, $name) {
 			$drivers = ServiceDispatcher::getAllDriversNames();
-			
 			sort($drivers, SORT_STRING);
 			$drivers_options = array();
 			
+			if (is_array($settings)) {
+				$settings = (object) $settings;
+			}
+			
 			// patch
-			$d = $this->get('driver');
+			$d = $settings->{'driver'};
 			if (is_array($d)) {
 				$d = implode(',', $d);
 			}
@@ -677,7 +680,7 @@
 				$drivers_options[] = array($driver, $selected);
 			}
 			
-			return Widget::Select('fields['.$this->get('sortorder').'][driver][]', $drivers_options, array('multiple'=>'multiple'));
+			return Widget::Select($name, $drivers_options, array('multiple'=>'multiple'));
 		}
 
 		/**

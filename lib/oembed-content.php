@@ -1,5 +1,7 @@
 <?php
 
+	require_once(EXTENSIONS . '/oembed_field/fields/field.oembed.php');
+
 	/**
 	 * @package oembed_field
 	 */
@@ -21,11 +23,9 @@
 
 			$driv_title = new XMLElement('label');
 			$driv_title->setValue(__('Supported services <i>Select to enable the service in the publish page</i>'));
-			$driv_title->appendChild(Widget::Select(
-				"{$field_name}[drivers][]",
-				$this->getDriversSelectOptions($settings),
-				array('multiple'=>'multiple')
-			));
+			$driv_title->appendChild(
+				FieldOembed::generateDriversSelectOptions($settings, "{$field_name}[drivers][]")
+			);
 
 			if (isset($errors->{'drivers'})) {
 				$driv_title = Widget::wrapFormElementWithError(
@@ -50,22 +50,6 @@
 
 			$wrapper->appendChild($driv_wrap);
 			$wrapper->appendChild($par_wrap);
-		}
-
-		/**
-		 * @todo Put this somewhere it doesn't need to be declared twice.
-		 */
-		private function getDriversSelectOptions(StdClass $settings) {
-			$drivers = ServiceDispatcher::getAllDriversNames();
-			sort($drivers, SORT_STRING);
-			$drivers_options = array();
-
-			foreach ($drivers as $driver) {
-				$selected = in_array($driver, $settings->{'drivers'});
-				$drivers_options[] = array($driver, $selected);
-			}
-
-			return $drivers_options;
 		}
 
 		public function sanitizeSettings($settings) {
