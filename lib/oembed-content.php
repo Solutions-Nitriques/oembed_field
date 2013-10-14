@@ -171,7 +171,8 @@
 				'id'		=> $values['id'],
 				'title'		=> $values['title'],
 				'driver'	=> $values['driver'],
-				'url'		=> $values['url'],
+				'url'		=> $data->{'url'},
+				'url_oembed_xml'	=> $values['url'],
 				'thumb'		=> $values['thumb'],
 				'xml'		=> $values['xml']
 			));
