@@ -29,9 +29,8 @@
 		 * @throws ServiceDriverException
 		 */
 		private static final function loadDrivers() {
-			$load = false;
-
-			// if the pointer is null, when sould load the drivers
+			
+			// if the pointer is null, then we sould load the drivers
 			if (self::$drivers == null) {
 
 				// create a new array
@@ -67,13 +66,7 @@
 					}
 
 				}
-
-				// set return value
-				$load = true;
-				
 			}
-			
-			return $load;
 		}
 
 		/**
@@ -152,18 +145,30 @@
 			} else {
 				$drivers = self::getAllDrivers();
 			}
-
-			// for each driver
-			foreach ($drivers as $className => $class) {
-
-				// if it matches, return it
-				if ($class->isMatch($url)) {
-					return $class;
-				}
-
+			
+			// Match a native driver
+			$driver = self::findDriverFiltered($drivers, true);
+			
+			// Try to match a non native one
+			if ($driver == null) {
+				$driver = self::findDriverFiltered($drivers, false);
 			}
-
-			// not found
+			
+			return $driver;
+		}
+		
+		private static final function findDriverFiltered(&$drivers, $native) {
+			if (!empty($drivers)) {
+				foreach ($drivers as $className => $class) {
+					// if the driver is $native
+					if ($class->isNative() == $native) {
+						// if it matches, return it
+						if ($class->isMatch($url)) {
+							return $class;
+						}
+					}
+				}
+			}
 			return null;
 		}
 

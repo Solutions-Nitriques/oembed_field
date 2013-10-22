@@ -23,6 +23,13 @@
 			return null;
 		}
 		
+		/**
+		 * This driver is non-native (third party)
+		 */
+		public function isNative() {
+			return false;	
+		}
+		
 		public function isMatch($url) {
 			// since this service accepts lots of providers,
 			// even not oEmbed compatible, just check that it's

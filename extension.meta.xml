@@ -44,15 +44,18 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
-		<release version="1.7" date="2013-09-05" min="2.3">
+		<release version="1.7" date="2013-10-22" min="2.3">
 	- Normalizing DS ouput to always be named `oembed`. This introduce a breaking change in DS output versus previous versions
 	- Added Instagram driver, first driver usign json as format - covers issue #15 as well
 	- Fixed a bug in the embed protocols (output if the setting is on AND if the driver supports it)
 	- Fixed Issue #36
+	- Fixed Issue #40
+	- Fixed Issue #41
 	- Reviewed Issue #35
 	- Added Polish translation
 	- Added Twitter driver
 	- Added Embed.ly driver (if you wish to add you key, do so in the query params option)
+	See also the note in the README about the "non-native" solutions. Fixes Issue #38
 		</release>
 		<release version="1.6" date="2013-04-01" min="2.3">
 	- Added Russian translation
