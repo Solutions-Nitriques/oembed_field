@@ -112,12 +112,18 @@
 			$message = NULL;
 			$required = ($this->get('required') == 'yes');
 
-			if($required && strlen($data) == 0){
+			if ($required && strlen($data) == 0){
 				$message = __("'%s' is a required field.", array($this->get('label')));
 				return self::__MISSING_FIELDS__;
 			}
-
+			
 			$url = $data;
+			
+			if (!filter_var($url, FILTER_VALIDATE_URL)) {
+				$message = __("%s: '%s' is not a valid URL.", array($this->get('label'), $url));
+				return self::__INVALID_FIELDS__;
+			}
+			
 			$driver = ServiceDispatcher::getServiceDriver($url, $this->getAllowedDrivers());
 
 			// valid driver
