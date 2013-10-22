@@ -18,7 +18,7 @@ Version: 1.7
 	- **Dailymotion** (http)
 	- **Twitter** (http)
 	- **Instagram** (http)
-	- Embed.ly (http/https)
+	- Embed.ly (http/https) * Non-native
 	- Flickr (http)
 	- Qik (http)
 	- Viddler (http)
@@ -49,6 +49,13 @@ See <http://getsymphony.com/learn/tasks/view/install-an-extension/>
 	- You can add extra parameters to the oEmbed request's query string: this is usefull for settings embed sizes
 - All the data will be available as xml in a datasource
 - Use the `oembed` tag for embeding the resource into your frontend
+
+#### Non-native ####
+
+"Non-native" solutions like embed.ly are tested after all other "native" solutions. This will
+allow you to enable both natives solution while being able to revert to a global fallback. If
+other non-native solutions are added, please do not enable more than one because this may cause 
+un-wanted behavior.
 
 ### TODO ###
 
