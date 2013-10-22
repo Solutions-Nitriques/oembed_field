@@ -6,6 +6,7 @@
 	- **Youtube**
 	- **Dailymotion**
 	- **Twitter**
+	- Embed.ly
 	- Flickr
 	- Qik
 	- Viddler
@@ -19,12 +20,12 @@
 	</types>
 	<authors>
 		<author>
-			<name github="Solutions-Nitriques" symphony="nitriques">Solutions Nitriques</name>
-			<website>http://www.nitriques.com/open-source/</website>
-		</author>
-		<author>
 			<name github="DeuxHuitHuit" symphony="">Deux Huit Huit</name>
 			<website>http://www.deuxhuithuit.com</website>
+		</author>
+		<author>
+			<name github="Solutions-Nitriques" symphony="nitriques">Solutions Nitriques</name>
+			<website>http://www.nitriques.com/open-source/</website>
 		</author>
 		<author>
 			<name github="rowan-lewis" symphony="buzzomatic">Rowan Lewis</name>
@@ -43,6 +44,19 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.7" date="2013-10-22" min="2.3">
+	- Normalizing DS ouput to always be named `oembed`. This introduce a breaking change in DS output versus previous versions
+	- Added Instagram driver, first driver usign json as format - covers issue #15 as well
+	- Fixed a bug in the embed protocols (output if the setting is on AND if the driver supports it)
+	- Fixed Issue #36
+	- Fixed Issue #40
+	- Fixed Issue #41
+	- Reviewed Issue #35
+	- Added Polish translation
+	- Added Twitter driver
+	- Added Embed.ly driver (if you wish to add you key, do so in the query params option)
+	See also the note in the README about the "non-native" solutions. Fixes Issue #38
+		</release>
 		<release version="1.6" date="2013-04-01" min="2.3">
 	- Added Russian translation
 	- Added SSL support for some drivers via protocol-less embedding (fixes #33)
@@ -51,7 +65,7 @@
 	- Fixed issue #35 when duplicating a section
 		</release>
 		<release version="1.5.1" date="2012-10-17" min="2.3">
-	- Minor bug fixes
+	- Minor bug fixes (#23, #26, #27)
 		</release>
 		<release version="1.5" date="2012-07-06" min="2.3">
 	- Made compatible with Symphony 2.3

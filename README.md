@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.6
+Version: 1.7
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
@@ -17,6 +17,8 @@ Version: 1.6
 	- **Youtube** (https/https)
 	- **Dailymotion** (http)
 	- **Twitter** (http)
+	- **Instagram** (http)
+	- Embed.ly (http/https) * Non-native
 	- Flickr (http)
 	- Qik (http)
 	- Viddler (http)
@@ -48,11 +50,21 @@ See <http://getsymphony.com/learn/tasks/view/install-an-extension/>
 - All the data will be available as xml in a datasource
 - Use the `oembed` tag for embeding the resource into your frontend
 
+#### Non-native ####
+
+"Non-native" solutions like embed.ly are tested after all other "native" solutions. This will
+allow you to enable both natives solution while being able to revert to a global fallback. If
+other non-native solutions are added, please do not enable more than one because this may cause 
+un-wanted behavior.
+
 ### TODO ###
 
 - Adds a auto-refresh data mechanism
 - Automatically add sites in the JIT authorized sites (for thumbnail and image services)
 - Add MySpace driver: Waiting for **MySpace** to complete their oEmbed service
+- Add Cinemagram driver: Waiting for **Cinemagram** to complete their oEmbed service
+- Add Issuu driver: Waiting for **Issuu** to complete their oEmbed service
+- Add UStream driver: Waiting for **UStream** to complete their oEmbed service
 
 ### CREDITS ###
 

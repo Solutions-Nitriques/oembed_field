@@ -159,7 +159,7 @@
 			if(empty($xml_data)) return false;
 
 			// create a new DOMDocument to manipulate the XML string
-			$xml = new DOMDocument();
+			$xml = new DOMDocument('1.0', 'utf-8');
 
 			// if we can load the string into the document
 			if (@$xml->loadXML($xml_data)) {
@@ -272,6 +272,24 @@
 		 */
 		public function supportsSSL() {
 			return false;
+		}
+		
+		/**
+		 * This flags indicate that the current driver is a native driver,
+		 * i.e. this driver uses the official oEmbed api of the provider.
+		 * Some drivers may use third party embed services that are compatible
+		 * with a rage of media across multiple sources. Hence, all native drivers
+		 * will be tested first and non-native solution will be used if not match is
+		 * found. Note that enabling multiple non-native drivers is not-recommanded.
+		 *
+		 * See: https://github.com/Solutions-Nitriques/oembed_field/pull/38
+		 * 
+		 * @since 1.7
+		 *
+		 * @return boolean
+		 */
+		public function isNative() {
+			return true;	
 		}
 
 		/**

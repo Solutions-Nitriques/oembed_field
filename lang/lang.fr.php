@@ -51,6 +51,9 @@
 
 		'Symphony could not parse XML from oEmbed remote service' =>
 		"Symphony n'a pas pu lire les données XML à partir du service oEmbed",
+		
+		'Symphony could not parse JSON from oEmbed remote service' =>
+		"Symphony n'a pas pu lire les données JSON à partir du service oEmbed",
 
 		'Error while loading the xml into the document' =>
 		'Une erreur est survenue lors du traitement des données xml',
@@ -83,5 +86,6 @@
 		'Erreur. Service non-reconnu.',
 
 		'Force protocol-less embeding (allow ssl, only if the drivers supports it)' =>
-		"Forcer l'embed sans protocole (permet SSL - seulement si le service le supporte)"
+		"Forcer l'embed sans protocole (permet SSL - seulement si le service le supporte)",
+		
 	);

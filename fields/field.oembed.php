@@ -112,12 +112,18 @@
 			$message = NULL;
 			$required = ($this->get('required') == 'yes');
 
-			if($required && strlen($data) == 0){
+			if ($required && strlen($data) == 0){
 				$message = __("'%s' is a required field.", array($this->get('label')));
 				return self::__MISSING_FIELDS__;
 			}
-
+			
 			$url = $data;
+			
+			if (!filter_var($url, FILTER_VALIDATE_URL)) {
+				$message = __("%s: '%s' is not a valid URL.", array($this->get('label'), $url));
+				return self::__INVALID_FIELDS__;
+			}
+			
 			$driver = ServiceDispatcher::getServiceDriver($url, $this->getAllowedDrivers());
 
 			// valid driver
@@ -433,51 +439,66 @@
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
 			$field->appendChild(new XMLElement('driver', General::sanitize($data['driver'])));
 
+			// store a pointer to the driver
+			// @todo: use the `driver` column
+			$driver = ServiceDispatcher::getServiceDriver($data['url']);
+			$parser = ServiceParser::getServiceParser($driver->getAPIFormat());
+
 			$protocols = new XMLElement('protocols');
-			if ($this->forceSSL()) {
+			if ($driver->supportsSSL()) {
 				$protocols->appendChild(new XMLElement('item', 'https'));
 			}
 			$protocols->appendChild(new XMLElement('item', 'http'));
 			$field->appendChild($protocols);
 
-			$xml = new DomDocument();
+			// oembed data
+			$xml = new DomDocument('1.0', 'utf-8');
+			$errorFlag = false;
+
+			// use our parser in order to get the xml string
+			$xml_data = $parser->createXML($data['oembed_xml'], $driver, $data['url'], $errorFlag);
 
 			// if we can successfully load the XML data into the
 			// DOM object while ignoring errors (@)
-			if (@$xml->loadXML($data['oembed_xml'])) {
+			if (!$errorFlag && @$xml->loadXML($xml_data)) {
 
 				$xml->preserveWhiteSpace = true;
 				$xml->formatOutput = true;
-				$xml->normalize();
+				$xml->normalizeDocument();
 
-				// store a pointer to the driver
-				// @todo: use the `driver` column
-				$driver = ServiceDispatcher::getServiceDriver($data['url']);
+				$root_name = $driver->getRootTagName();
 
 				// get the root node
-				$xml_root = $xml->getElementsByTagName($driver->getRootTagName())->item(0);
-
-				// not needed anymore
-				// if we did not found anything, try to look for a 'error' tag
-				/*if (empty($xml_root)) {
-					$xml_root = $xml->getElementsByTagName('error')->item(0);
-				}*/
+				$xml_root = $xml->getElementsByTagName($root_name)->item(0);
 
 				// if we've found a root node
 				if (!empty($xml_root)) {
 					// save it as a string
 					$xml = $xml->saveXML($xml_root);
+
+					// replace the 'root' element with 'oembed'
+					if ($root_name != 'oembed') {
+						$xml = preg_replace('/^<' . $root_name . '>/', '<oembed>', $xml);
+						$xml = preg_replace('/<\/' . $root_name . '>/', '</oembed>', $xml);
+					}
+
 					// set it as the 'value' of the field
 					// BEWARE: it will be just a string, since the
 					// value we set is xml. It's just a hack to pass
 					// the value from the DOMDocument object to the XMLElement
 					$field->setValue($xml, false);
+				} else {
+					$errorFlag = true;
 				}
+			}
+			else {
+				$errorFlag = true;
+			}
 
-			} else {
+			if ($errorFlag) {
 				// loading the xml string into the DOMDocument did not work
 				// so we will add a errors message into the result
-				$error = new XMLElement();
+				$error = new XMLElement('error');
 
 				$error->setValue(__('Error while loading the xml into the document'));
 
@@ -610,7 +631,7 @@
 			/* new line, drivers */
 			$driv_wrap = new XMLElement('div', NULL, array('class'=>'oembed-drivers'));
 			$driv_title = new XMLElement('label',__('Supported services <i>Select to enable the service in the publish page</i>'));
-			$driv_title->appendChild($this->generateDriversSelect());
+			$driv_title->appendChild(self::generateDriversSelectOptions($this->get(), 'fields['.$this->get('sortorder').'][driver][]'));
 			if (isset($errors['driver'])) {
 				$driv_title = Widget::wrapFormElementWithError($driv_title, $errors['driver']);
 			}
@@ -645,17 +666,27 @@
 
 		}
 
-		private function generateDriversSelect() {
+		public static function generateDriversSelectOptions($settings, $name) {
 			$drivers = ServiceDispatcher::getAllDriversNames();
-
 			sort($drivers, SORT_STRING);
 			$drivers_options = array();
+			
+			if (is_array($settings)) {
+				$settings = (object) $settings;
+			}
+			
+			// patch
+			$d = $settings->{'driver'};
+			if (is_array($d)) {
+				$d = implode(',', $d);
+			}
+			
 			foreach ($drivers as $driver) {
-				$selected = strpos($this->get('driver'), $driver) > -1;
+				$selected = strpos($d, $driver) > -1;
 				$drivers_options[] = array($driver, $selected);
 			}
-
-			return Widget::Select('fields['.$this->get('sortorder').'][driver][]', $drivers_options, array('multiple'=>'multiple'));
+			
+			return Widget::Select($name, $drivers_options, array('multiple'=>'multiple'));
 		}
 
 		/**
