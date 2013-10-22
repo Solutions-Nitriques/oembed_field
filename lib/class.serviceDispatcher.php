@@ -147,17 +147,17 @@
 			}
 			
 			// Match a native driver
-			$driver = self::findDriverFiltered($drivers, true);
+			$driver = self::findDriverFilteredForUrl($drivers, $url, true);
 			
-			// Try to match a non native one
 			if ($driver == null) {
-				$driver = self::findDriverFiltered($drivers, false);
+				// Try to match a non native one
+				$driver = self::findDriverFilteredForUrl($drivers, $url, false);
 			}
 			
 			return $driver;
 		}
 		
-		private static final function findDriverFiltered(&$drivers, $native) {
+		private static final function findDriverFilteredForUrl(&$drivers, $url, $native) {
 			if (!empty($drivers)) {
 				foreach ($drivers as $className => $class) {
 					// if the driver is $native
