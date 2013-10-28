@@ -119,7 +119,7 @@
 			
 			$url = $data;
 			
-			if (!filter_var($url, FILTER_VALIDATE_URL)) {
+			if (strlen($url) > 0 && !filter_var($url, FILTER_VALIDATE_URL)) {
 				$message = __("%s: '%s' is not a valid URL.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
@@ -127,13 +127,13 @@
 			$driver = ServiceDispatcher::getServiceDriver($url, $this->getAllowedDrivers());
 
 			// valid driver
-			if (!$driver && strlen($url) > 0) {
+			if (strlen($url) > 0 && !$driver) {
 				$message = __("%s: No <code>ServiceDriver</code> found for '%s'.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
-
+			
 			// uniqueness
-			if ($this->mustBeUnique() && !$this->checkUniqueness($url, $entry_id)) {
+			if (strlen($url) > 0 && $this->mustBeUnique() && !$this->checkUniqueness($url, $entry_id)) {
 				$message = __("%s: This field must be unique. An entry already contains this url.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
