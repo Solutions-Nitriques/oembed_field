@@ -44,6 +44,9 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.7.1" date="2013-10-28" min="2.3">
+	- Fixed Issue #42
+		</release>
 		<release version="1.7" date="2013-10-22" min="2.3">
 	- Normalizing DS ouput to always be named `oembed`. This introduce a breaking change in DS output versus previous versions
 	- Added Instagram driver, first driver usign json as format - covers issue #15 as well

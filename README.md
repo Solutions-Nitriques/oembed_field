@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.7
+Version: 1.7.1
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
