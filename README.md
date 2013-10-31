@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.7.1
+Version: 1.7.2
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
@@ -19,6 +19,7 @@ Version: 1.7.1
 	- **Twitter** (http)
 	- **Instagram** (http)
 	- Embed.ly (http/https) * Non-native
+	- Iframely (http/https) * Non-native
 	- Flickr (http)
 	- Qik (http)
 	- Viddler (http)

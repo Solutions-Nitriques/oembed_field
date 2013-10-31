@@ -6,7 +6,9 @@
 	- **Youtube**
 	- **Dailymotion**
 	- **Twitter**
+	- **Instagram**
 	- Embed.ly
+	- Iframely
 	- Flickr
 	- Qik
 	- Viddler
@@ -44,6 +46,9 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.7.2" date="2013-10-31" min="2.3">
+	- Added Iframely.com driver
+		</release>
 		<release version="1.7.1" date="2013-10-28" min="2.3">
 	- Fixed Issue #42
 		</release>
