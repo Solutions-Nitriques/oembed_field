@@ -73,3 +73,6 @@ Come say hi! -> <http://www.deuxhuithuit.com/>
 
 And thanks to everybody that added ServiceDrivers, reported bugs or submitted any improvements !
 
+### LICENSE ###
+
+MIT. See the LICENSE file or <http://deuxhuithuit.mit-license.org>
