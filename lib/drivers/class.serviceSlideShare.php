@@ -24,7 +24,6 @@
 			// TABARNAK !!!
 			$query_params = $params['query_params'];
 			return 'http://www.slideshare.net/api/oembed/2?format=xml&url=' . trim($params['url']) . $query_params;
-			var_dump($params);die;
 		}
 
 		public function getIdTagName() {
