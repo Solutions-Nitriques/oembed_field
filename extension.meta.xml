@@ -46,6 +46,9 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.7.3" date="2014-01-17" min="2.3">
+	- Fix the issue with the unique option that was used for two seperated things.
+		</release>
 		<release version="1.7.2" date="2013-10-31" min="2.3">
 	- Added Iframely.com driver
 		</release>
