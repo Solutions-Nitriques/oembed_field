@@ -49,7 +49,8 @@
 			$this->set('unique', 'no');
 			// set to show thumbs in table by default
 			$this->set('thumbs', 'yes');
-
+			// set not unique medias by defaults
+			$this->set('unique_media', 'no');
 		}
 
 		public function isSortable(){
@@ -68,8 +69,18 @@
 			return false;
 		}
 
+		/**
+		 * This returns true if only one oEmbed field can be added for this section
+		 */
 		public function mustBeUnique(){
 			return ($this->get('unique') == 'yes');
+		}
+		
+		/**
+		 * This returns true if resource can only be used once across this field.
+		 */
+		public function resourceMustBeUnique(){
+			return ($this->get('unique_media') == 'yes');
 		}
 
 		public function allowDatasourceOutputGrouping(){
@@ -83,7 +94,7 @@
 		public function allowDatasourceParamOutput(){
 			return false; // @todo: should we allow to output the url ?
 		}
-
+		
 		/**
 		 * @return array
 		 */
@@ -133,11 +144,11 @@
 			}
 			
 			// uniqueness
-			if (strlen($url) > 0 && $this->mustBeUnique() && !$this->checkUniqueness($url, $entry_id)) {
+			if (strlen($url) > 0 && $this->resourceMustBeUnique() && !$this->checkUniqueness($url, $entry_id)) {
 				$message = __("%s: This field must be unique. An entry already contains this url.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
-
+			
 			return self::__OK__;
 		}
 
@@ -288,6 +299,7 @@
 			$new_settings['driver'] = 		( isset($settings['driver']) 		&& is_array($settings['driver']) ? implode(',', $settings['driver']) : null);
 			$new_settings['query_params'] = ( isset($settings['query_params'])  && !!$settings['query_params'] ? $settings['query_params'] : null);
 			$new_settings['force_ssl'] = 	( isset($settings['force_ssl']) 	&& $settings['force_ssl'] == 'on' ? 'yes' : 'no');
+			$new_settings['unique_media'] = ( isset($settings['unique_media']) 	&& $settings['unique_media'] == 'on' ? 'yes' : 'no');
 
 			// save it into the array
 			$this->setArray($new_settings);
@@ -328,6 +340,7 @@
 			$drivers = $this->get('driver');
 			$query_params = $this->get('query_params');
 			$force_ssl = $this->get('force_ssl');
+			$uniqueMedias = $this->get('unique_media');
 
 			// exit if there is no id
 			if($id == false) return false;
@@ -353,6 +366,9 @@
 
 			// Force SSL setting
 			$settings['force_ssl'] = empty($force_ssl) ? 'no' : $force_ssl;
+			
+			// the 'unique media' setting
+			$settings['unique_media'] =  empty($uniqueMedias) ? 'no' : $uniqueMedias;
 
 			// Extra request parameters (@see issue #11)
 			if (!!$query_params && $query_params{0} != '&') {
@@ -526,12 +542,13 @@
 
 			$isRequired = $this->get('required') == 'yes';
 			$isUnique = $this->get('unique') == 'yes';
+			$isUniqueMedia = $this->get('unique_media') == 'yes';
 
 			$value = General::sanitize($data['url']);
 			$label = Widget::Label($this->get('label'));
 
 			// not required and unique label
-			if(!$isRequired && $isUnique) {
+			if(!$isRequired && $isUniqueMedia) {
 				$label->appendChild(new XMLElement('i', __('Optional') . ', ' . __('Unique')));
 
 			// not required label
@@ -539,7 +556,7 @@
 				$label->appendChild(new XMLElement('i', __('Optional')));
 
 			// unique label
-			} else if($isUnique) {
+			} else if($isUniqueMedia) {
 				$label->appendChild(new XMLElement('i', __('Unique')));
 			}
 
@@ -658,6 +675,7 @@
 			$this->appendMustBeUniqueCheckbox($chk_wrap);
 			$this->appendShowThumbnailCheckbox($chk_wrap);
 			$this->appendForceSSLCheckbox($chk_wrap);
+			$this->appendResourceMustBeUniqueCheckbox($chk_wrap);
 
 			/* append to wrapper */
 			$wrapper->appendChild($driv_wrap);
@@ -697,17 +715,37 @@
 		private function appendMustBeUniqueCheckbox(&$wrapper) {
 			$label = new XMLElement('label');
 			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][unique]', 'type' => 'checkbox'));
-
+			
 			$label->appendChild($chk);
-			$label->setValue(__('Make this field unique'), false);
+			$label->setValue(__('Make this field unique in the section'), false);
 
 			if ($this->get('unique') == 'yes') {
 				$chk->setAttribute('checked','checked');
 			}
-
+			
 			$wrapper->appendChild($label);
 		}
-
+		
+		/**
+		 *
+		 * Utility (private) function to append a checkbox for the 'unique media' setting
+		 * @param XMLElement $wrapper
+		 */
+		private function appendResourceMustBeUniqueCheckbox(&$wrapper) {
+			$label = new XMLElement('label');
+			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][unique_media]', 'type' => 'checkbox'));
+			
+			$label->appendChild($chk);
+			$label->setValue(__('Make this field checks to insure resources are used only once across the field'), false);
+			
+			if ($this->get('unique_media') == 'yes') {
+				$chk->setAttribute('checked','checked');
+			}
+			
+			$wrapper->appendChild($label);
+		}
+		
+		
 		/**
 		 *
 		 * Utility (private) function to append a checkbox for the 'thumbs' setting
@@ -960,7 +998,17 @@
 			return Symphony::Database()->query("
 					ALTER TABLE  `$tbl`
 					ADD COLUMN `force_ssl` ENUM('yes','no') NOT NULL DEFAULT 'no'
-					");
+				");
+		}
+		
+		public static function updateFieldTable_UniqueMedia() {
+
+			$tbl = self::FIELD_TBL_NAME;
+
+			return Symphony::Database()->query("
+					ALTER TABLE  `$tbl`
+					ADD COLUMN `unique_media` ENUM('yes','no') NOT NULL DEFAULT 'no'
+				");
 		}
 
 		/**

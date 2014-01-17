@@ -103,23 +103,26 @@
 		public function install() {
 			// pre v1.3.1
 			$create = FieldOembed::createFieldTable();
-
+			
 			// v1.3.1
 			$unique = FieldOembed::updateFieldTable_Unique();
-
+			
 			// v1.3.2
 			$thumbs = FieldOembed::updateFieldTable_Thumbs();
-
+			
 			// v1.4
 			$params = FieldOembed::updateFieldTable_QueryParams();
-
+			
 			// v1.6
 			$ssl = FieldOembed::updateFieldTable_ForceSSL();
-
-			return $create && $unique && $thumbs && $params && $ssl;
-
+			
+			// v1.7.3
+			$uniqueMedia = FieldOembed::updateFieldTable_UniqueMedia();
+			
+			return $create && $unique && $thumbs && $params && $ssl && $uniqueMedia;
+			
 		}
-
+		
 		/**
 		 * Creates the table needed for the settings of the field
 		 */
@@ -130,43 +133,48 @@
 			if ($ret && version_compare($previousVersion,'1.3.1') == -1) {
 				// update for unique setting
 				$ret_unique = FieldOembed::updateFieldTable_Unique();
-
+				
 				// set the return value
 				$ret = $ret_unique;
 			}
-
+			
 			// are we updating from lower than 1.3.2 ?
 			if ($ret && version_compare($previousVersion, '1.3.2') == -1) {
-
+				
 				// update for the thumbs settings
 				$ret_thumbs = FieldOembed::updateFieldTable_Thumbs();
-
+				
 				// v1.4
 				// update for the params settings
 				$ret_params = FieldOembed::updateFieldTable_QueryParams();
-
+				
 				// update for the driver column && set all drivers as allowed by default
 				$ret_driver = FieldOembed::updateFieldTable_Driver() &&
 							  FieldOembed::updateFieldData_Driver();
-
+				
 				// set the return value
 				$ret = $ret_thumbs && $ret_params && $ret_driver;
 			}
-
+			
 			// are we updating from lower or equal to 1.4 ?
 			if ($ret && version_compare($previousVersion, '1.4') < 1) {
 				// Fixes issue #22
 				$ret = FieldOembed::updateDataTable_Driver();
 			}
-
+			
 			// are we updating from lower then 1.6 ?
 			if ($ret && version_compare($previousVersion, '1.6') < 0) {
 				$ret = FieldOembed::updateFieldTable_ForceSSL();
 			}
-
+			
+			// are we updating from lower then 1.7.3 ?
+			if ($ret && version_compare($previousVersion, '1.7.3') < 0) {
+				$ret = FieldOembed::updateFieldTable_UniqueMedia();
+			}
+			
 			return $ret;
 		}
-
+		
 		/**
 		 *
 		 * Drops the table needed for the settings of the field
@@ -174,8 +182,8 @@
 		public function uninstall() {
 			// pre v1.3.2
 			$field = FieldOembed::deleteFieldTable();
-
+			
 			return $field;
 		}
-
+		
 	}

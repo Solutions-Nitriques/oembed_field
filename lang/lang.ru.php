@@ -1,3 +1,4 @@
+
 <?php
 
 	$about = array(
@@ -69,8 +70,11 @@
 		'Other properties' => 
 		'Дополнительные параметры',
 
-		'Make this field unique' => 
+		'Make this field unique in the section' => 
 		'Сделать поле уникальным',
+		
+		'Make this field checks to insure resources are used only once across the field' =>
+		false,
 
 		'Show thumbnails in table' => 
 		'Показывать превью в списке записей',

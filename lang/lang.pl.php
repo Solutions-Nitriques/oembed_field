@@ -71,8 +71,11 @@
 		'Other properties' => 
 		'Inne właściwości',
 
-		'Make this field unique' => 
+		'Make this field unique in the section' => 
 		'Uczyć to pole unikalnym',
+		
+		'Make this field checks to insure resources are used only once across the field' =>
+		false,
 
 		'Show thumbnails in table' => 
 		'Wyświetl miniatury w tabeli',

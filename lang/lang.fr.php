@@ -58,8 +58,11 @@
 		'Error while loading the xml into the document' =>
 		'Une erreur est survenue lors du traitement des données xml',
 
-		'Make this field unique' =>
-		'Rendre ce champs unique',
+		'Make this field unique in the section' =>
+		'Rendre ce champs unique dans la section',
+		
+		'Make this field checks to insure resources are used only once across the field' =>
+		"Faire en sorte que ce champs vérifie l'unicité de la ressource à travers le champs",
 
 		'Other properties' =>
 		'Autres propriétés',
