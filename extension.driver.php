@@ -172,6 +172,15 @@
 				$ret = FieldOembed::updateFieldTable_UniqueMedia();
 			}
 			
+			// are we updating from lower then 1.8 ?
+			if ($ret && version_compare($previousVersion, '1.8') < 0) {
+				$ret = FieldOembed::updateFieldTable_UniqueKey();
+			}
+			// are we updating from lower then 1.8 ?
+			if ($ret && version_compare($previousVersion, '1.8') < 0) {
+				$ret = FieldOembed::updateDataTable_UniqueKey();
+			}
+			
 			return $ret;
 		}
 		

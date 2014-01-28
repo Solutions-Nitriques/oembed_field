@@ -870,7 +870,7 @@
 					`dateCreated` 		timestamp DEFAULT CURRENT_TIMESTAMP,
 					`driver`			varchar(50),
 					PRIMARY KEY  (`id`),
-					KEY `entry_id` (`entry_id`)
+					UNIQUE KEY `entry_id` (`entry_id`)
 				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
 		}
@@ -889,7 +889,7 @@
 					`refresh` 		int(11) unsigned NULL,
 					`driver` 		varchar(250) NOT NULL,
 					PRIMARY KEY (`id`),
-					KEY `field_id` (`field_id`)
+					UNIQUE KEY `field_id` (`field_id`)
 				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 			");
 		}
@@ -957,32 +957,29 @@
 		}
 
 		public static function updateDataTable_Driver() {
-
-			$fm = new FieldManager(Symphony::Engine());
-
-			// get all entries tables of type oEmbed
-			$fields = $fm->fetch(null, null, 'ASC', 'id', 'oembed');
-
+			
+			$fields = self::getFields();
+			
 			// make sure the new driver column is add to
 			// fields that already exists
 			foreach ($fields as $field) {
-
+				
 				$id = $field->get('id');
-
-				// test is the colum exist
+				
+				// test is the column exist
 				$col = Symphony::Database()->fetch("
 					SHOW COLUMNS FROM `tbl_entries_data_$id`
 						WHERE `field` = 'driver'
 				");
-
+				
 				// if the col doest not exists
 				if (!is_array($col) || count($col) == 0) {
-
+					
 					$ret = Symphony::Database()->query("
 						ALTER TABLE  `tbl_entries_data_$id`
 							ADD COLUMN `driver`	varchar(50) NOT NULL
 					");
-
+					
 					if (!$ret) {
 						return false;
 					}
@@ -990,11 +987,36 @@
 			}
 			return true;
 		}
+		
+		private static function getFields() {
+			$fm = new FieldManager(Symphony::Engine());
 
+			// get all entries tables of type oEmbed
+			$fields = $fm->fetch(null, null, 'ASC', 'id', 'oembed');
+			
+			return $fields;
+		}
+		
+		public static function updateDataTable_UniqueKey() {
+			
+			$fields = self::getFields();
+			
+			// make sure the new driver column is add to
+			// fields that already exists
+			foreach ($fields as $field) {
+				$tbl = 'tbl_entries_data_' . $field->get('id');
+				return Symphony::Database()->query("
+					ALTER TABLE  `$tbl`
+					ADD UNIQUE (`field_id`)
+				");
+			}
+			return true;
+		}
+		
 		public static function updateFieldTable_ForceSSL() {
-
+			
 			$tbl = self::FIELD_TBL_NAME;
-
+			
 			return Symphony::Database()->query("
 					ALTER TABLE  `$tbl`
 					ADD COLUMN `force_ssl` ENUM('yes','no') NOT NULL DEFAULT 'no'
@@ -1002,25 +1024,34 @@
 		}
 		
 		public static function updateFieldTable_UniqueMedia() {
-
+			
 			$tbl = self::FIELD_TBL_NAME;
-
+			
 			return Symphony::Database()->query("
 					ALTER TABLE  `$tbl`
 					ADD COLUMN `unique_media` ENUM('yes','no') NOT NULL DEFAULT 'no'
 				");
 		}
-
+		
+		public static function updateFieldTable_UniqueKey() {
+			$tbl = self::FIELD_TBL_NAME;
+			
+			return Symphony::Database()->query("
+					ALTER TABLE  `$tbl`
+					ADD UNIQUE (`field_id`)
+				");
+		}
+		
 		/**
 		 *
 		 * Drops the table needed for the settings of the field
 		 */
 		public static function deleteFieldTable() {
 			$tbl = self::FIELD_TBL_NAME;
-
+			
 			return Symphony::Database()->query("
 				DROP TABLE IF EXISTS `$tbl`
 			");
 		}
-
+		
 	}
