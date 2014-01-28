@@ -1007,7 +1007,7 @@
 				$tbl = 'tbl_entries_data_' . $field->get('id');
 				return Symphony::Database()->query("
 					ALTER TABLE  `$tbl`
-					ADD UNIQUE (`field_id`)
+					ADD UNIQUE (`entry_id`)
 				");
 			}
 			return true;
