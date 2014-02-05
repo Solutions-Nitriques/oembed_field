@@ -434,12 +434,21 @@
 		 */
 		public function appendFormattedElement(&$wrapper, $data) {
 
-			if(!is_array($data) || empty($data)) return;
+			if(!is_array($data) || empty($data) || empty($data['url'])) return;
 
 			// If cache has expired refresh the data array from parsing the API XML
 			/*if ((time() - $data['last_updated']) > ($this->_fields['refresh'] * 60)) {
 				$data = VimeoHelper::updateClipInfo($data['clip_id'], $this->_fields['id'], $wrapper->getAttribute('id'), $this->Database);
 			}*/
+			
+			// store a pointer to the driver
+			// @todo: use the `driver` column
+			$driver = ServiceDispatcher::getServiceDriver($data['url']);
+			if ($driver == null) {
+				throw new Exception('Unable to find driver for url: `' . $data['url']) . '`';
+			}
+			$
+			$parser = ServiceParser::getServiceParser($driver->getAPIFormat());
 
 			// root for all values
 			$field = new XMLElement($this->get('element_name'));
@@ -454,11 +463,6 @@
 			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
 			$field->appendChild(new XMLElement('driver', General::sanitize($data['driver'])));
-
-			// store a pointer to the driver
-			// @todo: use the `driver` column
-			$driver = ServiceDispatcher::getServiceDriver($data['url']);
-			$parser = ServiceParser::getServiceParser($driver->getAPIFormat());
 
 			$protocols = new XMLElement('protocols');
 			if ($driver->supportsSSL()) {
