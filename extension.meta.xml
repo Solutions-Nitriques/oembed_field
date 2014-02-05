@@ -46,6 +46,9 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.8.1" date="2014-02-05" min="2.3">
+	- Fixed Issue #43
+		</release>
 		<release version="1.8" date="2014-01-28" min="2.3">
 	- Added unique key on `entry_id` and `field_id`
 		</release>
