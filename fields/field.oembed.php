@@ -445,25 +445,28 @@
 			// @todo: use the `driver` column
 			$driver = ServiceDispatcher::getServiceDriver($data['url']);
 			if ($driver == null) {
-				throw new Exception('Unable to find driver for url: `' . $data['url']) . '`';
+				throw new Exception('Unable to find driver for url: `' . $data['url'] . '`');
 			}
-			$
-			$parser = ServiceParser::getServiceParser($driver->getAPIFormat());
-
+			$apiFormat = $driver->getAPIFormat();
+			$parser = ServiceParser::getServiceParser($apiFormat);
+			if ($parser == null) {
+				throw new Exception('Unable to find parser for format: `' . $apiFormat . '`');
+			}
+			
 			// root for all values
 			$field = new XMLElement($this->get('element_name'));
-
+			
 			$field->setAttributeArray(array(
 				'id' => $data['res_id']
 			));
-
+			
 			$title = new XMLElement('title', General::sanitize($data['title']));
 			$title->setAttribute('handle', Lang::createHandle($data['title']));
 			$field->appendChild($title);
 			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
 			$field->appendChild(new XMLElement('driver', General::sanitize($data['driver'])));
-
+			
 			$protocols = new XMLElement('protocols');
 			if ($driver->supportsSSL()) {
 				$protocols->appendChild(new XMLElement('item', 'https'));
