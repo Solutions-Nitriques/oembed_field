@@ -4,7 +4,8 @@
 
 	require_once(TOOLKIT . '/class.field.php');
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDispatcher.php');
-
+	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDriver.php');
+	
 	/**
 	 *
 	 * Field class that will represent an oEmbed resource
@@ -814,7 +815,9 @@
 				$value = $textValue;
 			} else {
 				// create a image
-				$img_path = URL . '/image/1/0/40/1/' .  str_replace('http://', '',$thumb);
+				$thumb = ServiceDriver::removeHTTPProtocol($thumb);
+				$thumb = ServiceDriver::removeRelativeProtocol($thumb);
+				$img_path = URL . '/image/1/0/40/1/' . $thumb;
 
 				$value = '<img src="' . $img_path .'" alt="' . General::sanitize($data['title']) .'" height="40" />';
 			}

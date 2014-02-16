@@ -293,14 +293,29 @@
 		}
 
 		/**
-		 * Converts https:// and http:// to //
+		 * Converts https:// and http:// to // or the specified
+		 * $replaceValue
 		 *
 		 * @param string $value
+		 * @param string $replaceValue
 		 * @return string
 		 */
-		private static function removeHTTPProtocol($value) {
-			$value = str_replace('https://', '//', $value);
-			$value = str_replace('http://', '//', $value);
+		public static function removeHTTPProtocol($value, $replaceValue = '//') {
+			$value = str_replace('https://', $replaceValue, $value);
+			$value = str_replace('http://', $replaceValue, $value);
+			return $value;
+		}
+		
+		/**
+		 * Converts // to empty string or the specified
+		 * $replaceValue
+		 *
+		 * @param string $value
+		 * @param string $replaceValue
+		 * @return string
+		 */
+		public static function removeRelativeProtocol($value, $replaceValue = '') {
+			$value = preg_replace('/^\/\//', $replaceValue, $value);
 			return $value;
 		}
 
