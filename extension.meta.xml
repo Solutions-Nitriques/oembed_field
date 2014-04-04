@@ -13,6 +13,7 @@
 	- Qik
 	- Viddler
 	- SlideShare
+	- Soundcloud
 	</description>
 	<repo type="github">https://github.com/Solutions-Nitriques/oembed_field</repo>
 	<url type="discuss">http://symphony-cms.com/discuss/thread/73696/</url>
@@ -46,6 +47,9 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.8.2" date="2014-04-04" min="2.3">
+	- Added the Soundcloud driver (Thanks @twiro)
+		</release>
 		<release version="1.8.1" date="2014-02-05" min="2.3">
 	- Fixed Issue #43
 		</release>
