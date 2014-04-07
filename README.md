@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.8.2
+Version: 1.8.3
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
@@ -25,6 +25,7 @@ Version: 1.8.2
 	- Viddler (http)
 	- SlideShare (http)
 	- Soundcloud (http/https)
+	- Mixcloud (http/https)
 	- Yours... Anybody can add a service!       
 	  Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
 
