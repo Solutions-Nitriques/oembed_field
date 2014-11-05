@@ -676,7 +676,7 @@
 			$par_wrap->appendChild($par_title);
 
 			/* new line, check boxes */
-			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact'));
+			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact two columns'));
 			$chk_wrap->appendChild(new XMLElement('label', __('Other properties'), array('class'=>'oembed-other-title') ));
 			$this->appendRequiredCheckbox($chk_wrap);
 			$this->appendShowColumnCheckbox($chk_wrap);
@@ -721,7 +721,7 @@
 		 * @param XMLElement $wrapper
 		 */
 		private function appendMustBeUniqueCheckbox(&$wrapper) {
-			$label = new XMLElement('label');
+			$label = new XMLElement('label', NULL, array('class' => 'column'));
 			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][unique]', 'type' => 'checkbox'));
 			
 			$label->appendChild($chk);
@@ -740,7 +740,7 @@
 		 * @param XMLElement $wrapper
 		 */
 		private function appendResourceMustBeUniqueCheckbox(&$wrapper) {
-			$label = new XMLElement('label');
+			$label = new XMLElement('label', NULL, array('class' => 'column'));
 			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][unique_media]', 'type' => 'checkbox'));
 			
 			$label->appendChild($chk);
@@ -760,7 +760,7 @@
 		 * @param XMLElement $wrapper
 		 */
 		private function appendShowThumbnailCheckbox(&$wrapper) {
-			$label = new XMLElement('label');
+			$label = new XMLElement('label', NULL, array('class' => 'column'));
 			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][thumbs]', 'type' => 'checkbox'));
 
 			$label->appendChild($chk);
@@ -779,7 +779,7 @@
 		 * @param XMLElement $wrapper
 		 */
 		private function appendForceSSLCheckbox(&$wrapper) {
-			$label = new XMLElement('label');
+			$label = new XMLElement('label', NULL, array('class' => 'column'));
 			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][force_ssl]', 'type' => 'checkbox'));
 
 			$label->appendChild($chk);
