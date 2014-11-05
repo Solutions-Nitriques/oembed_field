@@ -797,13 +797,14 @@
 		 * Build the UI for the table view
 		 * @param Array $data
 		 * @param XMLElement $link
+		 * @param int $entry_id
 		 * @return string - the html of the link
 		 */
-		public function prepareTableValue($data, XMLElement $link=NULL){
+		public function prepareTableValue($data, XMLElement $link=NULL, $entry_id=NULL){
 
 			$url = $data['url'];
 			$thumb = $data['thumbnail_url'];
-			$textValue = $this->preparePlainTextValue($data, $data['res_id']);
+			$textValue = $this->prepareTextValue($data, $entry_id);
 			$value = NULL;
 
 			// no url = early exit
@@ -846,15 +847,13 @@
 		 * @param array $data
 		 * @param int $entry_id
 		 */
-		public function preparePlainTextValue($data, $entry_id = null) {
+		public function prepareTextValue($data, $entry_id = null) {
 			return (
 				isset($data['title'])
 					? General::sanitize($data['title'])
 					: (isset($data['url']) ? $data['url'] : $entry_id)
 			);
 		}
-
-
 
 
 
