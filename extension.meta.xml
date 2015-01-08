@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <extension id="oembed_field" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
 	<name>oEmbed Field</name>
 	<description>Easily embed videos/images from ANY* website that implements the oEmbed format. See http://oembed.com. Supported services:
