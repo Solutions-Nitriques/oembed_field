@@ -49,6 +49,9 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.8.5" date="2015-01-08" min="2.3" max="2.6.x">
+	- Fix for Symphony 2.5+ (Error method in Widget class as been renamed)
+		</release>
 		<release version="1.8.4" date="2014-11-05" min="2.3" max="2.5.x">
 	- Update for Symphony 2.5
 		</release>
