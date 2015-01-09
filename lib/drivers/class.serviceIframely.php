@@ -16,7 +16,7 @@
 			$url = rawurlencode($params['url']);
 			$query_params = $params['query_params'];
 
-			return 'http://iframely.com/oembed?format=xml&url=' . $url . $query_params;
+			return 'http://open.iframe.ly/api/oembed?format=xml&origin=@iframely&url=' . $url . $query_params;
 		}
 
 		public function getIdTagName() {
