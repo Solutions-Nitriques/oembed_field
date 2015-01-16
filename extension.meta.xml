@@ -49,6 +49,9 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.8.7" date="2015-01-16" min="2.3" max="2.6.x">
+	- UI fix in publish page: add a space between drivers so it wraps properly
+		</release>
 		<release version="1.8.6" date="2015-01-09" min="2.3" max="2.6.x">
 	- Fix for Iframely: Their oEmbed API endpoint changed
 		</release>
