@@ -576,7 +576,7 @@
 
 			$drivers = new XMLElement('div',
 				__('Supported services: <i>%s</i>',
-					array($this->get('driver'))
+					array(str_replace(',', ', ', $this->get('driver')))
 				)
 			);
 
