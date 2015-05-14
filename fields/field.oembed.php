@@ -377,12 +377,8 @@
 			}
 			$settings['query_params'] = empty($query_params) ? null : $query_params;
 
-			$tbl = self::FIELD_TBL_NAME;
-
-			Symphony::Database()->query("DELETE FROM `$tbl` WHERE `field_id` = '$id' LIMIT 1");
-
 			// return if the SQL command was successful
-			return Symphony::Database()->insert($settings, $tbl);
+			return FieldManager::saveSettings($id, $settings);
 
 		}
 
