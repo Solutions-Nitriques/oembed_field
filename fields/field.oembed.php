@@ -156,11 +156,11 @@
 
 		/**
 		 *
-		 * Utility (private) function to check if the $url param
+		 * Utility function to check if the $url param
 		 * is not already in the DB for this field
 		 * @param $url
 		 */
-		private function checkUniqueness($url, $entry_id = null) {
+		protected function checkUniqueness($url, $entry_id = null) {
 			$id = $this->get('field_id');
 
 			$query = "
