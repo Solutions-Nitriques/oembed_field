@@ -49,6 +49,9 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.8.9" date="2015-05-15" min="2.3" max="2.6.x">
+	- Mmke the js compatible with multilingual version
+		</release>
 		<release version="1.8.8" date="2015-05-14" min="2.3" max="2.6.x">
 	- Use FieldManager::saveSettings instead of raw SQL in commit
 	- Make checkUniqueness protected
