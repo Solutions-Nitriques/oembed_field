@@ -17,22 +17,26 @@
 		CONTENT_CLASS = '.' + CONTENT;
 
 	function hookOne() {
-		// create a local scope
-		var f = $(this),
-			container = $('span.frame', f),
-			input = $('input[name^=fields].irrelevant', f),
-			change = $('a.change', container);
+		var f = $(this);
+		var containers = $('span.frame', f);
+		
+		containers.each(function () {
+			var t = $(this);
+			var container = t.parent();
+			var input = $('input[name^=fields].irrelevant', container);
+			var change = $('a.change', container);
 
-		function switchToEdit() {
-			input.removeClass('irrelevant');
-			input.next().removeClass('irrelevant');
-			if ($(this).hasClass('remove')) {
-				container.remove();
-				input.val('');
-			}
-		};
+			function switchToEdit() {
+				input.removeClass('irrelevant');
+				input.next().removeClass('irrelevant');
+				if ($(this).hasClass('remove')) {
+					t.remove();
+					input.val('');
+				}
+			};
 
-		change.click(switchToEdit);
+			change.click(switchToEdit);
+		});
 	};
 
 	function init() {
