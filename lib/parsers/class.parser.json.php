@@ -27,7 +27,7 @@
 			$data = @json_decode($source, true);
 			
 			if ($data === FALSE) {
-				$errorFlag = true;	
+				$errorFlag = true;
 			}
 			
 			if (!$errorFlag) {

@@ -27,13 +27,13 @@
 		 * This driver is non-native (third party)
 		 */
 		public function isNative() {
-			return false;	
+			return false;
 		}
 		
 		public function isMatch($url) {
 			// since this service accepts lots of providers,
 			// even not oEmbed compatible, just check that it's
 			// an url
-			return filter_var($url, FILTER_VALIDATE_URL);	
+			return filter_var($url, FILTER_VALIDATE_URL);
 		}
 	}
