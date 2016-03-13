@@ -23,10 +23,10 @@
 		public function getEmbedCode($data, $options) {
 			$title = General::sanitize($data['title']);
 			return vsprintf('<img src="%s" width="%d" alt="%s" title="%s" />',
-							array(	$data['thumbnail_url'],
+							array($data['thumbnail_url'],
 									$this->getEmbedSize($options, 'width'),
 									$title, $title
-								  )
+								)
 					);
 		}
 
@@ -36,15 +36,6 @@
 		
 		public function getAPIFormat() {
 			return 'json';
-		}
-		
-		public function getRootTagName() {
-			// json format must use data as root node
-			return 'data';
-		}
-
-		public function getThumbnailTagName() {
-			return 'url';
 		}
 		
 		public function getTitleTagName() {
