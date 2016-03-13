@@ -88,6 +88,21 @@
 
 		/**
 		 *
+		 * Utility method that returns a drive by its name
+		 * @param $driverName
+		 * @return ServiceDriver
+		 * @throws ServiceDriverException
+		 */
+		public static final function getDriverByName($driverName) {
+			$allDrivers = self::getAllDrivers()
+			if (isset(self::$drivers[$driverName])) {
+				return self::$drivers[$driverName];
+			}
+			return null;
+		}
+
+		/**
+		 *
 		 * Method that return a sub-array containing only the allowed
 		 * drivers based on the $allowedList param
 		 * @param string|array $allowedList allowed class names
