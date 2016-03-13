@@ -632,18 +632,10 @@
 
 			// error management
 			if($flagWithError != NULL) {
-				$wrapper->appendChild(self::Error($label, $flagWithError));
+				$wrapper->appendChild(Widget::Error($label, $flagWithError));
 			} else {
 				$wrapper->appendChild($label);
 			}
-		}
-
-		// @todo: remove in 1.9
-		private static function Error($label, $flagWithError) {
-			if (is_callable(array('Widget', 'Error'))) {
-				return Widget::Error($label, $flagWithError);
-			}
-			return Widget::wrapFormElementWithError($label, $flagWithError);
 		}
 
 		/**
@@ -662,7 +654,7 @@
 			$driv_title = new XMLElement('label',__('Supported services <i>Select to enable the service in the publish page</i>'));
 			$driv_title->appendChild(self::generateDriversSelectOptions($this->get(), 'fields['.$this->get('sortorder').'][driver][]'));
 			if (isset($errors['driver'])) {
-				$driv_title = self::Error($driv_title, $errors['driver']);
+				$driv_title = Widget::Error($driv_title, $errors['driver']);
 			}
 			$driv_wrap->appendChild($driv_title);
 
