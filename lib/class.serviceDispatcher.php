@@ -41,30 +41,23 @@
 				
 				// for each file found
 				foreach ($drivers['filelist'] as $class) {
-						
 					$class = basename($class);
 				
 					try {
-
 						// include the class code
 						require_once(OEMBED_DRIVERS_DIR . $class);
 
 						// get class name
 						$class = str_replace(array('class.', '.php'), '', $class);
-							
+						
 						// create new instance
 						$class = new $class($url);
 						
 						// add the class to the stack
 						self::$drivers[$class->getName()] = $class;
-						
-						
 					} catch (Exception $ex) {
-					
 						throw new ServiceDriverException($url, $ex);
-						
 					}
-
 				}
 			}
 		}
@@ -73,6 +66,7 @@
 		 *
 		 * Public accessor for the array of all drivers
 		 * @return array
+		 * @throws ServiceDriverException
 		 */
 		public static final function getAllDrivers() {
 			// assure drivers are loaded
@@ -80,13 +74,13 @@
 
 			// return the array
 			return self::$drivers;
-			
 		}
 
 		/**
 		 *
 		 * Utility method that returns an array of the drivers' names
 		 * @return array
+		 * @throws ServiceDriverException
 		 */
 		public static final function getAllDriversNames() {
 			return array_keys(self::getAllDrivers());
@@ -97,6 +91,7 @@
 		 * Method that return a sub-array containing only the allowed
 		 * drivers based on the $allowedList param
 		 * @param string|array $allowedList allowed class names
+		 * @throws ServiceDriverException
 		 */
 		public static final function getAllowedDrivers($allowedList = null) {
 			$allowedDrivers = array();
