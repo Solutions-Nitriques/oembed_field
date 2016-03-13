@@ -440,7 +440,7 @@
 			
 			// store a pointer to the driver
 			// @todo: use the `driver` column
-			$driver = ServiceDispatcher::getServiceDriver($data['url']);
+			$driver = ServiceDispatcher::getServiceDriver($data['url'], $this->getAllowedDrivers());
 			if ($driver == null) {
 				throw new Exception('Unable to find driver for url: `' . $data['url'] . '`');
 			}
@@ -607,7 +607,7 @@
 				);
 
 				// get the embed code
-				$driver = ServiceDispatcher::getServiceDriver($value);
+				$driver = ServiceDispatcher::getServiceDriver($value, $this->getAllowedDrivers());
 				$embed = null;
 				if (!$driver) {
 					$embed = __('Error. Service unknown.');
