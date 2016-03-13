@@ -12,10 +12,29 @@
 			$url = rawurlencode($params['url']);
 			$query_params = $params['query_params'];
 
-			return 'https://api.twitter.com/1/statuses/oembed.xml?url=' . $url . $query_params;
+			return 'https://publish.twitter.com/oembed?url=' . $url . $query_params;
 		}
 
 		public function getIdTagName() {
 			return 'url';
+		}
+
+		public function getAPIFormat() {
+			return 'json';
+		}
+
+		public function supportsSSL() {
+			return true;
+		}
+
+		public function getEmbedCode($data, $options) {
+			$embed = parent::getEmbedCode($data, $options);
+			if (!$embed) {
+				$data = @json_decode($data['oembed_xml'], true);
+				if (is_array($data)) {
+					return $data['html'];
+				}
+			}
+			return $embed;
 		}
 	}
