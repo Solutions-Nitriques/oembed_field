@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.8.x
+Version: 1.9.x
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
@@ -16,9 +16,9 @@ Version: 1.8.x
 	- **Vimeo** (http/https)
 	- **Youtube** (https/https)
 	- **Dailymotion** (http)
-	- **Twitter** (http)
+	- **Twitter** (http/https)
 	- **Instagram** (http)
-	- Embed.ly (http/https) * Non-native
+	- Embed.ly (http/https) * Non-native (requires an account to get the key)
 	- Iframely (http/https) * Non-native
 	- Flickr (http)
 	- Qik (http)
@@ -26,6 +26,7 @@ Version: 1.8.x
 	- SlideShare (http)
 	- Soundcloud (http/https)
 	- Mixcloud (http/https)
+	- Noembed (http) * Non-native
 	- Yours... Anybody can add a service!       
 	  Just fork, code the missing [Service Driver](https://github.com/Solutions-Nitriques/oembed_field/blob/master/lib/class.serviceDriver.php) and request a pull!
 
