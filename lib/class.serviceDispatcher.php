@@ -94,7 +94,7 @@
 		 * @throws ServiceDriverException
 		 */
 		public static final function getDriverByName($driverName) {
-			$allDrivers = self::getAllDrivers()
+			$allDrivers = self::getAllDrivers();
 			if (isset(self::$drivers[$driverName])) {
 				return self::$drivers[$driverName];
 			}

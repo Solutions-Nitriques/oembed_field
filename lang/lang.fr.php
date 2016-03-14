@@ -70,8 +70,8 @@
 		'oEmbed Requests Parameters sets' =>
 		'Groupes de paramètres des requêtes oEmbed',
 
-		'Supported services: <i>%s</i>' =>
-		'Services supportés: <i>%s</i>',
+		'Supported services: ' =>
+		'Services supportés: ',
 
 		'Supported services <i>Select to enable the service in the publish page</i>' =>
 		'Services supportés <i>Veuillez choisir les services disponibles aux usagers</i>',

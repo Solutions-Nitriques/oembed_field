@@ -570,10 +570,20 @@
 			$url->setAttribute('name', 'fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix);
 			$url->setAttribute('value', $value);
 
+			$driverlinks = array();
+			foreach ($this->getAllowedDrivers() as $driver) {
+				$driverlink = new XMLElement('a', $driver);
+				$driver = ServiceDispatcher::getDriverByName($driver);
+				$driverDomain = current($driver->getDomains());
+				$driverlink->setAttribute('href',
+					($driver->supportsSSL() ? 'https' : 'http') . '://' . $driverDomain
+				);
+				$driverlink->setAttribute('target', '_blank');
+				$driverlinks[] = $driverlink->generate();
+			}
+
 			$drivers = new XMLElement('div',
-				__('Supported services: <i>%s</i>',
-					array(str_replace(',', ', ', $this->get('driver')))
-				)
+				__('Supported services: ') . implode(', ', $driverlinks)
 			);
 
 			if (strlen($value) == 0 || $flagWithError != NULL) {

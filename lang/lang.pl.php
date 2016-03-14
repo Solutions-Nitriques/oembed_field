@@ -44,8 +44,8 @@
 		'Unique' => 
 		'Unikalny',
 
-		'Supported services: <i>%s</i>' => 
-		'Obsługiwane usługi: <i>%s</i>',
+		'Supported services: ' => 
+		'Obsługiwane usługi: ',
 
 		'Change' => 
 		'Zmień',
