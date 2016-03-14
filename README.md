@@ -32,7 +32,7 @@ Version: 1.9.x
 
 ### REQUIREMENTS ###
 
-- Symphony CMS version 2.3 and up (as of the day of the last release of this extension)
+- Symphony CMS version 2.5.0 and up (as of the day of the last release of this extension)
 
 ### INSTALLATION ###
 
@@ -41,7 +41,7 @@ Version: 1.9.x
 - Put into the extension directory
 - Enable/install just like any other extension
 
-See <http://getsymphony.com/learn/tasks/view/install-an-extension/>
+See <http://www.getsymphony.com/learn/tasks/view/install-an-extension/>
 
 *Voila !*
 
@@ -72,7 +72,7 @@ un-wanted behavior.
 
 ### CREDITS ###
 
-Come say hi! -> <http://www.deuxhuithuit.com/>
+Come say hi! -> <https://deuxhuithuit.com/>
 
 And thanks to everybody that added ServiceDrivers, reported bugs or submitted any improvements !
 

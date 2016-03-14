@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension id="oembed_field" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+<extension id="oembed_field" status="released" xmlns="http://getsymphony.com/schemas/extension/1.0">
 	<name>oEmbed Field</name>
 	<description>Easily embed videos/images from ANY* website that implements the oEmbed format. See http://oembed.com. Supported services:
 	- **Vimeo**
@@ -17,7 +17,7 @@
 	- Mixcloud
 	</description>
 	<repo type="github">https://github.com/Solutions-Nitriques/oembed_field</repo>
-	<url type="discuss">http://symphony-cms.com/discuss/thread/73696/</url>
+	<url type="discuss">http://www.getsymphony.com/discuss/thread/73696/</url>
 	<url type="issues">https://github.com/Solutions-Nitriques/oembed_field/issues</url>
 	<types>
 		<type>Field</type>
