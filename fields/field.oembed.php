@@ -311,7 +311,7 @@
 		 *
 		 * Validates the field settings before saving it into the field's table
 		 */
-		public function checkFields(Array &$errors, $checkForDuplicates) {
+		public function checkFields(array &$errors, $checkForDuplicates = true) {
 			parent::checkFields($errors, $checkForDuplicates);
 
 			$driver = $this->get('driver');
@@ -389,7 +389,7 @@
 		 * @param array $data
 		 * @return boolean
 		 */
-		public function entryDataCleanup($entry_id, array $data) {
+		public function entryDataCleanup($entry_id, $data = null) {
 			if (empty($entry_id) || !parent::entryDataCleanup($entry_id, $data)) {
 				return false;
 			}
@@ -429,7 +429,7 @@
 		 * @param $wrapper
 		 * @param $data
 		 */
-		public function appendFormattedElement(&$wrapper, $data) {
+		public function appendFormattedElement(XMLElement &$wrapper, $data, $encode = false, $mode = NULL, $entry_id = NULL) {
 
 			if(!is_array($data) || empty($data) || empty($data['url'])) return;
 
@@ -555,7 +555,7 @@
 		 * @param string $fieldnamePrefix
 		 * @param string $fieldnamePostfix
 		 */
-		public function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL) {
+		public function displayPublishPanel(XMLElement &$wrapper, $data = NULL, $flagWithError = NULL, $fieldnamePrefix = NULL, $fieldnamePostfix = NULL, $entry_id = NULL) {
 
 			$isRequired = $this->get('required') == 'yes';
 			$isUnique = $this->get('unique') == 'yes';
@@ -667,7 +667,7 @@
 		 * @param XMLElement $wrapper
 		 * @param array $errors
 		 */
-		public function displaySettingsPanel(&$wrapper, $errors=NULL){
+		public function displaySettingsPanel(XMLElement &$wrapper, $errors=NULL){
 
 			/* first line, label and such */
 			parent::displaySettingsPanel($wrapper, $errors);
