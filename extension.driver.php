@@ -126,7 +126,7 @@
 		/**
 		 * Creates the table needed for the settings of the field
 		 */
-		public function update($previousVersion) {
+		public function update($previousVersion = false) {
 			$ret = true;
 
 			// are we updating from lower than 1.3.1 ?
