@@ -49,6 +49,11 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.9.1" date="2015-08-04" min="2.3" max="2.6.x">
+	- Supported on PHP 7.
+ 	- Fixed parameter to fit the parent method.
+ 	- Fixed database update.
+		</release>
 		<release version="1.9.0" date="2016-03-14" min="2.5.0" max="2.x.x">
 	- Updated compatibility infos
 	- Fixed Instagram embed code
