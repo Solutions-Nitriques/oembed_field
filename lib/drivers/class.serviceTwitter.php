@@ -32,7 +32,7 @@
 		}
 
 		public function getEmbedCode($data, $options) {
-			$embed = parent::getEmbedCode($data, $options);
+			$embed = @parent::getEmbedCode($data, $options);
 			if (!$embed) {
 				$data = @json_decode($data['oembed_xml'], true);
 				if (is_array($data)) {
