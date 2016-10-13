@@ -17,7 +17,7 @@
 			$url = rawurlencode($params['url']);
 			$query_params = $params['query_params'];
 
-			return 'http://api.instagram.com/oembed?url=' . $url . $query_params;
+			return 'https://api.instagram.com/oembed?url=' . $url . $query_params;
 		}
 		
 		public function getEmbedCode($data, $options) {
@@ -29,7 +29,11 @@
 								)
 					);
 		}
-
+		
+		public function supportsSSL() {
+			return true;
+		}
+		
 		public function getIdTagName() {
 			return 'media_id';
 		}
