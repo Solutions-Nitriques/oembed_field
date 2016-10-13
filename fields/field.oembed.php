@@ -487,47 +487,53 @@
 
 			// if we can successfully load the XML data into the
 			// DOM object while ignoring errors (@)
-			if (!$errorFlag && @$xml->loadXML($xml_data)) {
+			if (!$errorFlag) {
+				if (@$xml->loadXML($xml_data)) {
 
-				$xml->preserveWhiteSpace = true;
-				$xml->formatOutput = true;
-				$xml->normalizeDocument();
+					$xml->preserveWhiteSpace = true;
+					$xml->formatOutput = true;
+					$xml->normalizeDocument();
 
-				$root_name = $driver->getRootTagName();
+					$root_name = $driver->getRootTagName();
 
-				// get the root node
-				$xml_root = $xml->getElementsByTagName($root_name)->item(0);
+					// get the root node
+					$xml_root = $xml->getElementsByTagName($root_name)->item(0);
 
-				// if we've found a root node
-				if (!empty($xml_root)) {
-					// save it as a string
-					$xml = $xml->saveXML($xml_root);
+					// if we've found a root node
+					if (!empty($xml_root)) {
+						// save it as a string
+						$xml = $xml->saveXML($xml_root);
 
-					// replace the 'root' element with 'oembed'
-					if ($root_name != 'oembed') {
-						$xml = preg_replace('/^<' . $root_name . '>/', '<oembed>', $xml);
-						$xml = preg_replace('/<\/' . $root_name . '>/', '</oembed>', $xml);
+						// replace the 'root' element with 'oembed'
+						if ($root_name != 'oembed') {
+							$xml = preg_replace('/^<' . $root_name . '>/', '<oembed>', $xml);
+							$xml = preg_replace('/<\/' . $root_name . '>/', '</oembed>', $xml);
+						}
+
+						// set it as the 'value' of the field
+						// BEWARE: it will be just a string, since the
+						// value we set is xml. It's just a hack to pass
+						// the value from the DOMDocument object to the XMLElement
+						$field->setValue($xml, false);
+					} else {
+						$errorFlag = true;
+						$errorMsg = __('Empty root node');
 					}
-
-					// set it as the 'value' of the field
-					// BEWARE: it will be just a string, since the
-					// value we set is xml. It's just a hack to pass
-					// the value from the DOMDocument object to the XMLElement
-					$field->setValue($xml, false);
 				} else {
 					$errorFlag = true;
+					$errorMsg = __('Failed to load xml data');
 				}
-			}
-			else {
-				$errorFlag = true;
 			}
 
 			if ($errorFlag) {
 				// loading the xml string into the DOMDocument did not work
 				// so we will add a errors message into the result
 				$error = new XMLElement('error');
-
-				$error->setValue(__('Error while loading the xml into the document'));
+				$errorValue = __('Error while loading the xml into the document');
+				if ($errorMsg) {
+					$errorValue .= ': ' . $errorMsg;
+				}
+				$error->setValue($errorValue);
 
 				$field->appendChild($error);
 			}
