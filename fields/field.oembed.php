@@ -474,9 +474,16 @@
 			// oembed data
 			$xml = new DomDocument('1.0', 'utf-8');
 			$errorFlag = false;
+			$errorMsg = null;
 
 			// use our parser in order to get the xml string
-			$xml_data = $parser->createXML($data['oembed_xml'], $driver, $data['url'], $errorFlag);
+			try {
+				$xml_data = $parser->createXML($data['oembed_xml'], $driver, $data['url'], $errorFlag);
+			}
+			catch (Exception $ex) {
+				$errorFlag = true;
+				$errorMsg = $ex->getMessage();
+			}
 
 			// if we can successfully load the XML data into the
 			// DOM object while ignoring errors (@)
