@@ -11,17 +11,19 @@
 
 		public function getNeededUrlsToJITimages() {
 			return array(
-			
 				'static2.dmcdn.net/*'
-
 			);
+		}
+		
+		public function supportsSSL() {
+			return true;
 		}
 		
 		public function getOEmbedApiUrl($params) {
 			$url = trim($params['url']);
 			$query_params = $params['query_params'];
 
-			return 'http://www.dailymotion.com/services/oembed?format=xml&url=' . $url . $query_params;
+			return 'https://www.dailymotion.com/services/oembed?format=xml&url=' . $url . $query_params;
 		}
 
 	}
