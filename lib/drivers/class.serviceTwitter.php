@@ -27,6 +27,10 @@
 			return true;
 		}
 
+		public function getRootTagName() {
+			return 'data';
+		}
+
 		public function getEmbedCode($data, $options) {
 			$embed = parent::getEmbedCode($data, $options);
 			if (!$embed) {
