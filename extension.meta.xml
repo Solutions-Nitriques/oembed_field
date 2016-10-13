@@ -49,6 +49,11 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.10.0" date="2016-10-13" min="2.5.0" max="2.x.x">
+	- PHP 7 Support (Thanks @ChoboHub)
+	- Fixed problems with Twitter driver #56 (Thanks @finferflu)
+	- SSL (TLS) support for Instagram and Dailymotion
+		</release>
 		<release version="1.9.0" date="2016-03-14" min="2.5.0" max="2.x.x">
 	- Updated compatibility infos
 	- Fixed Instagram embed code
