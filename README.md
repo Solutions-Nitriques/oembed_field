@@ -1,6 +1,6 @@
 # Field: oEmbed #
 
-Version: 1.10.x
+Version: 1.11.x
 
 ## Easily embed videos/images from ANY* website that implements the oEmbed format ##
 
@@ -18,6 +18,7 @@ Version: 1.10.x
 	- **Dailymotion** (http/https)
 	- **Twitter** (http/https)
 	- **Instagram** (http/https)
+	- **Facebook** (http/https)
 	- Embed.ly (http/https) * Non-native (requires an account to get the key)
 	- Iframely (http/https) * Non-native
 	- Flickr (http)

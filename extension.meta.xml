@@ -7,6 +7,7 @@
 	- **Dailymotion**
 	- **Twitter**
 	- **Instagram**
+	- **Facebook**
 	- Embed.ly
 	- Iframely
 	- Flickr
@@ -49,6 +50,9 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.11.0" date="2016-11-07" min="2.5.0" max="2.x.x">
+	- Added Facebook driver
+		</release>
 		<release version="1.10.0" date="2016-10-13" min="2.5.0" max="2.x.x">
 	- PHP 7 Support (Thanks @ChoboHub)
 	- Fixed problems with Twitter driver #56 (Thanks @finferflu)
