@@ -13,7 +13,7 @@
 
 		public function getOEmbedApiUrl($params) {
 			$query_params = $params['query_params'];
-			return 'http://soundcloud.com/oembed?url=' . trim($params['url']) . $query_params;
+			return 'https://soundcloud.com/oembed?url=' . trim($params['url']) . $query_params;
 		}
 
 		public function supportsSSL() {
