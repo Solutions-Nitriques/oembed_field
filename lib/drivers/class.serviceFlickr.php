@@ -19,9 +19,13 @@
 							);
 		}
 
+		public function supportsSSL() {
+			return true;
+		}
+
 		public function getOEmbedApiUrl($params) {
 			$query_params = $params['query_params'];
-			return 'http://www.flickr.com/services/oembed?url=' . $params['url']. $query_params;
+			return 'https://www.flickr.com/services/oembed?url=' . $params['url']. $query_params;
 		}
 
 		public function getNeededUrlsToJITimages() {

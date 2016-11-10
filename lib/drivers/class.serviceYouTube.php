@@ -5,7 +5,7 @@
 
 	class serviceYouTube extends ServiceDriver {
 
-		const BASE_URL = "http://youtu.be/";
+		const BASE_URL = "https://youtu.be/";
 
 		public function __construct() {
 			parent::__construct('YouTube', array('youtube.com', 'youtu.be')); // Fix Issue #19
@@ -51,7 +51,7 @@
 				$url = self::BASE_URL . $exploded[count($exploded)-1];
 			}
 
-			return 'http://www.youtube.com/oembed?format=xml&url=' . $url . $query_params;
+			return 'https://www.youtube.com/oembed?format=xml&url=' . $url . $query_params;
 		}
 
 	}

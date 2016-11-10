@@ -10,19 +10,21 @@
 		}
 
 		public function getEmbedCode($data, $options) {
-			return vsprintf('<iframe src="//player.vimeo.com/video/%s" width="%d" height="%d" frameborder="0"></iframe>',
-							array(	$data['res_id'],
-									$this->getEmbedSize($options, 'width'),
-									$this->getEmbedSize($options, 'height')
-								  )
-					);
+			return vsprintf(
+				'<iframe src="https://player.vimeo.com/video/%s" width="%d" height="%d" frameborder="0"></iframe>',
+				array(
+					$data['res_id'],
+					$this->getEmbedSize($options, 'width'),
+					$this->getEmbedSize($options, 'height')
+				)
+			);
 		}
 
 		public function getOEmbedApiUrl($params) {
 			// DO NOT CONCAT WITH + IN PHP ... USE .
 			// TABARNAK !!!
 			$query_params = $params['query_params'];
-			return 'http://vimeo.com/api/oembed.xml?url=' . trim($params['url']) . $query_params;
+			return 'https://vimeo.com/api/oembed.xml?url=' . trim($params['url']) . $query_params;
 		}
 
 		public function getIdTagName() {
