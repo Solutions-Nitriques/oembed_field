@@ -21,7 +21,7 @@ Version: 1.11.x
 	- **Facebook** (http/https)
 	- Embed.ly (http/https) * Non-native (requires an account to get the key)
 	- Iframely (http/https) * Non-native
-	- Flickr (http)
+	- Flickr (http/https)
 	- Qik (http)
 	- Viddler (http)
 	- SlideShare (http)

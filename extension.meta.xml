@@ -50,6 +50,13 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.11.1" date="2016-11-10" min="2.5.0" max="2.x.x">
+	- Fixed problems with amperstands in the url, when url is used as id
+	- The Soundcloud driver now issues TLS requests
+	- The Vimeo driver now issues TLS requests
+	- The Youtube driver now issues TLS requests
+	- The Flickr driver now supports TLS
+		</release>
 		<release version="1.11.0" date="2016-11-07" min="2.5.0" max="2.x.x">
 	- Added Facebook driver
 		</release>
