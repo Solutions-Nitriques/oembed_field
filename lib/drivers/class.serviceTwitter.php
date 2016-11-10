@@ -15,10 +15,6 @@
 			return 'https://publish.twitter.com/oembed?url=' . $url . $query_params;
 		}
 
-		public function getIdTagName() {
-			return 'url';
-		}
-
 		public function getAPIFormat() {
 			return 'json';
 		}

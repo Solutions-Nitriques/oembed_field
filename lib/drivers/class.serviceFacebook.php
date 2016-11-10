@@ -9,10 +9,6 @@
 			parent::__construct('Facebook', array('facebook.com', 'fb.com'));
 		}
 
-		public function getIdTagName() {
-			return 'url';
-		}
-
 		public function getAPIFormat() {
 			return 'json';
 		}

@@ -19,10 +19,6 @@
 			return 'http://api.embed.ly/1/oembed?format=xml&url=' . $url . $query_params;
 		}
 
-		public function getIdTagName() {
-			return null;
-		}
-		
 		/**
 		 * This driver is non-native (third party)
 		 */

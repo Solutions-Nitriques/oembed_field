@@ -15,10 +15,6 @@
 			return 'https://noembed.com/embed?url=' . $url . $query_params;
 		}
 
-		public function getIdTagName() {
-			return null;
-		}
-
 		public function getAPIFormat() {
 			return 'json';
 		}

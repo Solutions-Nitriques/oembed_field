@@ -24,10 +24,6 @@
 			return 'http://www.flickr.com/services/oembed?url=' . $params['url']. $query_params;
 		}
 
-		public function getIdTagName() {
-			return 'url';
-		}
-
 		public function getNeededUrlsToJITimages() {
 			return array(
 				'http://www.flickr.com/*',

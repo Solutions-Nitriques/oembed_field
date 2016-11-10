@@ -19,10 +19,6 @@
 			return 'http://open.iframe.ly/api/oembed?format=xml&origin=@iframely&url=' . $url . $query_params;
 		}
 
-		public function getIdTagName() {
-			return null;
-		}
-		
 		/**
 		 * This driver is non-native (third party)
 		 */

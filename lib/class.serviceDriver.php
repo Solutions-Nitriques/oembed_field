@@ -237,12 +237,16 @@
 
 		/**
 		 *
-		 * Overridable method that shall return the name of the tag
-		 * that will be used as ID. Default returns null.
+		 * Overidable method that shall return the name of the tag
+		 * that will be used as ID.
 		 *
+		 * By returning null, a handle-ized version of the url will be
+		 * used as the ID.
+		 *
+		 * Default returns null.
 		 */
 		public function getIdTagName() {
-			return null; // will use url as id
+			return null;
 		}
 
 		/**
