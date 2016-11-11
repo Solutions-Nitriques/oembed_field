@@ -45,4 +45,8 @@
 		public function getTitleTagName() {
 			return 'title';
 		}
+		
+		public function getRootTagName() {
+			return 'data';
+		}
 	}
