@@ -104,6 +104,13 @@
 			// set our url
 			$gateway->init($url);
 
+			// set some options
+			$gateway->setopt('TIMEOUT', 20);
+			$gateway->setopt('CURLOPT_FOLLOWLOCATION', 1);
+			$gateway->setopt('CONTENTTYPE', 'text/plain');
+			// TODO: Add content type
+			// $gateway->setopt('CONTENTTYPE', 'json/application'|'text/xml'
+
 			// get the raw response, ignore errors
 			$response = @$gateway->exec();
 
