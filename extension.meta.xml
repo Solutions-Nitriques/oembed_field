@@ -50,6 +50,11 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.11.2" date="2016-11-11" min="2.5.0" max="2.x.x">
+	- Fix a problem with the Instagram driver
+	- Added bigger timeout for http requests
+	- Show curl error messages
+		</release>
 		<release version="1.11.1" date="2016-11-10" min="2.5.0" max="2.x.x">
 	- Fixed problems with amperstands in the url, when url is used as id
 	- The Soundcloud driver now issues TLS requests
