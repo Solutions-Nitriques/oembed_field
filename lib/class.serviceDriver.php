@@ -126,7 +126,10 @@
 			// if we have a valid response
 			if (!$response || strlen($response) < 1) {
 				$errorFlag = true;
-				$data['error'] = __('Failed to load oEmbed data');
+				$last = $gateway->getInfoLast();
+				$data['error'] = __('Failed to load oEmbed data: %s', array(
+					isset($last['curl_error']) ? curl_strerror($last['curl_error']) : ''
+				));
 
 			} else {
 				// get the good parser for the service format
