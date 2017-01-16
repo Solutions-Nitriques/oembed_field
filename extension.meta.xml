@@ -50,6 +50,10 @@
 		<!-- None -->
 	</dependencies>
 	<releases>
+		<release version="1.11.3" date="2017-01-16" min="2.5.0" max="2.x.x">
+	- Fix a PHP warning: CURLOPT are constants
+	- Fix error in PHP 5.3: curl_strerror is 5.4+
+		</release>
 		<release version="1.11.2" date="2016-11-11" min="2.5.0" max="2.x.x">
 	- Fix a problem with the Instagram driver
 	- Added bigger timeout for http requests
