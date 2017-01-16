@@ -127,8 +127,15 @@
 			if (!$response || strlen($response) < 1) {
 				$errorFlag = true;
 				$last = $gateway->getInfoLast();
+				$error = '';
+				if (function_exists('curl_strerror')) {
+					$error = isset($last['curl_error']) ? curl_strerror($last['curl_error']) : '';
+				} else {
+					$error = isset($last['curl_error']) ? $last['curl_error'] : '';
+				}
+				
 				$data['error'] = __('Failed to load oEmbed data: %s', array(
-					isset($last['curl_error']) ? curl_strerror($last['curl_error']) : ''
+					$error
 				));
 
 			} else {
