@@ -133,7 +133,7 @@
 				} else {
 					$error = isset($last['curl_error']) ? $last['curl_error'] : '';
 				}
-				
+
 				$data['error'] = __('Failed to load oEmbed data: %s', array(
 					$error
 				));
@@ -145,7 +145,7 @@
 
 				$parsedAray = @$parser->createArray($response, $this, $url, $errorFlag);
 
-				if (!$errorFlag && $parsedAray !== FALSE) {
+				if (!$errorFlag && $parsedAray !== false) {
 					// merge the parsed data
 					$data = array_merge($data, $parsedAray);
 				} else {
@@ -294,7 +294,7 @@
 		public function supportsSSL() {
 			return false;
 		}
-		
+
 		/**
 		 * This flags indicate that the current driver is a native driver,
 		 * i.e. this driver uses the official oEmbed api of the provider.
@@ -304,13 +304,13 @@
 		 * found. Note that enabling multiple non-native drivers is not-recommanded.
 		 *
 		 * See: https://github.com/Solutions-Nitriques/oembed_field/pull/38
-		 * 
+		 *
 		 * @since 1.7
 		 *
 		 * @return boolean
 		 */
 		public function isNative() {
-			return true;	
+			return true;
 		}
 
 		/**
@@ -326,7 +326,7 @@
 			$value = str_replace('http://', $replaceValue, $value);
 			return $value;
 		}
-		
+
 		/**
 		 * Converts // to empty string or the specified
 		 * $replaceValue
