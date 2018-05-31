@@ -5,6 +5,7 @@
 	require_once(TOOLKIT . '/class.field.php');
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDispatcher.php');
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDriver.php');
+	require_once EXTENSIONS . '/oembed_field/lib/class.entryqueryoembedadapter.php';
 
 	/**
 	 *
@@ -38,6 +39,8 @@
 		public function __construct(){
 			// call the parent constructor
 			parent::__construct();
+			// set the EQFA
+			$this->entryQueryFieldAdapter = new EntryQueryoEmbedAdapter($this);
 			// set the name of the field
 			$this->_name = __('oEmbed Resource');
 			// permits to make it required
@@ -55,11 +58,11 @@
 		}
 
 		public function isSortable(){
-			return false; // @todo: should we allow to sort by url/driver ?
+			return true;
 		}
 
 		public function canFilter(){
-			return false; // @todo: should we allow to filter by url/driver ?
+			return true;
 		}
 
 		public function canImport(){
@@ -834,11 +837,7 @@
 				$value = $textValue;
 			} else {
 				// create a image
-				$thumb = ServiceDriver::removeHTTPProtocol($thumb);
-				$thumb = ServiceDriver::removeRelativeProtocol($thumb);
-				$img_path = URL . '/image/1/0/40/1/' . $thumb;
-
-				$value = '<img src="' . $img_path .'" alt="' . General::sanitize($data['title']) .'" height="40" />';
+				$value = '<img src="' . $thumb .'" alt="' . General::sanitize($data['title']) .'" height="40" />';
 			}
 
 			// does this cell serve as a link ?
