@@ -820,7 +820,6 @@
 		 * @return string - the html of the link
 		 */
 		public function prepareTableValue($data, XMLElement $link = null, $entry_id = null){
-
 			$url = $data['url'];
 			$thumb = $data['thumbnail_url'];
 			$textValue = $this->prepareTextValue($data, $entry_id);
@@ -883,109 +882,137 @@
 		 * Creates table needed for entries of invidual fields
 		 */
 		public function createTable(){
-			$id = $this->get('id');
-
-			return Symphony::Database()->query("
-				CREATE TABLE `tbl_entries_data_$id` (
-					`id` INT(11) 		UNSIGNED NOT NULL AUTO_INCREMENT,
-					`entry_id` 			INT(11) UNSIGNED NOT NULL,
-					`res_id` 			VARCHAR(128),
-					`url` 				VARCHAR(2048),
-					`url_oembed_xml` 	VARCHAR(2048),
-					`title` 			VARCHAR(2048),
-					`thumbnail_url` 	VARCHAR(2048),
-					`oembed_xml` 		TEXT,
-					`dateCreated` 		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-					`driver`			VARCHAR(50),
-					PRIMARY KEY  (`id`),
-					UNIQUE KEY `entry_id` (`entry_id`)
-				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-			");
+			return Symphony::Database()
+				->create('tbl_entries_data_' . $this->get('id'))
+				->ifNotExists()
+				->charset('utf8')
+				->collate('utf8_unicode_ci')
+				->fields([
+					'id' => [
+						'type' => 'int(11)',
+						'auto' => true,
+					],
+					'entry_id' => 'int(11)',
+					'res_id' => 'varchar(128)',
+					'url' => 'varchar(2048)',
+					'url_oembed_xml' => 'varchar(2048)',
+					'title' => 'varchar(2048)',
+					'thumbnail_url' => 'varchar(2048)',
+					'oembed_xml' => 'text',
+					'dateCreated' => [
+						'type' => 'timestamp',
+						'default' => 'current_timestamp'
+					],
+					'driver' => 'varchar(50)',
+				])
+				->keys([
+					'id' => 'primary',
+					'entry_id' => 'unique',
+				])
+				->execute()
+				->success();
 		}
 
 		/**
 		 * Creates the table needed for the settings of the field
 		 */
 		public static function createFieldTable() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				CREATE TABLE IF NOT EXISTS `$tbl` (
-					`id` 			INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-					`field_id` 		INT(11) UNSIGNED NOT NULL,
-					`refresh` 		INT(11) UNSIGNED NULL,
-					`driver` 		VARCHAR(250) NOT NULL,
-					PRIMARY KEY (`id`),
-					UNIQUE KEY `field_id` (`field_id`)
-				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-			");
+			return Symphony::Database()
+				->create(self::FIELD_TBL_NAME)
+				->ifNotExists()
+				->charset('utf8')
+				->collate('utf8_unicode_ci')
+				->fields([
+					'id' => [
+						'type' => 'int(11)',
+						'auto' => true,
+					],
+					'field_id' => 'int(11)',
+					'refresh' => [
+						'type' => 'int(11)',
+						'null' => true,
+					],
+					'driver' => 'varchar(250)',
+				])
+				->keys([
+					'id' => 'primary',
+					'field_id' => 'unique',
+				])
+				->execute()
+				->success();
 		}
 
 		/**
 		 * Updates the table for the new settings: `unique`
 		 */
 		public static function updateFieldTable_Unique() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				ALTER TABLE  `$tbl`
-					ADD COLUMN `unique` ENUM('yes','no') NOT NULL DEFAULT 'no'
-			");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'unique' => [
+						'type' => 'enum',
+						'values' => ['yes','no'],
+						'default' => 'no',
+					],
+				])
+				->execute()
+				->success();
 		}
 
 		/**
 		 * Updates the table for the new settings: `thumbs`
 		 */
 		public static function updateFieldTable_Thumbs() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				ALTER TABLE  `$tbl`
-					ADD COLUMN `thumbs` ENUM('yes','no') NOT NULL DEFAULT 'no'
-			");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'thumbs' => [
+						'type' => 'enum',
+						'values' => ['yes','no'],
+						'default' => 'no',
+					],
+				])
+				->execute()
+				->success();
 		}
 
 		/**
 		 * Updates the table for the new settings: `params_set_id`
 		 */
 		public static function updateFieldTable_QueryParams() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				ALTER TABLE  `$tbl`
-					ADD COLUMN `query_params` VARCHAR(1024) NULL
-			");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'query_params' => [
+						'type' => 'varchar(2014)',
+						'null' => true,
+					],
+				])
+				->execute()
+				->success();
 		}
 
 		public static function updateFieldTable_Driver() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				ALTER TABLE  `$tbl`
-					MODIFY COLUMN `driver` VARCHAR(250) NOT NULL
-			");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->modify([
+					'driver' => 'varchar(250)',
+				])
+				->execute()
+				->success();
 		}
 
 		public static function updateFieldData_Driver() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			// allow all drivers for fields that already exists
-			$drivers = MySQL::cleanValue( implode(',',ServiceDispatcher::getAllDriversNames()) );
-
-			return Symphony::Database()->query("
-				UPDATE `$tbl`
-					SET `driver` = '$drivers'
-			");
+			return Symphony::Database()
+				->update(self::FIELD_TBL_NAME)
+				->set([
+					'driver' => MySQL::cleanValue( implode(',',ServiceDispatcher::getAllDriversNames())),
+				])
+				->execute()
+				->success();
 		}
 
 		public static function updateDataTable_Driver() {
-
 			$fields = self::getFields();
 
 			// make sure the new driver column is add to
@@ -995,18 +1022,25 @@
 				$id = $field->get('id');
 
 				// test is the column exist
-				$col = Symphony::Database()->fetch("
-					SHOW COLUMNS FROM `tbl_entries_data_$id`
-						WHERE `field` = 'driver'
-				");
+				$col = Symphony::Database()
+					->showColumns()
+					->from('tbl_entries_data_' . $id)
+					->where([
+						'field' => 'driver',
+					])
+					->execute()
+					->rows();
 
 				// if the col doest not exists
 				if (!is_array($col) || count($col) == 0) {
 
-					$ret = Symphony::Database()->query("
-						ALTER TABLE  `tbl_entries_data_$id`
-							ADD COLUMN `driver`	VARCHAR(50) NOT NULL
-					");
+					$ret = Symphony::Database()
+						->alter('tbl_entries_data_' . $id)
+						->add([
+							'driver' => 'varchar(50)',
+						])
+						->execute()
+						->success();
 
 					if (!$ret) {
 						return false;
@@ -1026,48 +1060,58 @@
 		}
 
 		public static function updateDataTable_UniqueKey() {
-
 			$fields = self::getFields();
 
 			// make sure the new driver column is add to
 			// fields that already exists
 			foreach ($fields as $field) {
-				$tbl = 'tbl_entries_data_' . $field->get('id');
-				return Symphony::Database()->query("
-					ALTER TABLE  `$tbl`
-					ADD UNIQUE (`entry_id`)
-				");
+				return Symphony::Database()
+					->alter('tbl_entries_data_' . $field->get('id'))
+					->addKey([
+						'entry_id' => 'unique',
+					])
+					->execute()
+					->success();
 			}
 			return true;
 		}
 
 		public static function updateFieldTable_ForceSSL() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-					ALTER TABLE  `$tbl`
-					ADD COLUMN `force_ssl` ENUM('yes','no') NOT NULL DEFAULT 'no'
-				");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'force_ssl' => [
+						'type' => 'enum',
+						'values' => ['yes','no'],
+						'default' => 'no',
+					],
+				])
+				->execute()
+				->success();
 		}
 
 		public static function updateFieldTable_UniqueMedia() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-					ALTER TABLE  `$tbl`
-					ADD COLUMN `unique_media` ENUM('yes','no') NOT NULL DEFAULT 'no'
-				");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'unique_media' => [
+						'type' => 'enum',
+						'values' => ['yes','no'],
+						'default' => 'no',
+					],
+				])
+				->execute()
+				->success();
 		}
 
 		public static function updateFieldTable_UniqueKey() {
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-					ALTER TABLE  `$tbl`
-					ADD UNIQUE (`field_id`)
-				");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->addKey([
+					'field_id' => 'unique',
+				])
+				->execute()
+				->success();
 		}
 
 		/**
@@ -1075,11 +1119,11 @@
 		 * Drops the table needed for the settings of the field
 		 */
 		public static function deleteFieldTable() {
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				DROP TABLE IF EXISTS `$tbl`
-			");
+			return Symphony::Database()
+				->drop(self::FIELD_TBL_NAME)
+				->ifExists()
+				->execute()
+				->success();
 		}
 
 	}

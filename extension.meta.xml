@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension id="oembed_field" status="released" xmlns="http://getsymphony.com/schemas/extension/1.0">
-	<name>oEmbed Field</name>
+	<name>Field: oEmbed</name>
 	<description>Easily embed videos/images from ANY* website that implements the oEmbed format. See http://oembed.com. Supported services:
 	- **Vimeo**
 	- **Youtube**
@@ -52,6 +52,7 @@
 	<releases>
 		<release version="2.0.0" date="TBA" min="4.0.0" max="4.x.x" php-min="5.6.x" php-max="7.x.x">
 	- Update for Symphony 4.x
+	- Code refactoring for Database and EQFA
 		</release>
 		<release version="1.11.3" date="2017-01-16" min="2.5.0" max="2.x.x">
 	- Fix a PHP warning: CURLOPT are constants
