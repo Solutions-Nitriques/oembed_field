@@ -892,17 +892,38 @@
 						'auto' => true,
 					],
 					'entry_id' => 'int(11)',
-					'res_id' => 'varchar(128)',
-					'url' => 'varchar(2048)',
-					'url_oembed_xml' => 'varchar(2048)',
-					'title' => 'varchar(2048)',
-					'thumbnail_url' => 'varchar(2048)',
-					'oembed_xml' => 'text',
+					'res_id' => [
+						'type' => 'varchar(128)',
+						'null' => true,
+					],
+					'url' => [
+						'type' => 'varchar(2048)',
+						'null' => true,
+					],
+					'url_oembed_xml' => [
+						'type' => 'varchar(2048)',
+						'null' => true,
+					],
+					'title' => [
+						'type' => 'varchar(2048)',
+						'null' => true,
+					],
+					'thumbnail_url' => [
+						'type' => 'varchar(2048)',
+						'null' => true,
+					],
+					'oembed_xml' => [
+						'type' => 'text',
+						'null' => true,
+					],
 					'dateCreated' => [
 						'type' => 'timestamp',
 						'default' => 'current_timestamp'
 					],
-					'driver' => 'varchar(50)',
+					'driver' => [
+						'type' => 'varchar(50)',
+						'null' => auto,
+					],
 				])
 				->keys([
 					'id' => 'primary',
