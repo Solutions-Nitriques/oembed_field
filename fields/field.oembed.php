@@ -1026,7 +1026,7 @@
 			return Symphony::Database()
 				->update(self::FIELD_TBL_NAME)
 				->set([
-					'driver' => MySQL::cleanValue( implode(',',ServiceDispatcher::getAllDriversNames())),
+					'driver' => implode(',',ServiceDispatcher::getAllDriversNames()),
 				])
 				->execute()
 				->success();
