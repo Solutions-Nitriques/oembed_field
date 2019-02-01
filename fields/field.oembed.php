@@ -366,7 +366,7 @@
 			$settings['refresh'] = $refresh;
 
 			// Permit only some specific drivers
-			$settings['driver'] = empty($drivers) || count($drivers) < 0 ? null : $drivers;
+			$settings['driver'] = empty($drivers) ? null : $drivers;
 
 			// Force SSL setting
 			$settings['force_ssl'] = empty($force_ssl) ? 'no' : $force_ssl;
