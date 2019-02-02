@@ -43,7 +43,7 @@
 			// may place the resource ID elsewhere in the hash (#) tag
 
 			// if the url contains '#' (the real resource ID is the last part)
-			if (strpos($url, '#') !== FALSE) {
+			if (strpos($url, '#') !== false) {
 				// split on every # or /
 				$exploded = preg_split('/[\/#]/', $url);
 

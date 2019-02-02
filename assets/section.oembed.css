@@ -5,15 +5,55 @@
 
 /**
  * CSS for the blueprintsection driver
- * 
+ *
  * @author nicolas
  */
 
 div.compact label.oembed-other-title {
-	width:90%;
-	margin: 0 0 1.5rem 1.5rem;
+	width: calc(100% - 3rem);
+	margin: 0 0 0 3rem;
 }
 
-.oembed-params-settings {
-	margin: 0 0 1.5rem 0;
+.field-oembed label > div {
+	margin-top: 2px;
+}
+
+.field-oembed label .frame {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.field-oembed label .frame > span {
+	display: none;
+}
+
+.field-oembed label .frame > div {
+	order: 99;
+	flex-shrink: 0;
+	width: 100%;
+}
+
+.field-oembed label .frame > a {
+	border-radius: 5px;
+	color: #fff;
+	font-size: 1.1rem;
+	font-style: normal;
+	text-transform: uppercase;
+	line-height: 1.6rem;
+	margin-bottom: 1rem;
+	padding: 0.5rem 1rem;
+	border: none;
+	background: #2f77eb;
+	cursor: pointer;
+}
+
+.field-oembed label .frame > a:hover {
+	background: #3B3D40;
+}
+
+.field-oembed label .frame > a + span + a {
+	margin-left: 1rem;
 }

@@ -31,7 +31,7 @@
 			if (!$errorFlag) {
 				$xml['xml'] = @$doc->saveXML();
 
-				if ($xml['xml'] === FALSE) {
+				if ($xml['xml'] === false) {
 					$errorFlag = true;
 				}
 				else {

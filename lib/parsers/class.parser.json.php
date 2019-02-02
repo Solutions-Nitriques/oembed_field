@@ -25,15 +25,15 @@
 		public function createArray($source, $driver, $url, &$errorFlag) {
 			// get the data as an array
 			$data = @json_decode($source, true);
-			
-			if ($data === FALSE) {
+
+			if ($data === false) {
 				$errorFlag = true;
 			}
-			
+
 			if (!$errorFlag) {
 				// original content
 				$xml['xml'] = $source;
-				
+
 				$idTagName = $driver->getIdTagName();
 				if ($idTagName == null || !isset($data[$idTagName])) {
 					$xml['id'] = Lang::createHandle($url);

@@ -5,7 +5,8 @@
 	require_once(TOOLKIT . '/class.field.php');
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDispatcher.php');
 	require_once(EXTENSIONS . '/oembed_field/lib/class.serviceDriver.php');
-	
+	require_once EXTENSIONS . '/oembed_field/lib/class.entryqueryoembedadapter.php';
+
 	/**
 	 *
 	 * Field class that will represent an oEmbed resource
@@ -38,6 +39,8 @@
 		public function __construct(){
 			// call the parent constructor
 			parent::__construct();
+			// set the EQFA
+			$this->entryQueryFieldAdapter = new EntryQueryoEmbedAdapter($this);
 			// set the name of the field
 			$this->_name = __('oEmbed Resource');
 			// permits to make it required
@@ -55,11 +58,11 @@
 		}
 
 		public function isSortable(){
-			return false; // @todo: should we allow to sort by url/driver ?
+			return true;
 		}
 
 		public function canFilter(){
-			return false; // @todo: should we allow to filter by url/driver ?
+			return true;
 		}
 
 		public function canImport(){
@@ -76,7 +79,7 @@
 		public function mustBeUnique(){
 			return ($this->get('unique') == 'yes');
 		}
-		
+
 		/**
 		 * This returns true if resource can only be used once across this field.
 		 */
@@ -95,7 +98,7 @@
 		public function allowDatasourceParamOutput(){
 			return false; // @todo: should we allow to output the url ?
 		}
-		
+
 		/**
 		 * @return array
 		 */
@@ -119,23 +122,23 @@
 		 * @param $message
 		 * @param $entry_id
 		 */
-		public function checkPostFieldData($data, &$message, $entry_id=NULL){
+		public function checkPostFieldData($data, &$message, $entry_id = null){
 
-			$message = NULL;
+			$message = null;
 			$required = ($this->get('required') == 'yes');
 
 			if ($required && strlen($data) == 0){
 				$message = __("'%s' is a required field.", array($this->get('label')));
 				return self::__MISSING_FIELDS__;
 			}
-			
+
 			$url = $data;
-			
+
 			if (strlen($url) > 0 && !filter_var($url, FILTER_VALIDATE_URL)) {
 				$message = __("%s: '%s' is not a valid URL.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
-			
+
 			$driver = ServiceDispatcher::getServiceDriver($url, $this->getAllowedDrivers());
 
 			// valid driver
@@ -143,13 +146,13 @@
 				$message = __("%s: No <code>ServiceDriver</code> found for '%s'.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
-			
+
 			// uniqueness
 			if (strlen($url) > 0 && $this->resourceMustBeUnique() && !$this->checkUniqueness($url, $entry_id)) {
 				$message = __("%s: This field must be unique. An entry already contains this url.", array($this->get('label'), $url));
 				return self::__INVALID_FIELDS__;
 			}
-			
+
 			return self::__OK__;
 		}
 
@@ -359,15 +362,15 @@
 			$settings['thumbs'] = empty($thumbs) ? 'no' : $thumbs;
 
 			// @todo implement this
-			// do not comment the next line, as we can not store NULL into it
+			// do not comment the next line, as we can not store null into it
 			$settings['refresh'] = $refresh;
 
 			// Permit only some specific drivers
-			$settings['driver'] = empty($drivers) || count($drivers) < 0 ? null : $drivers;
+			$settings['driver'] = empty($drivers) ? null : $drivers;
 
 			// Force SSL setting
 			$settings['force_ssl'] = empty($force_ssl) ? 'no' : $force_ssl;
-			
+
 			// the 'unique media' setting
 			$settings['unique_media'] =  empty($uniqueMedias) ? 'no' : $uniqueMedias;
 
@@ -429,7 +432,7 @@
 		 * @param $wrapper
 		 * @param $data
 		 */
-		public function appendFormattedElement(XMLElement &$wrapper, $data, $encode = false, $mode = NULL, $entry_id = NULL) {
+		public function appendFormattedElement(XMLElement &$wrapper, $data, $encode = false, $mode = null, $entry_id = null) {
 
 			if(!is_array($data) || empty($data) || empty($data['url'])) return;
 
@@ -437,7 +440,7 @@
 			/*if ((time() - $data['last_updated']) > ($this->_fields['refresh'] * 60)) {
 				$data = VimeoHelper::updateClipInfo($data['clip_id'], $this->_fields['id'], $wrapper->getAttribute('id'), $this->Database);
 			}*/
-			
+
 			// store a pointer to the driver
 			// @todo: use the `driver` column
 			$driver = ServiceDispatcher::getServiceDriver($data['url'], $this->getAllowedDrivers());
@@ -449,21 +452,21 @@
 			if ($parser == null) {
 				throw new Exception('Unable to find parser for format: `' . $apiFormat . '`');
 			}
-			
+
 			// root for all values
 			$field = new XMLElement($this->get('element_name'));
-			
+
 			$field->setAttributeArray(array(
 				'id' => $data['res_id']
 			));
-			
+
 			$title = new XMLElement('title', General::sanitize($data['title']));
 			$title->setAttribute('handle', Lang::createHandle($data['title']));
 			$field->appendChild($title);
 			$field->appendChild(new XMLElement('url', General::sanitize($data['url'])));
 			$field->appendChild(new XMLElement('thumbnail', General::sanitize($data['thumbnail_url'])));
 			$field->appendChild(new XMLElement('driver', General::sanitize($data['driver'])));
-			
+
 			$protocols = new XMLElement('protocols');
 			if ($driver->supportsSSL()) {
 				$protocols->appendChild(new XMLElement('item', 'https'));
@@ -555,7 +558,7 @@
 		 * @param string $fieldnamePrefix
 		 * @param string $fieldnamePostfix
 		 */
-		public function displayPublishPanel(XMLElement &$wrapper, $data = NULL, $flagWithError = NULL, $fieldnamePrefix = NULL, $fieldnamePostfix = NULL, $entry_id = NULL) {
+		public function displayPublishPanel(XMLElement &$wrapper, $data = null, $flagWithError = null, $fieldnamePrefix = null, $fieldnamePostfix = null, $entry_id = null) {
 
 			$isRequired = $this->get('required') == 'yes';
 			$isUnique = $this->get('unique') == 'yes';
@@ -599,7 +602,7 @@
 				__('Supported services: ') . implode(', ', $driverlinks)
 			);
 
-			if (strlen($value) == 0 || $flagWithError != NULL) {
+			if (strlen($value) == 0 || $flagWithError != null) {
 
 				// do nothing
 
@@ -654,7 +657,7 @@
 			$label->appendChild($drivers);
 
 			// error management
-			if($flagWithError != NULL) {
+			if($flagWithError != null) {
 				$wrapper->appendChild(Widget::Error($label, $flagWithError));
 			} else {
 				$wrapper->appendChild($label);
@@ -667,13 +670,13 @@
 		 * @param XMLElement $wrapper
 		 * @param array $errors
 		 */
-		public function displaySettingsPanel(XMLElement &$wrapper, $errors=NULL){
+		public function displaySettingsPanel(XMLElement &$wrapper, $errors = null){
 
 			/* first line, label and such */
 			parent::displaySettingsPanel($wrapper, $errors);
 
 			/* new line, drivers */
-			$driv_wrap = new XMLElement('div', NULL, array('class'=>'oembed-drivers'));
+			$driv_wrap = new XMLElement('div', null, array('class'=>'oembed-drivers'));
 			$driv_title = new XMLElement('label',__('Supported services <i>Select to enable the service in the publish page</i>'));
 			$driv_title->appendChild(self::generateDriversSelectOptions($this->get(), 'fields['.$this->get('sortorder').'][driver][]'));
 			if (isset($errors['driver'])) {
@@ -682,20 +685,20 @@
 			$driv_wrap->appendChild($driv_title);
 
 			/* new line, update settings */
-			$set_wrap = new XMLElement('div', NULL, array('class'=>'group'));
+			$set_wrap = new XMLElement('div', null, array('class'=>'group'));
 			$label = Widget::Label(__('Update cache <em>in minutes</em> (leave blank to never update) <i>Optional</i>'));
 			$label->appendChild(Widget::Input('fields['.$this->get('sortorder').'][refresh]', $this->get('refresh')));
 			$set_wrap->appendChild($label);
 
 			/* new line, request params */
 			// Fixes issue #11
-			$par_wrap = new XMLElement('div', NULL, array('class'=>'oembed-params-settings'));
+			$par_wrap = new XMLElement('div', null, array('class'=>'oembed-params-settings'));
 			$par_title = new XMLElement('label', __('Request URL Parameters (Appended to the query string) <i>Optional</i>'));
 			$par_title->appendChild(Widget::Input('fields['.$this->get('sortorder').'][query_params]', $this->get('query_params')));
 			$par_wrap->appendChild($par_title);
 
 			/* new line, check boxes */
-			$chk_wrap = new XMLElement('div', NULL, array('class' => 'compact two columns'));
+			$chk_wrap = new XMLElement('div', null, array('class' => 'compact two columns'));
 			$chk_wrap->appendChild(new XMLElement('label', __('Other properties'), array('class'=>'oembed-other-title') ));
 			$this->appendRequiredCheckbox($chk_wrap);
 			$this->appendShowColumnCheckbox($chk_wrap);
@@ -715,22 +718,22 @@
 			$drivers = ServiceDispatcher::getAllDriversNames();
 			sort($drivers, SORT_STRING);
 			$drivers_options = array();
-			
+
 			if (is_array($settings)) {
 				$settings = (object) $settings;
 			}
-			
+
 			// patch
 			$d = $settings->{'driver'};
 			if (is_array($d)) {
 				$d = implode(',', $d);
 			}
-			
+
 			foreach ($drivers as $driver) {
 				$selected = strpos($d, $driver) > -1;
 				$drivers_options[] = array($driver, $selected);
 			}
-			
+
 			return Widget::Select($name, $drivers_options, array('multiple'=>'multiple'));
 		}
 
@@ -740,47 +743,47 @@
 		 * @param XMLElement $wrapper
 		 */
 		private function appendMustBeUniqueCheckbox(&$wrapper) {
-			$label = new XMLElement('label', NULL, array('class' => 'column'));
-			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][unique]', 'type' => 'checkbox'));
-			
+			$label = new XMLElement('label', null, array('class' => 'column'));
+			$chk = new XMLElement('input', null, array('name' => 'fields['.$this->get('sortorder').'][unique]', 'type' => 'checkbox'));
+
 			$label->appendChild($chk);
 			$label->setValue(__('Make this field unique in the section'), false);
 
 			if ($this->get('unique') == 'yes') {
 				$chk->setAttribute('checked','checked');
 			}
-			
+
 			$wrapper->appendChild($label);
 		}
-		
+
 		/**
 		 *
 		 * Utility (private) function to append a checkbox for the 'unique media' setting
 		 * @param XMLElement $wrapper
 		 */
 		private function appendResourceMustBeUniqueCheckbox(&$wrapper) {
-			$label = new XMLElement('label', NULL, array('class' => 'column'));
-			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][unique_media]', 'type' => 'checkbox'));
-			
+			$label = new XMLElement('label', null, array('class' => 'column'));
+			$chk = new XMLElement('input', null, array('name' => 'fields['.$this->get('sortorder').'][unique_media]', 'type' => 'checkbox'));
+
 			$label->appendChild($chk);
 			$label->setValue(__('Make this field checks to insure resources are used only once across the field'), false);
-			
+
 			if ($this->get('unique_media') == 'yes') {
 				$chk->setAttribute('checked','checked');
 			}
-			
+
 			$wrapper->appendChild($label);
 		}
-		
-		
+
+
 		/**
 		 *
 		 * Utility (private) function to append a checkbox for the 'thumbs' setting
 		 * @param XMLElement $wrapper
 		 */
 		private function appendShowThumbnailCheckbox(&$wrapper) {
-			$label = new XMLElement('label', NULL, array('class' => 'column'));
-			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][thumbs]', 'type' => 'checkbox'));
+			$label = new XMLElement('label', null, array('class' => 'column'));
+			$chk = new XMLElement('input', null, array('name' => 'fields['.$this->get('sortorder').'][thumbs]', 'type' => 'checkbox'));
 
 			$label->appendChild($chk);
 			$label->setValue(__('Show thumbnails in table'), false);
@@ -798,8 +801,8 @@
 		 * @param XMLElement $wrapper
 		 */
 		private function appendForceSSLCheckbox(&$wrapper) {
-			$label = new XMLElement('label', NULL, array('class' => 'column'));
-			$chk = new XMLElement('input', NULL, array('name' => 'fields['.$this->get('sortorder').'][force_ssl]', 'type' => 'checkbox'));
+			$label = new XMLElement('label', null, array('class' => 'column'));
+			$chk = new XMLElement('input', null, array('name' => 'fields['.$this->get('sortorder').'][force_ssl]', 'type' => 'checkbox'));
 
 			$label->appendChild($chk);
 			$label->setValue(__('Force protocol-less embeding (allow ssl, only if the drivers supports it)'), false);
@@ -819,15 +822,14 @@
 		 * @param int $entry_id
 		 * @return string - the html of the link
 		 */
-		public function prepareTableValue($data, XMLElement $link=NULL, $entry_id=NULL){
-
+		public function prepareTableValue($data, XMLElement $link = null, $entry_id = null){
 			$url = $data['url'];
 			$thumb = $data['thumbnail_url'];
 			$textValue = $this->prepareTextValue($data, $entry_id);
-			$value = NULL;
+			$value = null;
 
 			// no url = early exit
-			if(strlen($url) == 0) return NULL;
+			if(strlen($url) == 0) return null;
 
 			// no thumbnail or the parameter is not set ?
 			if (empty($thumb) || $this->get('thumbs') != 'yes') {
@@ -835,11 +837,7 @@
 				$value = $textValue;
 			} else {
 				// create a image
-				$thumb = ServiceDriver::removeHTTPProtocol($thumb);
-				$thumb = ServiceDriver::removeRelativeProtocol($thumb);
-				$img_path = URL . '/image/1/0/40/1/' . $thumb;
-
-				$value = '<img src="' . $img_path .'" alt="' . General::sanitize($data['title']) .'" height="40" />';
+				$value = '<img src="' . $thumb .'" alt="' . General::sanitize($data['title']) .'" height="40" />';
 			}
 
 			// does this cell serve as a link ?
@@ -883,131 +881,183 @@
 		 * Creates table needed for entries of invidual fields
 		 */
 		public function createTable(){
-			$id = $this->get('id');
-
-			return Symphony::Database()->query("
-				CREATE TABLE `tbl_entries_data_$id` (
-					`id` int(11) 		unsigned NOT NULL auto_increment,
-					`entry_id` 			int(11) unsigned NOT NULL,
-					`res_id` 			varchar(128),
-					`url` 				varchar(2048),
-					`url_oembed_xml` 	varchar(2048),
-					`title` 			varchar(2048),
-					`thumbnail_url` 	varchar(2048),
-					`oembed_xml` 		text,
-					`dateCreated` 		timestamp DEFAULT CURRENT_TIMESTAMP,
-					`driver`			varchar(50),
-					PRIMARY KEY  (`id`),
-					UNIQUE KEY `entry_id` (`entry_id`)
-				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-			");
+			return Symphony::Database()
+				->create('tbl_entries_data_' . $this->get('id'))
+				->ifNotExists()
+				->fields([
+					'id' => [
+						'type' => 'int(11)',
+						'auto' => true,
+					],
+					'entry_id' => 'int(11)',
+					'res_id' => [
+						'type' => 'varchar(128)',
+						'null' => true,
+					],
+					'url' => [
+						'type' => 'varchar(2048)',
+						'null' => true,
+					],
+					'url_oembed_xml' => [
+						'type' => 'varchar(2048)',
+						'null' => true,
+					],
+					'title' => [
+						'type' => 'varchar(2048)',
+						'null' => true,
+					],
+					'thumbnail_url' => [
+						'type' => 'varchar(2048)',
+						'null' => true,
+					],
+					'oembed_xml' => [
+						'type' => 'text',
+						'null' => true,
+					],
+					'dateCreated' => [
+						'type' => 'timestamp',
+						'default' => 'current_timestamp'
+					],
+					'driver' => [
+						'type' => 'varchar(50)',
+						'null' => auto,
+					],
+				])
+				->keys([
+					'id' => 'primary',
+					'entry_id' => 'unique',
+				])
+				->execute()
+				->success();
 		}
 
 		/**
 		 * Creates the table needed for the settings of the field
 		 */
 		public static function createFieldTable() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				CREATE TABLE IF NOT EXISTS `$tbl` (
-					`id` 			int(11) unsigned NOT NULL auto_increment,
-					`field_id` 		int(11) unsigned NOT NULL,
-					`refresh` 		int(11) unsigned NULL,
-					`driver` 		varchar(250) NOT NULL,
-					PRIMARY KEY (`id`),
-					UNIQUE KEY `field_id` (`field_id`)
-				)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-			");
+			return Symphony::Database()
+				->create(self::FIELD_TBL_NAME)
+				->ifNotExists()
+				->fields([
+					'id' => [
+						'type' => 'int(11)',
+						'auto' => true,
+					],
+					'field_id' => 'int(11)',
+					'refresh' => [
+						'type' => 'int(11)',
+						'null' => true,
+					],
+					'driver' => 'varchar(250)',
+				])
+				->keys([
+					'id' => 'primary',
+					'field_id' => 'unique',
+				])
+				->execute()
+				->success();
 		}
 
 		/**
 		 * Updates the table for the new settings: `unique`
 		 */
 		public static function updateFieldTable_Unique() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				ALTER TABLE  `$tbl`
-					ADD COLUMN `unique` enum('yes','no') NOT NULL DEFAULT 'no'
-			");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'unique' => [
+						'type' => 'enum',
+						'values' => ['yes','no'],
+						'default' => 'no',
+					],
+				])
+				->execute()
+				->success();
 		}
 
 		/**
 		 * Updates the table for the new settings: `thumbs`
 		 */
 		public static function updateFieldTable_Thumbs() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				ALTER TABLE  `$tbl`
-					ADD COLUMN `thumbs` enum('yes','no') NOT NULL DEFAULT 'no'
-			");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'thumbs' => [
+						'type' => 'enum',
+						'values' => ['yes','no'],
+						'default' => 'no',
+					],
+				])
+				->execute()
+				->success();
 		}
 
 		/**
 		 * Updates the table for the new settings: `params_set_id`
 		 */
 		public static function updateFieldTable_QueryParams() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				ALTER TABLE  `$tbl`
-					ADD COLUMN `query_params` varchar(1024) NULL
-			");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'query_params' => [
+						'type' => 'varchar(2014)',
+						'null' => true,
+					],
+				])
+				->execute()
+				->success();
 		}
 
 		public static function updateFieldTable_Driver() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			return Symphony::Database()->query("
-				ALTER TABLE  `$tbl`
-					MODIFY COLUMN `driver` varchar(250) NOT NULL
-			");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->modify([
+					'driver' => 'varchar(250)',
+				])
+				->execute()
+				->success();
 		}
 
 		public static function updateFieldData_Driver() {
-
-			$tbl = self::FIELD_TBL_NAME;
-
-			// allow all drivers for fields that already exists
-			$drivers = MySQL::cleanValue( implode(',',ServiceDispatcher::getAllDriversNames()) );
-
-			return Symphony::Database()->query("
-				UPDATE `$tbl`
-					SET `driver` = '$drivers'
-			");
+			return Symphony::Database()
+				->update(self::FIELD_TBL_NAME)
+				->set([
+					'driver' => implode(',',ServiceDispatcher::getAllDriversNames()),
+				])
+				->execute()
+				->success();
 		}
 
 		public static function updateDataTable_Driver() {
-			
 			$fields = self::getFields();
-			
+
 			// make sure the new driver column is add to
 			// fields that already exists
 			foreach ($fields as $field) {
-				
+
 				$id = $field->get('id');
-				
+
 				// test is the column exist
-				$col = Symphony::Database()->fetch("
-					SHOW COLUMNS FROM `tbl_entries_data_$id`
-						WHERE `field` = 'driver'
-				");
-				
+				$col = Symphony::Database()
+					->showColumns()
+					->from('tbl_entries_data_' . $id)
+					->where([
+						'field' => 'driver',
+					])
+					->execute()
+					->rows();
+
 				// if the col doest not exists
 				if (!is_array($col) || count($col) == 0) {
-					
-					$ret = Symphony::Database()->query("
-						ALTER TABLE  `tbl_entries_data_$id`
-							ADD COLUMN `driver`	varchar(50) NOT NULL
-					");
-					
+
+					$ret = Symphony::Database()
+						->alter('tbl_entries_data_' . $id)
+						->add([
+							'driver' => 'varchar(50)',
+						])
+						->execute()
+						->success();
+
 					if (!$ret) {
 						return false;
 					}
@@ -1015,71 +1065,81 @@
 			}
 			return true;
 		}
-		
+
 		private static function getFields() {
 			$fm = new FieldManager(Symphony::Engine());
 
 			// get all entries tables of type oEmbed
 			$fields = $fm->fetch(null, null, 'ASC', 'id', 'oembed');
-			
+
 			return $fields;
 		}
-		
+
 		public static function updateDataTable_UniqueKey() {
-			
 			$fields = self::getFields();
-			
+
 			// make sure the new driver column is add to
 			// fields that already exists
 			foreach ($fields as $field) {
-				$tbl = 'tbl_entries_data_' . $field->get('id');
-				return Symphony::Database()->query("
-					ALTER TABLE  `$tbl`
-					ADD UNIQUE (`entry_id`)
-				");
+				return Symphony::Database()
+					->alter('tbl_entries_data_' . $field->get('id'))
+					->addKey([
+						'entry_id' => 'unique',
+					])
+					->execute()
+					->success();
 			}
 			return true;
 		}
-		
+
 		public static function updateFieldTable_ForceSSL() {
-			
-			$tbl = self::FIELD_TBL_NAME;
-			
-			return Symphony::Database()->query("
-					ALTER TABLE  `$tbl`
-					ADD COLUMN `force_ssl` ENUM('yes','no') NOT NULL DEFAULT 'no'
-				");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'force_ssl' => [
+						'type' => 'enum',
+						'values' => ['yes','no'],
+						'default' => 'no',
+					],
+				])
+				->execute()
+				->success();
 		}
-		
+
 		public static function updateFieldTable_UniqueMedia() {
-			
-			$tbl = self::FIELD_TBL_NAME;
-			
-			return Symphony::Database()->query("
-					ALTER TABLE  `$tbl`
-					ADD COLUMN `unique_media` ENUM('yes','no') NOT NULL DEFAULT 'no'
-				");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->add([
+					'unique_media' => [
+						'type' => 'enum',
+						'values' => ['yes','no'],
+						'default' => 'no',
+					],
+				])
+				->execute()
+				->success();
 		}
-		
+
 		public static function updateFieldTable_UniqueKey() {
-			$tbl = self::FIELD_TBL_NAME;
-			
-			return Symphony::Database()->query("
-					ALTER TABLE  `$tbl`
-					ADD UNIQUE (`field_id`)
-				");
+			return Symphony::Database()
+				->alter(self::FIELD_TBL_NAME)
+				->addKey([
+					'field_id' => 'unique',
+				])
+				->execute()
+				->success();
 		}
-		
+
 		/**
 		 *
 		 * Drops the table needed for the settings of the field
 		 */
 		public static function deleteFieldTable() {
-			$tbl = self::FIELD_TBL_NAME;
-			
-			return Symphony::Database()->query("
-				DROP TABLE IF EXISTS `$tbl`
-			");
+			return Symphony::Database()
+				->drop(self::FIELD_TBL_NAME)
+				->ifExists()
+				->execute()
+				->success();
 		}
-		
+
 	}
